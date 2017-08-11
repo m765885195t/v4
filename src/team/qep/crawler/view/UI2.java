@@ -265,7 +265,7 @@ public class UI2 implements MouseListener {
 		Init2.Init2JButton(release, "release");
 		Init2.Init2JButton(startTask, "startTask");
 		Init2.Init2JTable(runJTable, "runJTable");
-		runData = Task.getRunningTask(5);
+//		runData = Task.getRunningTask(5);
 		runModel = new DefaultTableModel(runData,Default.getTaskViewJColumnNames()){
 			public boolean isCellEditable(int row,int column){ 
 				return false;

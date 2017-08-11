@@ -40,7 +40,7 @@ public class Task {
 	public static boolean beginTask(int taskNumber,String[] taskSet){
 		StringBuilder S = new StringBuilder();
 		for(int i=0 ; i<taskSet.length ; i++){
-			S.append(Operationstring.getIndex(Default.getDefaultUrl(), taskSet[i])+",");
+			S.append(Operationstring.getIndex(Default.getSupportFuzzyUrl(), taskSet[i])+",");
 		}
 		String flag = Communication.SendAndRecv(ConvertJSON.toJSON(taskNumber, 	Operationstring.deleteLastChar(S.toString(),',')));
 		String[] str = ConvertJSON.toStringArray(flag);
@@ -52,8 +52,8 @@ public class Task {
 
 	//终止任务---
 	public static boolean endTask(int taskNumber,String string){
-		System.out.println(ConvertJSON.toJSON(taskNumber,String.valueOf(Operationstring.getIndex(Default.getDefaultUrl(), string)))+"转换后的终止任务");
-		String flag = Communication.SendAndRecv(ConvertJSON.toJSON(taskNumber,String.valueOf(Operationstring.getIndex(Default.getDefaultUrl(), string))));
+		System.out.println(ConvertJSON.toJSON(taskNumber,String.valueOf(Operationstring.getIndex(Default.getSupportFuzzyUrl(), string)))+"转换后的终止任务");
+		String flag = Communication.SendAndRecv(ConvertJSON.toJSON(taskNumber,String.valueOf(Operationstring.getIndex(Default.getSupportFuzzyUrl(), string))));
 		String[] str = ConvertJSON.toStringArray(flag);
 		if(str[0].equals(String.valueOf(taskNumber))){
 			if(str[1].equals("0")){
@@ -66,8 +66,8 @@ public class Task {
 	}
 	//修改任务状态
 	public static boolean statusTask(int taskNumber,String string){
-		System.out.println(ConvertJSON.toJSON(taskNumber,String.valueOf(Operationstring.getIndex(Default.getDefaultUrl(), string)))+"转换后的终止任务");
-		String flag = Communication.SendAndRecv(ConvertJSON.toJSON(taskNumber,String.valueOf(Operationstring.getIndex(Default.getDefaultUrl(), string))));
+		System.out.println(ConvertJSON.toJSON(taskNumber,String.valueOf(Operationstring.getIndex(Default.getSupportFuzzyUrl(), string)))+"转换后的终止任务");
+		String flag = Communication.SendAndRecv(ConvertJSON.toJSON(taskNumber,String.valueOf(Operationstring.getIndex(Default.getSupportFuzzyUrl(), string))));
 		String[] str = ConvertJSON.toStringArray(flag);
 		if(str[0].equals(String.valueOf(taskNumber))){
 			if(str[1].equals("0")){

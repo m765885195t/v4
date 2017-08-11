@@ -32,7 +32,7 @@ public class Operationstring {
 	}
 	//得到正确的发布任务
 	public static String[] differenceString(String[] string1,String[] string2){
-		String[] defaultTask = Default.getDefaultUrl();
+		String[] defaultTask = Default.getSupportFuzzyUrl();
 		ArrayList<String> strlist = new ArrayList<String>();
 		for(int i=0 ; i<string1.length ; i++){
 			    //添加成功的url一定在默认任务集中      且不能在正在运行的任务中，格式一定要完整正确

@@ -47,7 +47,7 @@ public class UI implements MouseListener {
 	private Myjpanel taskJPanel = new Myjpanel("");//任务面板
 	private JTextArea distributionTask = new JTextArea();//分发任务集
 	private JScrollPane distributionJSPanel = new JScrollPane(distributionTask);
-	private JComboBox defaultTask = new JComboBox(Default.getDefaultUrl());//默认任务集
+	private JComboBox defaultTask = new JComboBox(Default.getSupportFuzzyUrl());//默认任务集
 	private JButton startTask= new JButton("start");//开始任务
 	private String[][] taskData ;////在运行任务
 	private DefaultTableModel taskModel;
@@ -125,7 +125,8 @@ public class UI implements MouseListener {
 		monitoringData.setForeground(Color.white);
 		monitoringData.setFont(new Font("微软雅黑",0,32));
 
-		Init.initJPanel(taskJPanel, "taskJPanel",  Default.JPanelX, Default.JPanelY);
+		Init.initJPanel(taskJPanel, "taskJPanel",  Default.JFrameX, Default.JFrameY);
+		taskJPanel.setBackground(Color.black);
 		Init.initJTextArea(distributionTask, "distributionTask");
 		Init.initJScrollPane(distributionJSPanel, "distributionJSPanel");
 		Init.initJComboBox(defaultTask, "defaultTask");
@@ -143,7 +144,7 @@ public class UI implements MouseListener {
 		Init.initJScrollPane(viewJSPanel, "viewJSPanel");
 		Init.initJButton(endTask, "endTask");
 
-		Init.initJPanel(dateJPanel, "dateJPanel", Default.JPanelX, Default.JPanelY);
+		Init.initJPanel(dateJPanel, "dateJPanel", Default.JFrameX, Default.JFrameY);
 		Init.initJButton(refreshData, "refreshData");
 		lineChart = Crawlergraph.createLineChart();
 		Init.initJButton(downloadData, "downloadData");
