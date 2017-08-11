@@ -5,7 +5,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Scanner;
 
-import team.qep.crawler.basic.Default;
+import team.qep.crawler.basic.Constant;
 
 //字符串转换工具
 public class Operationstring {
@@ -32,11 +32,11 @@ public class Operationstring {
 	}
 	//得到正确的发布任务
 	public static String[] differenceString(String[] string1,String[] string2){
-		String[] defaultTask = Default.getSupportFuzzyUrl();
+		String[] ConstantTask = Constant.SupportExactUrl.toArray(new String[Constant.SupportExactUrl.size()]);
 		ArrayList<String> strlist = new ArrayList<String>();
 		for(int i=0 ; i<string1.length ; i++){
 			    //添加成功的url一定在默认任务集中      且不能在正在运行的任务中，格式一定要完整正确
-			if(inTheArray(defaultTask, string1[i]) && !inTheArray(string2,string1[i])){
+			if(inTheArray(ConstantTask, string1[i]) && !inTheArray(string2,string1[i])){
 					strlist.add(string1[i]);
 			}
 		}

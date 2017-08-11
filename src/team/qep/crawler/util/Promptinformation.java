@@ -13,7 +13,6 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JTextArea;
 
-import team.qep.crawler.basic.Default;
 import team.qep.crawler.view.Init2;
 import team.qep.crawler.view.Myjpanel;
 
@@ -52,21 +51,21 @@ public class Promptinformation implements MouseListener {
 		jp.setBounds(0, 0, 380, 150);
 		
 		Init2.Init2JButton(jb1, "jb1");
-		jb1.setIcon(new ImageIcon(Default.getDynamicIconPath("define")));//任务icon
+//		jb1.setIcon(new ImageIcon(Default.getDynamicIconPath("define")));//任务icon
 		jb1.setBounds(160, 100, 32, 32);
-		jb1.setContentAreaFilled(false);//按键透明
+//		jb1.setContentAreaFilled(false);//按键透明
 		jb1.addMouseListener(this);
 
 		Init2.Init2JButton(jb2, "jb2");
-		jb2.setIcon(new ImageIcon(Default.getDynamicIconPath("determine")));//任务icon
+//		jb2.setIcon(new ImageIcon(Default.getDynamicIconPath("determine")));//任务icon
 		jb2.setBounds(80, 100, 32, 32);
-		jb2.setContentAreaFilled(false);//按键透明
+//		jb2.setContentAreaFilled(false);//按键透明
 		jb2.addMouseListener(this);
 		
 		Init2.Init2JButton(jb3, "jb3");
-		jb3.setIcon(new ImageIcon(Default.getDynamicIconPath("cancel")));//任务icon
+//		jb3.setIcon(new ImageIcon(Default.getDynamicIconPath("cancel")));//任务icon
 		jb3.setBounds(260, 100, 32, 32);
-		jb3.setContentAreaFilled(false);//按键透明
+//		jb3.setContentAreaFilled(false);//按键透明
 		jb3.addMouseListener(this);
 
 		Init2.Init2JTextArea(info, "info");
@@ -91,20 +90,14 @@ public class Promptinformation implements MouseListener {
 	}
 	public void mouseEntered(MouseEvent e){//鼠标进入组件时执行的操作 
 		if("jb1".equals(e.getComponent().getName())){
-			jb1.setIcon(new ImageIcon(Default.getDynamicIconPath("define1")));//任务icon
 		}else if("jb2".equals(e.getComponent().getName())){
-			jb2.setIcon(new ImageIcon(Default.getDynamicIconPath("determine1")));//任务icon
 		}else if("jb3".equals(e.getComponent().getName())){
-			jb3.setIcon(new ImageIcon(Default.getDynamicIconPath("cancel1")));//任务icon
 		}
 	}
 	public void mouseExited(MouseEvent e) {//鼠标离开组件时执行的操作 
 		if("jb1".equals(e.getComponent().getName())){
-			jb1.setIcon(new ImageIcon(Default.getDynamicIconPath("define")));//任务icon
 		}else if("jb2".equals(e.getComponent().getName())){
-			jb2.setIcon(new ImageIcon(Default.getDynamicIconPath("determine")));//任务icon
 		}else if("jb3".equals(e.getComponent().getName())){
-			jb3.setIcon(new ImageIcon(Default.getDynamicIconPath("cancel")));//任务icon
 		}
 	}
 	public void mousePressed(MouseEvent e) {

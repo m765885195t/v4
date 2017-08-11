@@ -5,7 +5,7 @@ import java.util.Random;
 
 import org.jfree.chart.editor.DefaultChartEditorFactory;
 
-import team.qep.crawler.basic.Default;
+import team.qep.crawler.basic.Constant;
 import team.qep.crawler.socket.Communication;
 import team.qep.crawler.socket.Download;
 import team.qep.crawler.util.ConvertJSON;
@@ -66,7 +66,7 @@ public class Data {
 		ArrayList<String> list = new ArrayList<String>();
 		list.add("ALL");
 		for(int i=start ; i<end ; i++){
-			list.add(Default.taskSet[i]);
+			list.add(Constant.taskSet[i]);
 		}
 		//返回添加好的二级
 		return Operationstring.toTwoimensional((String[])list.toArray(new String[list.size()]));
