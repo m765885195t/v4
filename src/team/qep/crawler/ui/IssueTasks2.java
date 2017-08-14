@@ -61,7 +61,7 @@ public class IssueTasks2 extends JPanel implements MouseListener {
 		}
 
 		columnNames = Constant.E_CommerceCcolumnNames;
-		// data = new String[0][];//得到数据
+		 data = new String[0][];//得到数据
 		timelyDataSetModel = new DefaultTableModel(data, columnNames);
 		timelyDataSet.setModel(timelyDataSetModel);
 	}

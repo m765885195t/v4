@@ -99,7 +99,7 @@ public class UI implements MouseListener {
 		ctlJP.setBounds(0, 0, Constant.JFrame_Width, Constant.JFrame_Height);
 		zoom.setBounds(Constant.JFrame_Width - 60, 0, 30, 30);
 		close.setBounds(Constant.JFrame_Width - 30, 0, 30, 30);
-		datetime.setBounds(Constant.JFrame_Width - 300, 2, 300, 30);
+		datetime.setBounds(Constant.JFrame_Width - 300, 0, 300, 30);
 
 		sidebarJP.setBounds(0, 0, 50, Constant.JFrame_Height);
 		issueTask1.setBounds(0, 0, 50, 50);
