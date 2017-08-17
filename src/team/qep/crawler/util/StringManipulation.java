@@ -12,5 +12,13 @@ public class StringManipulation {
 		}
 		return str;
 	}
+	//二位数组转一维数组(只取第一列)
+	public static String[] toOneDimensionalArrays(String[][] string){
+		String[] str = new String[string.length];
+		for(int i = 0 ; i < string.length ; i++) {
+			str[i] = string[i][0];
+		}
+		return str;
+	}
 }
 

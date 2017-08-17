@@ -13,102 +13,21 @@ import team.qep.crawler.socket.Communication;
 import team.qep.crawler.util.ConvertJSON;
 import team.qep.crawler.util.Operationstring;
 import team.qep.crawler.util.Promptinformation;
+import team.qep.crawler.util.StringManipulation;
 
 public class Task {
-	//v3.0
-	//得到正在运行的任务集
-	public static String[][] getRunningTask(int taskNumber){
-		String flag = Communication.SendAndRecv(ConvertJSON.toJSON(taskNumber,""));
-		String[] str = ConvertJSON.toStringArray(flag);
-		ArrayList<String[]> list = new ArrayList<String[]>();
-		System.out.println(flag);
-
-		for(int i=1 ; i<str.length ; i+=2){
-			list.add(new String[]{Constant.taskSet[Integer.valueOf(str[i])],String.valueOf(str[i+1])});
-		}
-		String[][] A= new String[list.size()][3];
-		for(int i=0 ; i<list.size() ; i++){
-			for(int j=0 ; j<2 ; j++){
-				if(j==1){
-					switch(list.get(i)[j]){
-						case "1":A[i][j] = "Run";break;
-						case "2":A[i][j] = "Pause";break;
-					}
-				}else{
-					A[i][j] = list.get(i)[j];
-				}
-			}
-		}
-		return A;
-//		return new String[][]{{"1","blog.csdn.net"}};
-//		return new String[][]{};
-	}
-	//发布任务集
-	public static boolean beginTask(int taskNumber,String[] taskSet){
-		StringBuilder S = new StringBuilder();
-		for(int i=0 ; i<taskSet.length ; i++){
-			S.append(Operationstring.getIndex((String [])Constant.SupportExactUrl.toArray(), taskSet[i])+",");
-		}
-		String flag = Communication.SendAndRecv(ConvertJSON.toJSON(taskNumber, 	Operationstring.deleteLastChar(S.toString(),',')));
-		String[] str = ConvertJSON.toStringArray(flag);
-//		if(str[1].equals("0")){
-//			return false;
-//		}
-		return true;
-	}
-
-	//终止任务---
-	public static boolean endTask(int taskNumber,String string){
-		System.out.println(ConvertJSON.toJSON(taskNumber,String.valueOf(Operationstring.getIndex((String[]) Constant.SupportExactUrl.toArray(), string)))+"转换后的终止任务");
-		String flag = Communication.SendAndRecv(ConvertJSON.toJSON(taskNumber,String.valueOf(Operationstring.getIndex((String[])Constant.SupportExactUrl.toArray(), string))));
-		String[] str = ConvertJSON.toStringArray(flag);
-		if(str[0].equals(String.valueOf(taskNumber))){
-			if(str[1].equals("0")){
-				return false;
-			}
-		}else{
-			return false;
-		}
-		return true;
-	}
-	//修改任务状态
-	public static boolean statusTask(int taskNumber,String string){
-		System.out.println(ConvertJSON.toJSON(taskNumber,String.valueOf(Operationstring.getIndex((String[])Constant.SupportExactUrl.toArray(), string)))+"转换后的终止任务");
-		String flag = Communication.SendAndRecv(ConvertJSON.toJSON(taskNumber,String.valueOf(Operationstring.getIndex((String[])Constant.SupportExactUrl.toArray(), string))));
-		String[] str = ConvertJSON.toStringArray(flag);
-		if(str[0].equals(String.valueOf(taskNumber))){
-			if(str[1].equals("0")){
-				return false;
-			}
-		}else{
-			return false;
-		}
-		return true;
-	}
-	
-	
-	//v4.0
-	//得到运行中的总任务集
-	public static String[] getRunUrl(){
-		String[] runFuzzyUrl = getRunFuzzyUrl();
-		String[] runExactUrl = getRunExactUrl();
-
-		runFuzzyUrl = Arrays.copyOf(runFuzzyUrl,runFuzzyUrl.length + runExactUrl.length);// 扩容模糊集
-        System.arraycopy(runExactUrl, 0, runFuzzyUrl, runFuzzyUrl.length, runExactUrl.length);//合并精确集到模糊集		
-        
-        return runFuzzyUrl;		
-	}
-	//得到运行中的模糊任务集
-	public static String[] getRunFuzzyUrl(){
-		String[] runFuzzyUrl = new String[0];
+	//得到运行的任务集
+	public static String[][] getRunUrlSet(){
+		String[][] runUrl = new String[][]{{"www.taobao.com","羽毛球"},{"www.taobao.com","伞"},{"www.taobao.com",""}};
 		
-		return runFuzzyUrl;		
-	}
-	//得到运行中的精确任务集
-	public static String[] getRunExactUrl(){
-		String[] runExactUrl = new String[0];
+		return runUrl;		
+	}	
+	//存在本地?
+	//得到终止的任务集
+	public static String[][] getStopUrlSet(){
+		String[][] stopUrl = new String[][]{{"www.taobao.com","1"},{"www.taobao.com","2"},{"www.taobao.com",""}};
 		
-		return runExactUrl;		
+		return stopUrl;		
 	}
 	
 	//发布模糊任务                       参数--->(模糊任务url集string,优先度int)
@@ -116,21 +35,31 @@ public class Task {
 		//1---分割为数组同时去掉重复的url
 		Set<String> set = new HashSet<String>(Arrays.asList(fuzzyURL.replace(" ", "").split("\n")));
 		//2---去掉不支持(错误)的url
-		Set<String> support = new HashSet<String>(Constant.SupportExactUrl);
+		Set<String> support = new HashSet<String>(Constant.SupportFuzzyUrl);
 		set.retainAll(support);
-		//3---去掉运行中(已经发布过)的url,
-		Set<String> run = new HashSet<String>(Arrays.asList(Task.getRunFuzzyUrl()));//得到正在运行的任务集
-		set.removeAll(run);
+		//3---去掉运行中(已经发布过)的url
+		ArrayList<String> list = new ArrayList<String>();
+		boolean flag=true;//重复标志
+		for(String url:set){
+			flag=true;
+			for(String[] str: Task.getRunUrlSet()){
+				if(str[0].equals(url) && str[1].equals("")){
+					 flag=false;
+				}
+			}
+			if(flag){
+				list.add(url);
+			}
+		}
 		//得到待发布的模糊任务集
-		String[] fuzzyUrlSet=(String[])set.toArray(new String[set.size()]);
-		
-		//转为下标
+		String[] fuzzyUrlSet=(String[])list.toArray(new String[list.size()]);
+		//转为url编号
 		int[] task = new int[fuzzyUrlSet.length];
 		for(int i=0 ; i<task.length ; i++){
 			task[i]=Constant.SupportExactUrl.indexOf(fuzzyUrlSet[i]);
 		}
-//		Arrays.toString(task);
-		
+		//得到任务字符数组[1,2]
+		p(Arrays.toString(task));
 		//待转json发送
 		
 		return true;
@@ -138,14 +67,22 @@ public class Task {
 	
 	//发布精确任务      参数--->(精确任务url(string)  关键字(string)    优先度(int))
 	public static boolean exactUrlPublish(String exactURL, String key, int priority){
-		if(!Arrays.asList(getRunExactUrl()).contains(exactURL)){//不存在相同的任务
+		//去重
+		boolean flag=true;//重复标志
+		for(String[] str: Task.getRunUrlSet()){
+			if(str[0].equals(exactURL) && str[1].equals(key)){
+				 flag=false;
+			}
+		}
+		if(flag){
 			int task = Constant.SupportExactUrl.indexOf(exactURL);//得到任务下标
-			
+			p(task);
 			//待转json发送
 			
 			return true;
+		}else{//已经重复
+			return false;
 		}
-		return false;
 	}
 	
 	//发布及时任务      参数--->(及时任务url集(string)  模板配置(string))
@@ -163,14 +100,38 @@ public class Task {
 	public static String[][] getTimelyUrlData() {
 		return new String[][]{{"dsa"}};
 	}
+	
+	//查找关键字        参数--->(类型终止or运行(String)   精确任务url(string))
+	public static String[] getKeyWords(int type,String string) {
+		ArrayList<String> list = new ArrayList<String>();
+		list.add("");
+		String[][] taskSet = null;
+		if(type==Constant.KeyValue.get("run")){
+			taskSet=Task.getRunUrlSet();
+		}else if(type==Constant.KeyValue.get("stop")){
+			taskSet=Task.getStopUrlSet();
+		}
+		for(String str:taskSet[0]){
+			if(str.equals(string)){
+				list.add(str);
+			}
+		}
+		return list.toArray(new String[list.size()]);
+	}
+	
 	public static void main(String[] args){
-		timelyUrlPublish("blog.sina.com.cn","s");
+		fuzzyUrlPublish("www.taobao.com",1);
 	}
 	//简化输出
-	public void p(String str){
+	public static void p(String str){
 		System.out.println(str);
 	}
-	public void p(int str){
+	public static void p(int str){
 		System.out.println(str);
 	}
+	//得到该url对应的数据     keyword为空说明为模糊任务，否则为精确任务
+	public static String[][] getUrlData(String url, String keyWord) {
+		return new String[][]{{"dsa"}};
+	}
+
 }

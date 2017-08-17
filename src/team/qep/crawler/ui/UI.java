@@ -47,7 +47,7 @@ public class UI implements MouseListener {
 		this.setColour();
 		this.listener();
 
-		flag[Constant.Options.get("issueTask1")] = true;
+		flag[Constant.KeyValue.get("issueTask1")] = true;
 		issueTask1.setBackground(new Color(20, 20, 20));
 		issueTask1.setIcon(new ImageIcon(Constant.getIcon("issueTask1w")));
 
@@ -118,7 +118,7 @@ public class UI implements MouseListener {
 
 	private void setColour() {
 		// 默认其余组件都未使用
-		for (Integer values : Constant.Options.values()) {
+		for (Integer values : Constant.KeyValue.values()) {
 			flag[values] = false;
 		}
 		// 面板色
@@ -163,12 +163,12 @@ public class UI implements MouseListener {
 
 	}
 
-	private void toggleOptions(JButton jb, JPanel jp) {// 切换选项
+	private void toggleKeyValue(JButton jb, JPanel jp) {// 切换选项
 		this.setColour();// 全部恢复为默认
 		jb.setContentAreaFilled(true);// 显示背景
 		jb.setBackground(new Color(20, 20, 20));// 设置背景色
 		jb.setIcon(new ImageIcon(Constant.getIcon(jb.getName() + "w")));// 设置图标icon
-		flag[Constant.Options.get(jb.getName())] = true;// 已使用此组件
+		flag[Constant.KeyValue.get(jb.getName())] = true;// 已使用此组件
 		ctlJF.remove(issueTask1JP);
 		ctlJF.remove(issueTask2JP);
 		ctlJF.remove(taskControlJP);
@@ -181,22 +181,22 @@ public class UI implements MouseListener {
 
 	public void mouseClicked(MouseEvent e) {// 单击
 		if ("issueTask1".equals(e.getComponent().getName())) {
-			this.toggleOptions(issueTask1, issueTask1JP);
+			this.toggleKeyValue(issueTask1, issueTask1JP);
 
 		} else if ("issueTask2".equals(e.getComponent().getName())) {
-			this.toggleOptions(issueTask2, issueTask2JP);
+			this.toggleKeyValue(issueTask2, issueTask2JP);
 
 		} else if ("taskControl".equals(e.getComponent().getName())) {
-			this.toggleOptions(taskControl, taskControlJP);
+			this.toggleKeyValue(taskControl, taskControlJP);
 
 		} else if ("dataMonitoring".equals(e.getComponent().getName())) {
-			this.toggleOptions(dataMonitoring, dataMonitoringJP);
+			this.toggleKeyValue(dataMonitoring, dataMonitoringJP);
 
 		} else if ("dataDisplay".equals(e.getComponent().getName())) {
-			this.toggleOptions(dataDisplay, dataDisplayJP);
+			this.toggleKeyValue(dataDisplay, dataDisplayJP);
 
 		} else if ("historyRecord".equals(e.getComponent().getName())) {
-			this.toggleOptions(historyRecord, historyRecordJP);
+			this.toggleKeyValue(historyRecord, historyRecordJP);
 
 		} else if ("zoom".equals(e.getComponent().getName())) {
 			zoom.setIcon(new ImageIcon(Constant.getIcon("zoom")));
@@ -250,35 +250,35 @@ public class UI implements MouseListener {
 
 	public void mouseExited(MouseEvent e) {// 离开
 		if ("issueTask1".equals(e.getComponent().getName())) {
-			if (!flag[Constant.Options.get(issueTask1.getName())]) {// 若未使用组件,恢复其颜色
+			if (!flag[Constant.KeyValue.get(issueTask1.getName())]) {// 若未使用组件,恢复其颜色
 				issueTask1.setIcon(new ImageIcon(Constant.getIcon("issueTask1b")));
 			}
 		} else if ("issueTask2".equals(e.getComponent().getName())) {
-			if (!flag[Constant.Options.get(issueTask2.getName())]) {
+			if (!flag[Constant.KeyValue.get(issueTask2.getName())]) {
 				issueTask2.setIcon(new ImageIcon(Constant.getIcon("issueTask2b")));
 			}
 		} else if ("taskControl".equals(e.getComponent().getName())) {
-			if (!flag[Constant.Options.get(taskControl.getName())]) {
+			if (!flag[Constant.KeyValue.get(taskControl.getName())]) {
 				taskControl.setIcon(new ImageIcon(Constant.getIcon("taskControlb")));
 			}
 		} else if ("dataMonitoring".equals(e.getComponent().getName())) {
-			if (!flag[Constant.Options.get(dataMonitoring.getName())]) {
+			if (!flag[Constant.KeyValue.get(dataMonitoring.getName())]) {
 				dataMonitoring.setIcon(new ImageIcon(Constant.getIcon("dataMonitoringb")));
 			}
 		} else if ("dataDisplay".equals(e.getComponent().getName())) {
-			if (!flag[Constant.Options.get(dataDisplay.getName())]) {
+			if (!flag[Constant.KeyValue.get(dataDisplay.getName())]) {
 				dataDisplay.setIcon(new ImageIcon(Constant.getIcon("dataDisplayb")));
 			}
 		} else if ("historyRecord".equals(e.getComponent().getName())) {
-			if (!flag[Constant.Options.get(historyRecord.getName())]) {
+			if (!flag[Constant.KeyValue.get(historyRecord.getName())]) {
 				historyRecord.setIcon(new ImageIcon(Constant.getIcon("historyRecordb")));
 			}
 		} else if ("zoom".equals(e.getComponent().getName())) {
-			if (!flag[Constant.Options.get(zoom.getName())]) {
+			if (!flag[Constant.KeyValue.get(zoom.getName())]) {
 				zoom.setIcon(new ImageIcon(Constant.getIcon("zoomb")));
 			}
 		} else if ("close".equals(e.getComponent().getName())) {
-			if (!flag[Constant.Options.get(close.getName())]) {
+			if (!flag[Constant.KeyValue.get(close.getName())]) {
 				close.setIcon(new ImageIcon(Constant.getIcon("closeb")));
 			}
 		}

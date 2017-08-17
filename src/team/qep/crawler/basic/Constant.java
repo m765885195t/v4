@@ -8,7 +8,7 @@ public class Constant {
 	public static final int JFrame_Width  = 1024;
 	public static final int JFrame_Height = 632;
 	//UI选项卡的键值对
-	public static final HashMap<String, Integer> Options = new HashMap<String, Integer>() {
+	public static final HashMap<String, Integer> KeyValue = new HashMap<String, Integer>() {
 		{
 			put("issueTask1", 0);
 			put("issueTask2", 1);
@@ -18,24 +18,24 @@ public class Constant {
 			put("historyRecord", 5);
 			put("zoom", 8);
 			put("close", 9);
+			put("stop", 12);
+			put("run", 13);
 		}
 	};
 	
 	//模糊任务集 
 	public static final ArrayList<String> SupportFuzzyUrl = new ArrayList<String>(){{
 		add("www.taobao.com");
-		add("blog.csdn.net");
 		add("www.tmall.com");
 		add("news.sina.com.cn");
+		add("blog.csdn.net");
 		add("blog.sina.com.cn");
 	}};
-	//精确任务集
+	//模糊任务集上电商与博客新闻的分割线
+	public static final int division = 2;
+	//精确任务集-------模糊任务集的子集
 	public static final ArrayList<String> SupportExactUrl = new ArrayList<String>(){{
 		add("www.taobao.com");
-		add("blog.csdn.net");
-		add("www.tmall.com");
-		add("news.sina.com.cn");
-		add("blog.sina.com.cn");
 	}};
 
 	//及时任务的配置模板
@@ -49,9 +49,12 @@ public class Constant {
 	//协议表
 	public static final HashMap<String, Integer> Agreement = new HashMap<String, Integer>() {
 		{
-			put("fuzzyUrlPublish", 5);//发布模糊任务
-			put("exactUrlPublish", 6);//发布精确任务
-			put("timelyUrlPublish", 7);//发布及时任务
+			put("fuzzyUrl", 5);//模糊任务
+			put("exactUrl", 6);//精确任务
+			put("timelyUrl", 7);//及时任务
+			put("DownloadData ", 8);//下载的数据量
+			put("ProgressData ", 9);//爬取的数据量
+			
 		}
 	};
 	
@@ -59,8 +62,8 @@ public class Constant {
 	public static final String[] E_CommerceCcolumnNames = new String[]{"URL","商品名","店铺名","评论"};//电商数据列名
 	public static final String[] BlogNewsCcolumnNames = new String[]{"标题","关键字","摘要"};//博客新闻数据列名
 	public static final String[] TaskCcolumnNames = new String[]{"URL","任务类别","关键字","发布时间","任务状态"};//任务数据列名
+	public static final String[] HistoricalTaskCcolumnNames = new String[]{"URL","关键字","总数"};//历史任务数据列名
 
-	
 	public static String getIcon(String path) {// 得到icon
 		return "./image/icon/" + path + ".png";
 	}

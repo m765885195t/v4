@@ -5,7 +5,6 @@ import java.awt.Font;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JDialog;
-import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -14,6 +13,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
+import javax.swing.ListSelectionModel;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.JTableHeader;
 
@@ -29,7 +29,6 @@ public class Init {
 		jf.setLocationRelativeTo(null);// 起始位置为屏幕中央
 		jf.setUndecorated(true);// 去掉标题栏
 		jf.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);// 隐藏当前窗口，并释放窗体占有的其他资源
-
 	}
 
 	public static void initJDialog(JDialog jd, String str, int x, int y) {// 主窗口,窗口名,窗口大小
@@ -65,15 +64,12 @@ public class Init {
 		jtf.setBackground(Color.white);// 设置背景色为白
 		// jtf.setEditable(false);//屏蔽输入
 		// jtf.setFocusable(false);//消除光标
-		// jtf.setDocument(new MyDocument(16));//限制密码输入长度
 	}
 
 	// 标签初始化
 	public static void initJLable(JLabel jl, String str) {
 		jl.setName(str);// 设置文本框的名字
-		// jl.setFont(new Font("serif",0,20));
 		jl.setFont(new Font("微软雅黑", 0, 20));
-		// jl.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));//进入框为手
 		jl.setForeground(Color.white);
 	}
 
@@ -81,15 +77,8 @@ public class Init {
 	public static void initJButton(JButton jb, String str) {
 		jb.setName(str);
 		jb.setFocusable(false);// 消除光标
-		// jb.setContentAreaFilled(false);//按键透明
 		jb.setBorder(null);// 去掉边框
 		jb.setFont(new Font("微软雅黑", 0, 20));
-
-		// jb.setBorder(BorderFactory.createLineBorder(new Color(51,153,204)));
-		// jb.setForeground(new Color( 51,153,204));
-		// jb.setBackground(new Color(245,245,245));
-		// jb.setAutoscrolls(true);
-
 	}
 
 	// ---------面板初始化
@@ -125,22 +114,21 @@ public class Init {
 		header.setReorderingAllowed(false);// 不可拖动列
 		header.setForeground(Color.blue);// 字体颜色
 		header.setFont(new Font("微软雅黑", 0, 21));// 字体颜色
-		// header.setOpaque(false);
-		// 表头渲染器
-		// DefaultTableCellRenderer head = new DefaultTableCellRenderer();//
-		// 设置table内容居中
-		// head.setOpaque(false);
-		// head.setHorizontalAlignment(JLabel.CENTER);//水平居中对齐
-		// header.setDefaultRenderer(head);//为表头设置渲染器
+		 header.setOpaque(false);
+//		 表头渲染器
+		 DefaultTableCellRenderer head = new DefaultTableCellRenderer();//
+//		 设置table内容居中
+		 head.setOpaque(false);
+		 head.setHorizontalAlignment(JLabel.CENTER);//水平居中对齐
+		 header.setDefaultRenderer(head);//为表头设置渲染器
+		jt.getTableHeader().setReorderingAllowed(false);//不可拖动列
+		//设置只能选中单行
+		jt.getSelectionModel().setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 
 	}
 
-	public static void initJComboBox(JComboBox choice, String str) {
+	public static void initJComboBox(JComboBox<String> choice, String str) {
 		choice.setName(str);
 		choice.setFont(new Font("微软雅黑", 0, 20));
-	}
-
-	public static void initJFileChooser(JFileChooser JFileChooser, String str) {
-		JFileChooser.setName(str);
 	}
 }

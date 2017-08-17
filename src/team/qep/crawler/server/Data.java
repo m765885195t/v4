@@ -12,9 +12,16 @@ import team.qep.crawler.util.ConvertJSON;
 import team.qep.crawler.util.Operationstring;
 
 public class Data {
-	//刷新数据  得到数据爬取量生成折线图
-	public static String[][] refreshData(int taskNumber){
-//		String flag = Communication.SendAndRecv(ConvertJSON.toJSON(taskNumber,""));
+	//简化输出
+	public static void p(String str){
+		System.out.println(str);
+	}
+	public static void p(int str){
+		System.out.println(str);
+	}
+	//得到进度数据生成折线图
+	public static String[][] scheduleData(){
+//		String flag = Communication.SendAndRecv(ConvertJSON.toJSON(Constant.Agreement.get("ProgressData"),""));
 //		String[] str = ConvertJSON.toStringArray(flag);
 //		
 //		ArrayList<String[]> list = new ArrayList<String[]>();
@@ -23,26 +30,53 @@ public class Data {
 //			list.add(new String[]{str[i+2],"News",str[i]});
 //			list.add(new String[]{str[i+3],"Blog",str[i]});
 //		}
-//		
-		Random a = new Random();
+		
+		Random random = new Random();
 		ArrayList<String[]> list = new ArrayList<String[]>();
-		for(int i=0 ; i<9; i++){
-			list.add(new String[]{String.valueOf(i*a.nextInt()),"E-Commerce","07/18 "+String.valueOf(i*2+10)+":00"});
-			list.add(new String[]{String.valueOf(i*a.nextInt()),"News","07/18 "+String.valueOf(i*2+10)+":00"});
-			list.add(new String[]{String.valueOf(i*a.nextInt()),"Blog","07/18 "+String.valueOf(i*2+10)+":00"});
+		for(int i=0 ; i<8; i++){
+			list.add(new String[]{String.valueOf(i*random.nextInt(1000)),"E-Commerce","07/18 "+String.valueOf(i*2+10)+":00"});
+			list.add(new String[]{String.valueOf(i*random.nextInt(1000)),"News","07/18 "+String.valueOf(i*2+10)+":00"});
+			list.add(new String[]{String.valueOf(i*random.nextInt(1000)),"Blog","07/18 "+String.valueOf(i*2+10)+":00"});
 		}
 //		
-		String[][] A = new String[list.size()][3];
+		String[][] dataSet = new String[list.size()][3];
 		for(int i=0 ; i<list.size() ; i++){
 			for(int j=0 ; j<3 ; j++){
-				A[i][j] = list.get(i)[j];
+				dataSet[i][j] = list.get(i)[j];
 			}
 		}
-		return A;
+		p("das");
+		return dataSet;
+	}	
+	//得到总下载量数据生成饼状图
+	public static String[][] downloadData(){
+//		String flag = Communication.SendAndRecv(ConvertJSON.toJSON(Constant.Agreement.get("DownloadData"),""));
+//		String[] str = ConvertJSON.toStringArray(flag);
+//		
+//		ArrayList<String[]> list = new ArrayList<String[]>();
+//		list.add(new String[]{"E-Commerce",str[1]});
+//		list.add(new String[]{"News",str[2]});
+//		list.add(new String[]{"Blog",str[3]});
+		
+		Random random = new Random();
+		ArrayList<String[]> list = new ArrayList<String[]>();
+		list.add(new String[]{"E-Commerce",String.valueOf(random.nextInt(10))});
+		list.add(new String[]{"News",String.valueOf(random.nextInt(10))});
+		list.add(new String[]{"Blog",String.valueOf(random.nextInt(10))});
+		
+		String[][] dataSet = new String[list.size()][2];
+		for(int i=0 ; i<list.size() ; i++){
+			for(int j=0 ; j<2 ; j++){
+				dataSet[i][j] = list.get(i)[j];
+			}
+		}
+		return dataSet;
 	}
 	
-	//清空数据
-	public static boolean emptyData(int taskNumber,int urlstart,int urlend){//url起止范围
+	//清空数据 ----参数（带清空数据据的url(String), 关键字keyWord(String))
+	public static boolean wipeData(String url,String keyWord){
+		int task = Constant.SupportFuzzyUrl.indexOf(url);//得到任务下标
+		//待转json发送
 //		String flag = Communication.SendAndRecv(ConvertJSON.toJSON(taskNumber,""));
 //		String[] str = ConvertJSON.toStringArray(flag);
 //		if(str[1].equals("0")){
@@ -50,39 +84,6 @@ public class Data {
 //		}
 		return true;
 	}
-	
-	//得到删除的一级数据类别
-	public static String[][] getOneData(){
-		ArrayList<String> list = new ArrayList<String>();
-		list.add("ALL");
-		list.add("E-Commerce");
-		list.add("News");
-		list.add("Blog");
-		//返回添加好的一级
-		return Operationstring.toTwoimensional((String[])list.toArray(new String[list.size()]));
-	}
-	//得到删除的二级数据类别
-	public static String[][] getTwoData(int start,int end){//起止范围
-		ArrayList<String> list = new ArrayList<String>();
-		list.add("ALL");
-		for(int i=start ; i<end ; i++){
-			list.add(Constant.taskSet[i]);
-		}
-		//返回添加好的二级
-		return Operationstring.toTwoimensional((String[])list.toArray(new String[list.size()]));
-	}
-	
-	//下载数据
-	public static boolean downloadData(int taskNumber,int select,String pathName){//可选择下载那个类别
-		if(Download.download(ConvertJSON.toJSON(taskNumber,""),pathName)){
-			return true;
-		}
-		return false;
-	}
 	public static void main(String[] args){
-		String[][] a= getTwoData(0,2);
-		for(int i=0 ; i<a.length ; i++){
-			System.out.println(a[i][0]);
-		}
 	}
 }

@@ -22,7 +22,7 @@ import team.qep.crawler.util.StringManipulation;
 
 public class IssueTasks1 extends JPanel implements MouseListener {
 	private JTable supportUrlSet = new JTable(new DefaultTableModel(
-			StringManipulation.toTwoDimensionalArrays(Constant.SupportExactUrl), new String[] { "SupportURL" }) {
+			StringManipulation.toTwoDimensionalArrays(Constant.SupportFuzzyUrl), new String[] { "SupportURL" }) {
 		public boolean isCellEditable(int row, int column) {
 			return false;
 		}
@@ -135,11 +135,10 @@ public class IssueTasks1 extends JPanel implements MouseListener {
 			int priority = fuzzyUrlPriority.getSelectedIndex() + 1;
 			if (!fuzzyURL.equals("")) {
 				if (Task.fuzzyUrlPublish(fuzzyURL, priority)) {
-					// 发布成功
-
 					new Promptinformation(null,
 							"Successful submission has been done automatically with duplicate tasks and unsupported tasks.",
 							1);// １为普通窗口2为确认对话窗口
+					
 					fuzzyURLSet.setText("");
 					fuzzyUrlPriority.setSelectedIndex(0);
 				} else {

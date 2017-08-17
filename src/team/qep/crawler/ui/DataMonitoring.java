@@ -12,16 +12,15 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 import team.qep.crawler.basic.Constant;
 import team.qep.crawler.server.Task;
-import team.qep.crawler.view.Crawlergraph;
 
 public class DataMonitoring extends JPanel implements MouseListener {
 	private JLabel dataDisplay = new JLabel("Data  Monitoring");
 
 	private JComboBox<String> runTask = new JComboBox<String>(); //运行中的任务
-	private JTextField taskStatus = new JTextField(); // 任务状态
+	private JComboBox<String> selectKeyword  = new JComboBox<String>(); //选择关键字
 	private JButton savePicture = new JButton();// 保存当前进度图
 	private JButton refresh = new JButton();// 刷新
-	private JPanel lineChart;//进度图savePicture
+	private JPanel lineChart=CrawlerChart.createLineChart();//进度图
 
 	public DataMonitoring() {
 		this.Init();
@@ -32,17 +31,19 @@ public class DataMonitoring extends JPanel implements MouseListener {
 
 		this.add(dataDisplay);
 		this.add(runTask);
-		this.add(taskStatus);
+		this.add(selectKeyword);
 		this.add(savePicture);
 		this.add(refresh);
 		this.add(lineChart);
 	}
 
 	private void loadingData() {// 装载数据
-		lineChart = Crawlergraph.createLineChart();
-		
-		for(String str:Task.getRunUrl()){//得到正在运行的任务(精确+模糊)
+		for(String str:Task.getRunUrlSet()[0]){//添加正在运行的精确任务
 			runTask.addItem(str);
+		}
+		//初始得到第一个url的关键字
+		for(String str:Task.getKeyWords(Constant.KeyValue.get("run"),runTask.getSelectedItem().toString())){
+			selectKeyword.addItem(str);
 		}
 	}
 
@@ -51,8 +52,7 @@ public class DataMonitoring extends JPanel implements MouseListener {
 		Init.initJLable(dataDisplay, "dataDisplay");
 
 		Init.initJComboBox(runTask, "runTask");
-		Init.initJTextField(taskStatus, "taskStatus");
-	    taskStatus.setEditable(false);//屏蔽输入
+		Init.initJComboBox(selectKeyword, "selectKeyword");
 
 		Init.initJButton(savePicture, "savePicture");
 		Init.initJButton(refresh, "refresh");
@@ -62,7 +62,7 @@ public class DataMonitoring extends JPanel implements MouseListener {
 	private void setBounds() {
 		dataDisplay.setBounds(380, 0, 300, 40);
 		runTask.setBounds(60, 64, 200, 33);
-		taskStatus.setBounds(330, 64, 180, 33);
+		selectKeyword.setBounds(330, 64, 180, 33);
 		savePicture.setBounds(590, 60, 120, 40);
 		refresh.setBounds(784, 60, 120, 40);
 		lineChart.setBounds(15, 130, 944, 430);
@@ -80,6 +80,7 @@ public class DataMonitoring extends JPanel implements MouseListener {
 	}
 
 	private void listener() {
+		selectKeyword.addActionListener(runTask);
 		savePicture.addMouseListener(this);
 		refresh.addMouseListener(this);
 	}
@@ -88,7 +89,12 @@ public class DataMonitoring extends JPanel implements MouseListener {
 		if ("savePicture".equals(e.getComponent().getName())) {
 
 		} else if ("refresh".equals(e.getComponent().getName())) {
-		
+//			刷新数据视图
+			this.remove(lineChart);
+			lineChart=CrawlerChart.createLineChart();
+			this.add(lineChart);
+			lineChart.setBounds(15, 130, 944, 430);
+			this.updateUI();
 		}
 	}
 
