@@ -28,8 +28,8 @@ public class IssueTasks2 extends JPanel implements MouseListener {
 	private JTextArea timelyURLSet = new JTextArea();
 	private JScrollPane timelyURLSetJSP = new JScrollPane(timelyURLSet); // 待发布的及时url集合
 
-	private JComboBox<String> template = new JComboBox<String>(); // 及时爬取模板
-	private JButton timelyUrlPublish = new JButton(); // 及时任务发布
+	private JComboBox<String> template = new JComboBox<String>(); // 即时爬取模板
+	private JButton timelyUrlPublish = new JButton(); // 即时任务发布
 	private JButton refresh = new JButton(); // 刷新数据
 
 	private String[] columnNames; // 表格列名

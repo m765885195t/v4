@@ -6,37 +6,46 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.PrintWriter;
+import java.net.InetSocketAddress;
 import java.net.Socket;
+import java.net.SocketTimeoutException;
 import java.net.UnknownHostException;
 
 import team.qep.crawler.util.Promptinformation;
 
 public class Communication{
-//	private static String IP = "120.77.201.150";
-	private static String IP = "123.206.89.123";
-//	private static String IP = "127.0.0.1";
-//	private static String IP = "192.168.30.170";
-	private static int port = 8888;
+	private static final String IP = "120.77.201.150";
+	private static final int port = 8888;
+	private static String recv = "[]";
 	
-    public static String SendAndRecv(String str) {
-        String recv = null;
-      recv="[\"5\",1,1,2,2]";
-
+    public static String SendAndRecv(String send) {
         try{   
         	//1.建立客户端socket连接，指定服务器位置及端口
-        	Socket socket =new Socket(IP,port);
-        	socket.setSoTimeout(3000);
+//        	Socket socket =new Socket(IP,port);
+        	Socket socket = new Socket();
+        	InetSocketAddress address=new InetSocketAddress(IP, port);
+        	socket.connect(address,3000);//连接超时时长
         	//2.发送信息
         	OutputStream os=socket.getOutputStream();
         	PrintWriter pw=new PrintWriter(os);
-        	pw.write(str);
+        	pw.write(send);
         	pw.flush();
         	socket.shutdownOutput();
-           
+            System.out.println("我说:"+send);
+
         	//接受信息
+        	socket.setSoTimeout(3000);//读数据操作时,最多阻塞3秒钟 时间一到(不再等待读下去了),抛出IOException？
         	InputStream is=socket.getInputStream();
         	BufferedReader br=new BufferedReader(new InputStreamReader(is));
-        	recv=br.readLine();
+        	
+//        	StringBuffer strbuf=new StringBuffer();
+//        	String str;
+//        	while((str=br.readLine())!= null){
+//        		strbuf.append(str);
+//        	}
+//        	recv=strbuf.toString();
+        	
+            recv=br.readLine();
         	socket.shutdownInput();
             System.out.println("服务器说:"+recv);
 
@@ -48,11 +57,11 @@ public class Communication{
         	socket.close();
         } catch (UnknownHostException e) {
         	e.printStackTrace();
-        } catch (IOException e) {
-//			new Promptinformation(null, "Server connection off!",1);//１为普通窗口2为确认对话窗口
+        }catch (IOException e) {
+//        	System.out.println("读不出数据");
+        	recv="[]";//远程服务器长时间无回响
         	e.printStackTrace();
-//        	System.exit(0);
-        }
+        } 
         return recv;
     }
 }

@@ -13,9 +13,8 @@ import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 
 import team.qep.crawler.basic.Constant;
-import team.qep.crawler.server.Data;
 
-public class TaskControl extends JPanel implements MouseListener {
+public class Setting extends JPanel implements MouseListener {
 
 	private JLabel task = new JLabel("Task Control");
 
@@ -30,7 +29,7 @@ public class TaskControl extends JPanel implements MouseListener {
 	private JButton suspendTask = new JButton();// 暂停任务
 	private JButton endTask = new JButton();// 结束任务
 
-	public TaskControl() {
+	public Setting() {
 		this.Init();
 		this.loadingData();
 		this.setBounds();
@@ -48,7 +47,6 @@ public class TaskControl extends JPanel implements MouseListener {
 
 	private void loadingData() {// 装载数据
 		columnNames = Constant.TaskCcolumnNames;
-		data=Data.getRunUrlSet();
 		taskDataSetModel = new DefaultTableModel(data, columnNames) {
 			public boolean isCellEditable(int row, int column) {
 				return false;
@@ -103,13 +101,7 @@ public class TaskControl extends JPanel implements MouseListener {
 
 	public void mouseClicked(MouseEvent e) {// 单击
 		if ("refresh".equals(e.getComponent().getName())) {
-			data=Data.getRunUrlSet();
-			taskDataSetModel = new DefaultTableModel(data, columnNames) {
-				public boolean isCellEditable(int row, int column) {
-					return false;
-				}
-			};
-			taskDataSet.setModel(taskDataSetModel);
+			
 		} else if ("startTask".equals(e.getComponent().getName())) {
 
 		} else if ("suspendTask".equals(e.getComponent().getName())) {

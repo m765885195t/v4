@@ -17,6 +17,7 @@ import javax.swing.table.DefaultTableModel;
 
 import team.qep.crawler.basic.Constant;
 import team.qep.crawler.server.Task;
+import team.qep.crawler.util.MyDocument;
 import team.qep.crawler.util.Promptinformation;
 import team.qep.crawler.util.StringManipulation;
 
@@ -63,10 +64,9 @@ public class IssueTasks1 extends JPanel implements MouseListener {
 
 	private void loadingData() {// 装载数据
 		for (int i = 1; i <= 5; i++) {
-			fuzzyUrlPriority.addItem("      Priority     " + String.valueOf(i));
-			exactUrlPriority.addItem("      Priority     " + String.valueOf(i));
+			fuzzyUrlPriority.addItem("      优先级      " + String.valueOf(i));
+			exactUrlPriority.addItem("      优先级      " + String.valueOf(i));
 		}
-
 		for (String str : Constant.SupportExactUrl) {
 			exactURLSet.addItem(str);
 		}
@@ -85,6 +85,7 @@ public class IssueTasks1 extends JPanel implements MouseListener {
 		Init.initJLable(exact, "exact");
 		Init.initJComboBox(exactURLSet, "exactURLSet");
 		Init.initJTextField(keyWord, "keyWord");
+		keyWord.setDocument(new MyDocument(30));
 		Init.initJComboBox(exactUrlPriority, "exactUrlPriority");
 		Init.initJButton(exactUrlPublish, "exactUrlPublish");
 	}
@@ -135,19 +136,14 @@ public class IssueTasks1 extends JPanel implements MouseListener {
 			int priority = fuzzyUrlPriority.getSelectedIndex() + 1;
 			if (!fuzzyURL.equals("")) {
 				if (Task.fuzzyUrlPublish(fuzzyURL, priority)) {
-					new Promptinformation(null,
-							"Successful submission has been done automatically with duplicate tasks and unsupported tasks.",
-							1);// １为普通窗口2为确认对话窗口
-					
-					fuzzyURLSet.setText("");
-					fuzzyUrlPriority.setSelectedIndex(0);
+					new Promptinformation(null,"模糊任务发布成功,已自动修正链接",Constant.KeyValue.get("Info"));
 				} else {
-					// 发布失败
-					new Promptinformation(null, "The task submission failed. Check network connections!", 1);// １为普通窗口2为确认对话窗口
+					new Promptinformation(null, "任务发送失败,可能原因:  已发布过or服务器已断开", Constant.KeyValue.get("Info"));
 				}
+				fuzzyURLSet.setText("");
+				fuzzyUrlPriority.setSelectedIndex(0);
 			} else {
-				// 空任务
-				new Promptinformation(null, "Please enter the correct url with the currently supported url", 1);// １为普通窗口2为确认对话窗口
+				new Promptinformation(null, "请选择混合url", Constant.KeyValue.get("Info"));
 			}
 		} else if ("exactUrlPublish".equals(e.getComponent().getName())) {
 			String exactURL = exactURLSet.getSelectedItem().toString();
@@ -156,21 +152,15 @@ public class IssueTasks1 extends JPanel implements MouseListener {
 
 			if (!key.equals("")) {
 				if (Task.exactUrlPublish(exactURL, key, priority)) {
-					// 发布成功
-
-					new Promptinformation(null,
-							"Successful submission has been done automatically with duplicate tasks and unsupported tasks.",
-							1);// １为普通窗口2为确认对话窗口
+					new Promptinformation(null,"精确任务发布成功",Constant.KeyValue.get("Info"));
 					exactURLSet.setSelectedIndex(0);
 					keyWord.setText("");
 					exactUrlPriority.setSelectedIndex(0);
 				} else {
-					// 发布失败
-					new Promptinformation(null, "The task submission failed. Check network connections!", 1);// １为普通窗口2为确认对话窗口
+					new Promptinformation(null, "任务发送失败,可能原因:  已发布过or服务器已断开", Constant.KeyValue.get("Info"));
 				}
 			} else {
-				// 空关键字
-				new Promptinformation(null, "Please enter the correct url with the currently supported url", 1);// １为普通窗口2为确认对话窗口
+				new Promptinformation(null, "请输入关键字", Constant.KeyValue.get("Info"));
 			}
 		}
 	}

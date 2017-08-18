@@ -4,14 +4,25 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.util.Timer;
+import java.util.TimerTask;
+
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
+
+import org.jfree.chart.ChartPanel;
+import org.jfree.chart.JFreeChart;
+import org.jfree.chart.plot.CategoryPlot;
+
 import team.qep.crawler.basic.Constant;
+import team.qep.crawler.server.Data;
 import team.qep.crawler.server.Task;
+import team.qep.crawler.util.StringManipulation;
+import team.qep.crawler.view.Crawlergraph;
 
 public class DataMonitoring extends JPanel implements MouseListener {
 	private JLabel dataDisplay = new JLabel("Data  Monitoring");
@@ -20,7 +31,8 @@ public class DataMonitoring extends JPanel implements MouseListener {
 	private JComboBox<String> selectKeyword  = new JComboBox<String>(); //选择关键字
 	private JButton savePicture = new JButton();// 保存当前进度图
 	private JButton refresh = new JButton();// 刷新
-	private JPanel lineChart=CrawlerChart.createLineChart();//进度图
+	private JFreeChart lineChart = CrawlerChart.getLineChart();
+	private JPanel lineChartJP=new ChartPanel(lineChart);
 
 	public DataMonitoring() {
 		this.Init();
@@ -34,21 +46,29 @@ public class DataMonitoring extends JPanel implements MouseListener {
 		this.add(selectKeyword);
 		this.add(savePicture);
 		this.add(refresh);
-		this.add(lineChart);
+		this.add(lineChartJP);
 	}
 
 	private void loadingData() {// 装载数据
-		for(String str:Task.getRunUrlSet()[0]){//添加正在运行的精确任务
+		for(String str:StringManipulation.oneDuplicateRemoval(StringManipulation.toOneDimensionalArrays(Data.getRunUrlSet()))){//添加正在运行的精确任务
 			runTask.addItem(str);
 		}
+
 		//初始得到第一个url的关键字
-		for(String str:Task.getKeyWords(Constant.KeyValue.get("run"),runTask.getSelectedItem().toString())){
-			selectKeyword.addItem(str);
-		}
+//		for(String str:Task.getKeyWords(Constant.KeyValue.get("run"),runTask.getSelectedItem().toString())){
+//			selectKeyword.addItem(str);
+		selectKeyword.addItem("");
+
+//		}
+		//定时刷新数据
+//		new Timer().schedule(new TimerTask() {
+//			public void run() {
+//			   ((CategoryPlot) lineChart.getPlot()).setDataset(CrawlerChart.getLineDataSet());
+//			}
+//		},0,2000); //数据刷新频率 --- 可设置
 	}
 
 	private void Init() {
-
 		Init.initJLable(dataDisplay, "dataDisplay");
 
 		Init.initJComboBox(runTask, "runTask");
@@ -65,7 +85,7 @@ public class DataMonitoring extends JPanel implements MouseListener {
 		selectKeyword.setBounds(330, 64, 180, 33);
 		savePicture.setBounds(590, 60, 120, 40);
 		refresh.setBounds(784, 60, 120, 40);
-		lineChart.setBounds(15, 130, 944, 430);
+		lineChartJP.setBounds(15, 130, 944, 430);
 	}
 
 	private void setColour() {
@@ -89,15 +109,11 @@ public class DataMonitoring extends JPanel implements MouseListener {
 		if ("savePicture".equals(e.getComponent().getName())) {
 
 		} else if ("refresh".equals(e.getComponent().getName())) {
-//			刷新数据视图
-			this.remove(lineChart);
-			lineChart=CrawlerChart.createLineChart();
-			this.add(lineChart);
-			lineChart.setBounds(15, 130, 944, 430);
-			this.updateUI();
+			String url=runTask.getSelectedItem().toString();
+			String keyWord=selectKeyword.getSelectedItem().toString();
+			((CategoryPlot) lineChart.getPlot()).setDataset(CrawlerChart.getLineDataSet(url,keyWord));
 		}
 	}
-
 	public void mousePressed(MouseEvent e) {// 按下
 	}
 

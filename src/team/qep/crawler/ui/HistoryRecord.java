@@ -4,6 +4,9 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.util.Timer;
+import java.util.TimerTask;
+
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JLabel;
@@ -12,9 +15,16 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 
+import org.jfree.chart.ChartPanel;
+import org.jfree.chart.JFreeChart;
+import org.jfree.chart.plot.CategoryPlot;
+import org.jfree.chart.plot.PiePlot;
+
 import team.qep.crawler.basic.Constant;
+import team.qep.crawler.server.Data;
 
 public class HistoryRecord extends JPanel implements MouseListener {
+	private Timer temer = new Timer();
 	private JLabel historyRecord = new JLabel("History  Record");
 
 	private String[] columnNames; // 表格列名
@@ -23,7 +33,8 @@ public class HistoryRecord extends JPanel implements MouseListener {
 	private JTable taskDataSet = new JTable();
 	private JScrollPane taskDataJSP = new JScrollPane(taskDataSet); // 历史人任务记录
 	
-	private JPanel pieChart=CrawlerChart.createPieChart();// 历史任务记录
+	private JFreeChart pieChart = CrawlerChart.getPieChart();
+	private JPanel pieChartJP=new ChartPanel(pieChart);// 历史任务记录
 	private JButton refresh = new JButton();// 刷新
 	private JButton deleteData = new JButton();// 删除数据
 
@@ -36,16 +47,27 @@ public class HistoryRecord extends JPanel implements MouseListener {
 
 		this.add(historyRecord);
 		this.add(taskDataJSP);
-		this.add(pieChart);
+		this.add(pieChartJP);
 		this.add(refresh);
 		this.add(deleteData);
 	}
 
 	private void loadingData() {// 装载数据
 		columnNames = Constant.HistoricalTaskCcolumnNames;
-		data = new String[0][];//得到数据
-		taskDataSetModel = new DefaultTableModel(data, columnNames);
+		data=Data.getDownloadDataSet();
+		taskDataSetModel = new DefaultTableModel(data, columnNames){
+			public boolean isCellEditable(int row, int column) {
+				return false;
+			}
+		};
 		taskDataSet.setModel(taskDataSetModel);
+		
+		//定时刷新数据
+//		temer.schedule(new TimerTask() {
+//			public void run() {
+//			   ((PiePlot) pieChart.getPlot()).setDataset(CrawlerChart.getPieDataSet());
+//			}
+//		},0,2000); //数据刷新频率   --- 可设置
 	}
 
 	private void Init() {
@@ -53,7 +75,8 @@ public class HistoryRecord extends JPanel implements MouseListener {
 
 		Init.initJTable(taskDataSet, "taskDataSet");
 		Init.initJScrollPane(taskDataJSP, "taskDataJSP");
-		
+		taskDataSet.setFont(new Font("serif", 0, 17));// 设置表格字体
+
 		Init.initJButton(refresh, "refresh");
 		Init.initJButton(deleteData, "deleteData");
 
@@ -63,7 +86,7 @@ public class HistoryRecord extends JPanel implements MouseListener {
 		historyRecord.setBounds(380, 0, 300, 40);
 		
 		taskDataJSP.setBounds(30, 50, 420, 520);
-		pieChart.setBounds(500, 50, 444, 450);
+		pieChartJP.setBounds(500, 50, 444, 450);
 		refresh.setBounds(500, 530, 170, 42);
 		deleteData.setBounds(770, 530, 170, 42);
 	}
@@ -86,7 +109,14 @@ public class HistoryRecord extends JPanel implements MouseListener {
 
 	public void mouseClicked(MouseEvent e) {// 单击
 		if ("refresh".equals(e.getComponent().getName())) {
-			
+			data=Data.getDownloadDataSet();
+			taskDataSetModel = new DefaultTableModel(data, columnNames) {
+				public boolean isCellEditable(int row, int column) {
+					return false;
+				}
+			};
+			taskDataSet.setModel(taskDataSetModel);
+			((PiePlot) pieChart.getPlot()).setDataset(CrawlerChart.getPieDataSet());
 		}else if ("deleteData".equals(e.getComponent().getName())) {
 			
 		}

@@ -101,7 +101,7 @@ public class Crawlergraph {
 	   //得到数据集 
 	    private static DefaultCategoryDataset getDataSet() {  
 	        DefaultCategoryDataset defaultcategorydataset = new DefaultCategoryDataset();  
-	        String[][] dataSet = Data.refreshData(18);
+	        String[][] dataSet = Data.scheduleData();
             for(int i=0 ; i<dataSet.length ; i++){
                 defaultcategorydataset.addValue(Integer.valueOf(dataSet[i][0]), dataSet[i][1], dataSet[i][2]);  
             }  

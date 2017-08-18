@@ -20,6 +20,7 @@ import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 
 import team.qep.crawler.basic.Constant;
+import team.qep.crawler.server.Data;
 import team.qep.crawler.server.Task;
 
 public class DataDisplay extends JPanel implements MouseListener {
@@ -53,14 +54,14 @@ public class DataDisplay extends JPanel implements MouseListener {
 	}
 
 	private void loadingData() {// 装载数据
-		for(String[] str:Task.getRunUrlSet()){//正在运行的所有任务集
-			selectUrl.addItem(str[0]);
-		}
+//		for(String[] str:Data.getALLUrlSet()){//所有任务集q
+//			selectUrl.addItem(str[0]);
+//		}
 		
 		//初始得到第一个url的关键字
-		for(String str:Task.getKeyWords(Constant.KeyValue.get("stop"),selectUrl.getSelectedItem().toString())){
-			selectKeyword.addItem(str);
-		}
+//		for(String str:Task.getKeyWords(Constant.KeyValue.get("Complete"),selectUrl.getSelectedItem().toString())){
+//			selectKeyword.addItem(str);
+//		}
 		
 		columnNames = Constant.E_CommerceCcolumnNames;
 		data = new String[0][];//得到数据
@@ -102,9 +103,9 @@ public class DataDisplay extends JPanel implements MouseListener {
 			public void itemStateChanged(ItemEvent e){
 				selectKeyword.removeAllItems();
 				selectKeyword.addItem("");
-				for(String str:Task.getKeyWords(Constant.KeyValue.get("stop"),selectUrl.getSelectedItem().toString())){
-					selectKeyword.addItem(str);
-				}
+//				for(String str:Task.getKeyWords(Constant.UIKeyValue.get("stop"),selectUrl.getSelectedItem().toString())){
+//					selectKeyword.addItem(str);
+//				}
 				if(selectUrl.getSelectedIndex()<Constant.division){//设置表格列名 电商or新闻博客
 					flag=true;
 				}else{
@@ -116,9 +117,9 @@ public class DataDisplay extends JPanel implements MouseListener {
 			public void itemStateChanged(ItemEvent e){
 				selectKeyword.removeAllItems();
 				selectKeyword.addItem("");
-				for(String str:Task.getKeyWords(Constant.KeyValue.get("stop"),selectUrl.getSelectedItem().toString())){
-					selectKeyword.addItem(str);
-				}
+//				for(String str:Task.getKeyWords(Constant.UIKeyValue.get("stop"),selectUrl.getSelectedItem().toString())){
+//					selectKeyword.addItem(str);
+//				}
 			}
 		});
 		refresh.addMouseListener(this);

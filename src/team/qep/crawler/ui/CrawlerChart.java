@@ -33,19 +33,10 @@ import org.jfree.data.general.DefaultPieDataset;
 import team.qep.crawler.server.Data;
 
 public class CrawlerChart {
-	// 创建折线图表
-	public static JPanel createLineChart() {
-		return new ChartPanel(getLineChart());
-	}
-
-	// 创建饼状图表
-	public static JPanel createPieChart() {
-		return new ChartPanel(getPieChart());
-	}
-
+	//得到折线图
 	public static JFreeChart getLineChart() {
 		// JFreeChart对象 参数：标题，目录轴显示标签，数据轴显示标签，数据集，是否显示图例，是否生成工具，是否生成URL连接
-		JFreeChart jfreechart = ChartFactory.createLineChart("Task Schedule", "", "", getLineDataSet(),
+		JFreeChart jfreechart = ChartFactory.createLineChart("Task Schedule", "", "", null,
 				PlotOrientation.VERTICAL, true, true, false);
 		// jfreechart = ChartFactory.createLineChart3D("", "", "",getDataSet(),
 		// PlotOrientation.VERTICAL, true, true, false);
@@ -54,11 +45,11 @@ public class CrawlerChart {
 		jfreechart.getLegend().setItemFont(new Font("微软雅黑", 1, 15));// 图例字体
 
 		CategoryPlot categoryplot = (CategoryPlot) jfreechart.getPlot(); // 获取折线图plot对象
-		categoryplot.setBackgroundPaint(Color.lightGray); // 背景
-		categoryplot.setRangeGridlinePaint(Color.white);
 		categoryplot.setDomainGridlinesVisible(true); // 设置是否显示垂直方向背景,默认值为false
-		// 空数据提示
-		categoryplot.setNoDataMessage("No download history, please start the task");
+//		categoryplot.setDomainGridlinePaint(Color.red);//网格竖线颜色
+//		categoryplot.setRangeGridlinePaint(Color.orange);//网格横线颜色
+		categoryplot.setBackgroundPaint(Color.lightGray); // 背景色
+		categoryplot.setNoDataMessage("No download history, please start the task");// 空数据提示
 		categoryplot.setNoDataMessageFont(new Font("微软雅黑", 1, 25));// 字体
 		categoryplot.setNoDataMessagePaint(Color.RED);// 字体颜色
 
@@ -94,6 +85,7 @@ public class CrawlerChart {
 
 		return jfreechart;
 	}
+	//得到饼状图
 	public static JFreeChart getPieChart() {
 		JFreeChart chart = ChartFactory.createPieChart("Total Data Weight ", getPieDataSet(), true, true, false);
 
@@ -115,16 +107,16 @@ public class CrawlerChart {
 	}
 	
 	// 得到折线图数据
-	static DefaultCategoryDataset getLineDataSet() {
+	public static DefaultCategoryDataset getLineDataSet(String url,String keyWord) {
 		DefaultCategoryDataset defaultcategorydataset = new DefaultCategoryDataset();
-		String[][] dataSet = Data.scheduleData();
+		String[][] dataSet = Data.getScheduleData(url,keyWord);
 		for (int i = 0; i < dataSet.length; i++) {
 			defaultcategorydataset.addValue(Integer.valueOf(dataSet[i][0]), dataSet[i][1], dataSet[i][2]);
 		}
 		return defaultcategorydataset;
 	}
 	// 得到饼状图数据
-	private static DefaultPieDataset getPieDataSet() {
+	public static DefaultPieDataset getPieDataSet() {
 		DefaultPieDataset defaultPieDataset = new DefaultPieDataset();
 		String[][] dataSet = Data.downloadData();
 		for (int i=0; i < dataSet.length; i++) {
