@@ -28,7 +28,6 @@ public class IssueTasks2 extends JPanel implements MouseListener {
 	private JTextArea timelyURLSet = new JTextArea();
 	private JScrollPane timelyURLSetJSP = new JScrollPane(timelyURLSet); // 待发布的及时url集合
 
-	private JComboBox<String> template = new JComboBox<String>(); // 即时爬取模板
 	private JButton timelyUrlPublish = new JButton(); // 即时任务发布
 	private JButton refresh = new JButton(); // 刷新数据
 
@@ -48,27 +47,20 @@ public class IssueTasks2 extends JPanel implements MouseListener {
 		this.add(timely);
 		this.add(timelyURLSetJSP);
 
-		this.add(template);
 		this.add(timelyUrlPublish);
 		this.add(refresh);
 		this.add(timelyDataJSP);
 	}
 
 	private void loadingData() {// 装载数据
-		// 模板配置
-		for (String str : Constant.Template) {
-			template.addItem(str);
-		}
-
 		columnNames = Constant.E_CommerceCcolumnNames;
-		 data = new String[0][];//得到数据
+		data = new String[0][];//得到数据
 		timelyDataSetModel = new DefaultTableModel(data, columnNames);
 		timelyDataSet.setModel(timelyDataSetModel);
 	}
 
 	private void Init() {
 		Init.initJLable(timely, "timely");
-		Init.initJComboBox(template, "template");
 
 		Init.initJTextArea(timelyURLSet, "timelyURLSet");
 		Init.initJScrollPane(timelyURLSetJSP, "timelyURLSetJSP");
@@ -82,8 +74,7 @@ public class IssueTasks2 extends JPanel implements MouseListener {
 
 	private void setBounds() {
 		timely.setBounds(400, 0, 200, 40);
-		timelyURLSetJSP.setBounds(80, 50, 670, 190);
-		template.setBounds(780, 60, 120, 33);
+		timelyURLSetJSP.setBounds(80, 50, 300, 500);
 		timelyUrlPublish.setBounds(780, 121, 120, 40);
 		refresh.setBounds(780, 190, 120, 40);
 		timelyDataJSP.setBounds(40, 280, 894, 280);
@@ -101,17 +92,6 @@ public class IssueTasks2 extends JPanel implements MouseListener {
 	}
 
 	private void listener() {
-		template.addItemListener(new ItemListener() {
-			public void itemStateChanged(ItemEvent e) {
-				if (e.getStateChange() == ItemEvent.SELECTED) {
-					if (template.getSelectedIndex() < 2) {
-						flag = true;
-					} else {
-						flag = false;
-					}
-				}
-			}
-		});
 		refresh.addMouseListener(this);
 		timelyUrlPublish.addMouseListener(this);
 	}
@@ -119,10 +99,9 @@ public class IssueTasks2 extends JPanel implements MouseListener {
 	public void mouseClicked(MouseEvent e) {// 单击
 		if ("timelyUrlPublish".equals(e.getComponent().getName())) {
 			String timelyURL = timelyURLSet.getText();
-			String configure = template.getSelectedItem().toString();
 
 			if (!timelyURL.equals("")) {
-				if (Task.timelyUrlPublish(timelyURL, configure)) {
+				if (Task.timelyUrlPublish(timelyURL)) {
 					// 发布成功
 
 					// //立即获取数据or手动刷新<--
@@ -136,18 +115,15 @@ public class IssueTasks2 extends JPanel implements MouseListener {
 					// DefaultTableModel(data,columnNames);
 					// timelyDataSet.setModel(timelyDataSetModel);
 
-					new Promptinformation(null,
-							"Successful submission has been done automatically with duplicate tasks and unsupported tasks.",
-							1);// １为普通窗口2为确认对话窗口
+					new Promptinformation(null,"任务发布成功",Constant.KeyValue.get("Info"));// １为普通窗口2为确认对话窗口
 					timelyURLSet.setText("");
-					template.setSelectedIndex(0);
 				} else {
 					// 发布失败
-					new Promptinformation(null, "The task submission failed. Check network connections!", 1);// １为普通窗口2为确认对话窗口
+					new Promptinformation(null, "请检查网络连接", Constant.KeyValue.get("Info"));// １为普通窗口2为确认对话窗口
 				}
 			} else {
 				// 空任务
-				new Promptinformation(null, "Please enter the correct url with the currently supported url", 1);// １为普通窗口2为确认对话窗口
+				new Promptinformation(null, "请输入url", Constant.KeyValue.get("Info"));// １为普通窗口2为确认对话窗口
 			}
 
 		} else if ("refresh".equals(e.getComponent().getName())) {

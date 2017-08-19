@@ -88,7 +88,7 @@ public class Task {
 	}
 	
 	//发布及时任务      参数--->(及时任务url集(string)  模板配置(string))
-	public static boolean timelyUrlPublish(String timelyURL, String configure) {
+	public static boolean timelyUrlPublish(String timelyURL) {
 		//1---分割为数组同时去掉重复的url
 		Set<String> set = new HashSet<String>(Arrays.asList(timelyURL.replace(" ", "").split("\n")));
 		String[] timelyUrlSet=(String[])set.toArray(new String[set.size()]);

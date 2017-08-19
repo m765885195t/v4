@@ -58,6 +58,7 @@ public class Communication{
         } catch (UnknownHostException e) {
         	e.printStackTrace();
         }catch (IOException e) {
+        	//服务器未开直接关闭
 //        	System.out.println("读不出数据");
         	recv="[]";//远程服务器长时间无回响
         	e.printStackTrace();

@@ -49,7 +49,7 @@ public class Init {
 		jta.setName(str);// 设置文本域的名字
 		jta.setForeground(Color.black);
 //		 jta.setEditable(false);//屏蔽输入
-		 jta.setFocusable(false);//消除光标
+//		 jta.setFocusable(false);//消除光标
 		jta.setLineWrap(true);// 自动换行
 
 	}
