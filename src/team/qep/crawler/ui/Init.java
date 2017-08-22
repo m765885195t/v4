@@ -14,6 +14,7 @@ import javax.swing.JTable;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
+import javax.swing.SwingConstants;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.JTableHeader;
 
@@ -71,6 +72,7 @@ public class Init {
 		jl.setName(str);// 设置文本框的名字
 		jl.setFont(new Font("微软雅黑", 0, 20));
 		jl.setForeground(Color.white);
+		jl.setHorizontalAlignment(SwingConstants.CENTER); 
 	}
 
 	// ---------按键初始化

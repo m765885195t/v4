@@ -32,7 +32,14 @@ public class StringManipulation {
 		}
 		return str;
 	}
-	
+	//二维数组转二维数组(只取其中几列)
+	public static String[][] twoToTwo(String[][] string,int cloum){
+		String[][] str = new String[string.length][1];
+		for(int i = 0 ; i < string.length ; i++) {
+			str[i][0] = string[i][cloum];
+		}
+		return str;
+	}
 	//一维数组去重
 	public static String[] oneDuplicateRemoval(String[] string){
 		Set<String> set = new HashSet<String>(Arrays.asList(string));

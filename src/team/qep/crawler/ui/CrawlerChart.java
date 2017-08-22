@@ -126,8 +126,8 @@ public class CrawlerChart {
 	}
 
 	// 保存为图片
-	public static boolean savePicture(String path, JFreeChart jfreechart) {
-		File file = new File("./" + path + "/" + new SimpleDateFormat("yyyyMMddHHmmss").format(new Date()) + ".jpg");
+	public static boolean savePicture(JFreeChart jfreechart) {
+		File file = new File("./image/schedule/" + new SimpleDateFormat("yyyyMMddHHmmss").format(new Date()) + ".jpg");
 		if (!file.exists()) {// 文件不存在则创建
 			try {
 				file.getParentFile().mkdirs();

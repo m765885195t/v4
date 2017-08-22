@@ -5,8 +5,8 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
-import team.qep.crawler.basic.Constant;
 import team.qep.crawler.socket.Communication;
+import team.qep.crawler.util.Constant;
 import team.qep.crawler.util.ConvertJSON;
 
 public class Task {
@@ -92,29 +92,67 @@ public class Task {
 		//1---分割为数组同时去掉重复的url
 		Set<String> set = new HashSet<String>(Arrays.asList(timelyURL.replace(" ", "").split("\n")));
 		String[] timelyUrlSet=(String[])set.toArray(new String[set.size()]);
+		String content=Arrays.toString(timelyUrlSet).substring(1,Arrays.toString(timelyUrlSet).length()-1);
+		String send=ConvertJSON.toJSON(Constant.Agreement.get("timelyUrlPublish"),content);
+		String[] recv = ConvertJSON.toStringArray(Communication.SendAndRecv(send));
 		
-		//默认最好10个超过大小收发有误(猜测)
-		//待转json发送
-		
-		return true;
-	}
-	//得到及时任务的结果数据   
-	public static String[][] getTimelyUrlData() {
-		return new String[][]{{"dsa"}};
-	}
-	
-	//查找url对应的关键字        参数--->任务url(string))
-	public static String[] getKeyWords(String url) {
-		ArrayList<String> list = new ArrayList<String>();
-		list.add("");
-		String[][] taskSet=Data.getALLUrlSet();
-		for(String[] str:taskSet){
-			if(url.equals(str[0])){
-				list.add(str[1]);
+		if(recv.length>0){//<0 说明服务器无响应
+			if(recv[0].equals(String.valueOf(Constant.Agreement.get("timelyUrlPublish"))) && recv[1].equals(String.valueOf(Constant.KeyValue.get("Success")))){
+				return true;
 			}
 		}
-		return list.toArray(new String[list.size()]);
+		return true;
 	}
+	//更改任务状态       参数---->url(String)  关键字 (int)  任务状态(int)
+	public static boolean modifyTaskStatus(String url,String keyWord,int status) {
+		String send=ConvertJSON.toJSON(Constant.Agreement.get("ModifyTaskStatus"),Constant.SupportFuzzyUrl.indexOf(url)+","+keyWord+","+status);
+		String[] recv=ConvertJSON.toStringArray(Communication.SendAndRecv(send));
+		if(recv.length>0){//<0 说明服务器无响应
+			if(recv[0].equals(String.valueOf(Constant.Agreement.get("ModifyTaskStatus"))) && recv[1].equals(String.valueOf(Constant.KeyValue.get("Success")))){
+				return true;
+			}
+		}	
+		return false;
+	}
+	
+	//更改从机状态       参数---->从机编号(String)  状态 (int)
+	public static boolean modifyResourceStatus(String number,int status) {
+		String send=ConvertJSON.toJSON(Constant.Agreement.get("ModifyResourceStatus"),number+","+status);
+		String[] recv=ConvertJSON.toStringArray(Communication.SendAndRecv(send));
+		if(recv.length>0){//<0 说明服务器无响应
+			if(recv[0].equals(String.valueOf(Constant.Agreement.get("ModifyResourceStatus"))) && recv[1].equals(String.valueOf(Constant.KeyValue.get("Success")))){
+				return true;
+			}
+		}	
+		return false;
+	}
+	
+	//增删从机       参数---->状态add   1/delete  0(int) 增加的ip(String)/删除的从机编号
+	public static boolean addDeleteResource(int status,String number) {
+		String send=ConvertJSON.toJSON(Constant.Agreement.get("AddDeleteResource"),status+","+number);
+		String[] recv=ConvertJSON.toStringArray(Communication.SendAndRecv(send));
+		if(recv.length>0){//<0 说明服务器无响应
+			if(recv[0].equals(String.valueOf(Constant.Agreement.get("AddDeleteResource"))) && recv[1].equals(String.valueOf(Constant.KeyValue.get("Success")))){
+				return true;
+			}
+		}	
+		return false;
+	}
+	
+	//删除任务数据      参数--->(url(string) 关键字keyWord(string))
+	public static boolean deleteTaskData (String url,String keyWord) {
+		String send=ConvertJSON.toJSON(Constant.Agreement.get("DeleteTaskData"),Constant.SupportFuzzyUrl.indexOf(url)+","+keyWord);
+		p(send);
+		String[] recv=ConvertJSON.toStringArray(Communication.SendAndRecv(send));
+		if(recv.length>0){//<0 说明服务器无响应
+			if(recv[0].equals(String.valueOf(Constant.Agreement.get("DeleteTaskData"))) && recv[1].equals(String.valueOf(Constant.KeyValue.get("Success")))){
+				return true;
+			}
+		}	
+		return false;
+	}
+		
+	
 	//简化输出
 	public static void p(String str){
 		System.out.println(str);

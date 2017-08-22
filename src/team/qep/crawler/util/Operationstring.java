@@ -5,8 +5,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Scanner;
 
-import team.qep.crawler.basic.Constant;
-
 //字符串转换工具
 public class Operationstring {
 	//将输入的任务集分割成字符数组

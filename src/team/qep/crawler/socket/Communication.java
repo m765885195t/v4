@@ -11,6 +11,7 @@ import java.net.Socket;
 import java.net.SocketTimeoutException;
 import java.net.UnknownHostException;
 
+import team.qep.crawler.util.Constant;
 import team.qep.crawler.util.Promptinformation;
 
 public class Communication{
@@ -24,7 +25,7 @@ public class Communication{
 //        	Socket socket =new Socket(IP,port);
         	Socket socket = new Socket();
         	InetSocketAddress address=new InetSocketAddress(IP, port);
-        	socket.connect(address,3000);//连接超时时长
+        	socket.connect(address,2000);//连接超时时长
         	//2.发送信息
         	OutputStream os=socket.getOutputStream();
         	PrintWriter pw=new PrintWriter(os);
@@ -61,7 +62,9 @@ public class Communication{
         	//服务器未开直接关闭
 //        	System.out.println("读不出数据");
         	recv="[]";//远程服务器长时间无回响
-        	e.printStackTrace();
+//			new Promptinformation(null,"网络未连接  or 服务器端未开启",Constant.KeyValue.get("Info"));// １为普通窗口2为确认对话窗口
+//        	System.exit(0);
+			e.printStackTrace();
         } 
         return recv;
     }

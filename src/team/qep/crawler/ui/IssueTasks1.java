@@ -15,8 +15,8 @@ import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.table.DefaultTableModel;
 
-import team.qep.crawler.basic.Constant;
 import team.qep.crawler.server.Task;
+import team.qep.crawler.util.Constant;
 import team.qep.crawler.util.MyDocument;
 import team.qep.crawler.util.Promptinformation;
 import team.qep.crawler.util.StringManipulation;
@@ -30,13 +30,14 @@ public class IssueTasks1 extends JPanel implements MouseListener {
 	});
 	private JScrollPane supportedJSP = new JScrollPane(supportUrlSet); // 支持的url集合
 
-	private JLabel fuzzy = new JLabel("Fuzzy Crawl");
+	private JLabel fuzzy = new JLabel("模 糊 爬 取");
+
 	private JTextArea fuzzyURLSet = new JTextArea();
 	private JScrollPane fuzzyURLSetJSP = new JScrollPane(fuzzyURLSet); // 待发布的模糊url集合
 	private JComboBox<String> fuzzyUrlPriority = new JComboBox<String>(); // 模糊任务优先度
 	private JButton fuzzyUrlPublish = new JButton(); // 模糊任务发布
 
-	private JLabel exact = new JLabel("Exact Crawl");
+	private JLabel exact = new JLabel("精 确 爬 取");
 	private JComboBox<String> exactURLSet = new JComboBox<String>(); // 待发布的精确url
 	private JTextField keyWord = new JTextField(); // 关键字
 	private JComboBox<String> exactUrlPriority = new JComboBox<String>(); // 精确任务优先度
@@ -93,12 +94,12 @@ public class IssueTasks1 extends JPanel implements MouseListener {
 	private void setBounds() {
 		supportedJSP.setBounds(50, 35, 200, 508);
 
-		fuzzy.setBounds(400, 10, 200, 32);
+		fuzzy.setBounds(360, 10, 200, 32);
 		fuzzyURLSetJSP.setBounds(350, 60, 230, 330);
 		fuzzyUrlPriority.setBounds(365, 430, 200, 32);
 		fuzzyUrlPublish.setBounds(380, 500, 170, 40);
 
-		exact.setBounds(720, 10, 200, 35);
+		exact.setBounds(700, 10, 200, 35);
 		exactURLSet.setBounds(680, 120, 230, 35);
 		keyWord.setBounds(680, 225, 230, 35);
 		exactUrlPriority.setBounds(695, 345, 200, 32);
@@ -137,11 +138,12 @@ public class IssueTasks1 extends JPanel implements MouseListener {
 			if (!fuzzyURL.equals("")) {
 				if (Task.fuzzyUrlPublish(fuzzyURL, priority)) {
 					new Promptinformation(null,"模糊任务发布成功,已自动修正链接",Constant.KeyValue.get("Info"));
+					fuzzyURLSet.setText("");
+					fuzzyUrlPriority.setSelectedIndex(0);
 				} else {
 					new Promptinformation(null, "任务发送失败,可能原因:  已发布过or服务器已断开", Constant.KeyValue.get("Info"));
 				}
-				fuzzyURLSet.setText("");
-				fuzzyUrlPriority.setSelectedIndex(0);
+				
 			} else {
 				new Promptinformation(null, "请选择混合url", Constant.KeyValue.get("Info"));
 			}

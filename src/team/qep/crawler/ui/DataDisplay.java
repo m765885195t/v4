@@ -19,14 +19,15 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 
-import team.qep.crawler.basic.Constant;
 import team.qep.crawler.server.Data;
 import team.qep.crawler.server.Task;
+import team.qep.crawler.util.Constant;
+import team.qep.crawler.util.StringManipulation;
 
 public class DataDisplay extends JPanel implements MouseListener {
 	private boolean flag = true;// true---电商 false---新闻博客
 
-	private JLabel dataDisplay = new JLabel("Data Display");
+	private JLabel dataDisplay = new JLabel("数  据  展  示");
 
 	private JComboBox<String> selectUrl = new JComboBox<String>();  //选择url(模糊or电商)
 	private JComboBox<String> selectKeyword  = new JComboBox<String>(); //选择关键字
@@ -54,15 +55,17 @@ public class DataDisplay extends JPanel implements MouseListener {
 	}
 
 	private void loadingData() {// 装载数据
-//		for(String[] str:Data.getALLUrlSet()){//所有任务集q
-//			selectUrl.addItem(str[0]);
-//		}
-		
+		//去重后的url集-----展示的数据为所有任务
+		String[] urlSet=StringManipulation.oneDuplicateRemoval(StringManipulation.toOneDimensionalArrays(Data.getALLUrlSet()));
+		for(String str:urlSet){//所有任务集
+			selectUrl.addItem(str);
+		}
 		//初始得到第一个url的关键字
-//		for(String str:Task.getKeyWords(Constant.KeyValue.get("Complete"),selectUrl.getSelectedItem().toString())){
-//			selectKeyword.addItem(str);
-//		}
-		
+		if(selectUrl.getItemCount()>0){
+			for(String str:Data.getKeyWords(Data.getALLUrlSet(),selectUrl.getSelectedItem().toString())){
+				selectKeyword.addItem(str);
+			}
+		}
 		columnNames = Constant.E_CommerceCcolumnNames;
 		data = new String[0][];//得到数据
 		taskDataSetModel = new DefaultTableModel(data, columnNames);
@@ -81,7 +84,7 @@ public class DataDisplay extends JPanel implements MouseListener {
 	}
 
 	private void setBounds() {
-		dataDisplay.setBounds(380, 0, 300, 40);
+		dataDisplay.setBounds(320, 0, 300, 40);
 		selectUrl.setBounds(130, 70, 200, 33);
 		selectKeyword.setBounds(430,70, 150, 33);
 		refresh.setBounds(700, 65, 150, 40);
@@ -102,43 +105,49 @@ public class DataDisplay extends JPanel implements MouseListener {
 		selectUrl.addItemListener(new ItemListener(){
 			public void itemStateChanged(ItemEvent e){
 				selectKeyword.removeAllItems();
-				selectKeyword.addItem("");
-//				for(String str:Task.getKeyWords(Constant.UIKeyValue.get("stop"),selectUrl.getSelectedItem().toString())){
-//					selectKeyword.addItem(str);
-//				}
-				if(selectUrl.getSelectedIndex()<Constant.division){//设置表格列名 电商or新闻博客
-					flag=true;
-				}else{
-					flag=false;
+				if(selectUrl.getItemCount()>0){
+					for(String str:Data.getKeyWords(Data.getALLUrlSet(),selectUrl.getSelectedItem().toString())){
+						selectKeyword.addItem(str);
+					}
+					if(Constant.SupportFuzzyUrl.indexOf(selectUrl.getSelectedItem().toString())<Constant.division){//设置表格列名 电商or新闻博客
+						flag=true;
+					}else{
+						flag=false;
+					}
 				}
 			}
 		});
-		selectUrl.addItemListener(new ItemListener(){
-			public void itemStateChanged(ItemEvent e){
-				selectKeyword.removeAllItems();
-				selectKeyword.addItem("");
-//				for(String str:Task.getKeyWords(Constant.UIKeyValue.get("stop"),selectUrl.getSelectedItem().toString())){
-//					selectKeyword.addItem(str);
-//				}
-			}
-		});
+	
 		refresh.addMouseListener(this);
 	}
 
 	public void mouseClicked(MouseEvent e) {// 单击
 		if ("refresh".equals(e.getComponent().getName())) {
-			String url = selectUrl.getSelectedItem().toString();
-			String keyWord = selectKeyword.getSelectedItem().toString();
-			
-			data=Task.getUrlData(url,keyWord);
-			if(flag){
-				columnNames = Constant.E_CommerceCcolumnNames;
-			}else{
-				columnNames = Constant.BlogNewsCcolumnNames;
+			if(selectUrl.getItemCount()>0){
+				String url = selectUrl.getSelectedItem().toString();
+				String keyWord = selectKeyword.getSelectedItem().toString();
+				data=Task.getUrlData(url,keyWord);
+				if(flag){
+					columnNames = Constant.E_CommerceCcolumnNames;
+				}else{
+					columnNames = Constant.BlogNewsCcolumnNames;
+				}
+				taskDataSetModel = new DefaultTableModel(data,columnNames);
+				taskDataSet.setModel(taskDataSetModel);
+				
+				selectUrl.removeAllItems();
+				String[] urlSet=StringManipulation.oneDuplicateRemoval(StringManipulation.toOneDimensionalArrays(Data.getALLUrlSet()));
+				for(String str:urlSet){//所有任务集
+					selectUrl.addItem(str);
+				}
+				selectUrl.setSelectedItem(url);
+				//初始得到第一个url的关键字
+				selectKeyword.removeAllItems();
+				for(String str:Data.getKeyWords(Data.getALLUrlSet(),selectUrl.getSelectedItem().toString())){
+					selectKeyword.addItem(str);
+				}
+				selectKeyword.setSelectedItem(keyWord);
 			}
-			
-			taskDataSetModel = new DefaultTableModel(data,columnNames);
-			taskDataSet.setModel(taskDataSetModel);
 		}
 	}
 

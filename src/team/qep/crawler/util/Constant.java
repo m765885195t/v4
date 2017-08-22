@@ -1,4 +1,4 @@
-package team.qep.crawler.basic;
+package team.qep.crawler.util;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -17,6 +17,7 @@ public class Constant {
 			put("dataMonitoring", 8);
 			put("dataDisplay", 10);
 			put("historyRecord", 12);
+			put("helpDescription", 13);
 			put("setting", 14);
 			put("zoom", 16);
 			put("close", 18);
@@ -69,13 +70,19 @@ public class Constant {
 		{
 			put("RunUrlSet", 1);//运行的任务集合
 			put("AllUrlSet", 2);//所有的任务集合
-			put("fuzzyUrlPublish", 3);//发布模糊任务
+			put("StopUrlSet", 3);//终止的任务集合
+			put("fuzzyUrlPublish", 4);//发布模糊任务
 			put("exactUrlPublish", 5);//发布精确任务
 			put("timelyUrlPublish", 8);//发布即时任务
+			put("ModifyTaskStatus", 9);//修改任务状态
 			put("DownloadData", 13);//下载的数据量
 			put("ProgressData", 21);//爬取的数据量
 			put("TotalData", 34);//三大类别数据量
+			put("TimelyData", 35);//即时数据
 			put("ResourceInformation", 55);//从机资源信息
+			put("ModifyResourceStatus", 56);//重启从机
+			put("AddDeleteResource", 57);//添加从机资源
+			put("DeleteTaskData", 89);//删除任务数据
 		}
 	};
 	
@@ -93,47 +100,28 @@ public class Constant {
 			put("Start", 21);//启用从机
 			put("Ready", 34);//从机准备中
 			put("Stop", 55);//终止从机
+			put("Add", 56);//增加从机
+			put("Delete", 57);//删除从机
+			put("EC",1);//即时任务的数据为电商
+			put("BN", 0);//即时任务的数据为新闻
+			
 			put("Info", 89);//信息窗口
 			put("Confirm", 144);//确认对话窗口
 			
 		}
 	};
 	
-	public static final String[] E_CommerceCcolumnNames = new String[]{"URL","商品名","店铺名","评论"};//电商数据列名
+	public static final String[] E_CommerceCcolumnNames = new String[]{"商品url","商品名","商品价格","店铺名","店铺url","店铺综合评分"};//电商数据列名
 	public static final String[] BlogNewsCcolumnNames = new String[]{"标题","关键字","摘要"};//博客新闻数据列名
-	public static final String[] TaskCcolumnNames = new String[]{"URL","任务类别","关键字","发布时间","任务状态"};//任务数据列名
-	public static final String[] HistoricalTaskCcolumnNames = new String[]{"URL","关键字","总数"};//历史任务数据列名
+	public static final String[] TaskCcolumnNames = new String[]{"URL","关键字","任务类别","发布时间","任务状态"};//任务数据列名
+	public static final String[] HistoricalTaskCcolumnNames = new String[]{"URL","关键字","总数"};//下载数据列名
 	public static final String[] ResourceSchedulingCcolumnNames = new String[]{"从机编号","IP","状态","任务数"};//历史任务数据列名
 
 	public static String getIcon(String path) {// 得到icon
 		return "./image/icon/" + path + ".png";
 	}
 	
-	// v2.0
-	private static int refreshrate = 1000;
-	private static boolean refreshrate_flag = true;// true一样未变化 false刷新时间已改变
-	public static int EC_News = 1;
-	public static int News_Blog = 2;
-	public static String[] taskSet = new String[] { "www.taobao.com", "blog.csdn.net", "1", "2", "3", "4" };;
-
-	public static boolean getRefreshrate_flag() {
-		return refreshrate_flag;
-	}
-
-	public static void setRefreshrate_flag(boolean flag) {
-		refreshrate_flag = flag;
-	}
-
-	public static void setRefreshrate(int refresh) {
-		refreshrate = refresh;
-	}
-
-	public static int getRefreshrate() {
-		return refreshrate;
-	}
-
-	public static String getPromptImagePath() {// 得到提示框路径
-		// return "./image/prompt.jpg";
-		return "./image/1.jpg";
+	public static String getHelpPicturePath(int layer) {// 得到提示框路径
+		return "./image/help/"+layer+".jpg";
 	}
 }

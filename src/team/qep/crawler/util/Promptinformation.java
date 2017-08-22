@@ -9,16 +9,10 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
 
-import team.qep.crawler.basic.Constant;
-import team.qep.crawler.server.Task;
 import team.qep.crawler.ui.Init;
-import team.qep.crawler.view.Init2;
-import team.qep.crawler.view.Myjpanel;
 
 //自定义消息提示框
 public class Promptinformation implements MouseListener {
@@ -54,16 +48,16 @@ public class Promptinformation implements MouseListener {
 	}
 
 	private void Init() {
-		Init2.Init2JDialog(infoJD, "infoJD", 380, 150);
-		Init2.Init2JPanel(infoJP, "infoJP");
+		Init.initJDialog(infoJD, "infoJD", 380, 150);
+		Init.initJPanel(infoJP, "infoJP");
 		
-		Init2.Init2JTextArea(info, "info");
+		Init.initJTextArea(info, "info");
 		info.setBorder(null);//去掉边框
 		info.setEditable(false);//屏蔽输入
 
-		Init2.Init2JButton(jb1, "jb1");
-		Init2.Init2JButton(jb2, "jb2");
-		Init2.Init2JButton(jb3, "jb3");
+		Init.initJButton(jb1, "jb1");
+		Init.initJButton(jb2, "jb2");
+		Init.initJButton(jb3, "jb3");
 	}
 
 	private void setBounds() {

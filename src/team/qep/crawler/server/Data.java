@@ -6,9 +6,8 @@ import java.util.Random;
 
 import org.jfree.chart.editor.DefaultChartEditorFactory;
 
-import team.qep.crawler.basic.Constant;
 import team.qep.crawler.socket.Communication;
-import team.qep.crawler.socket.Download;
+import team.qep.crawler.util.Constant;
 import team.qep.crawler.util.ConvertJSON;
 import team.qep.crawler.util.Operationstring;
 import team.qep.crawler.util.StringManipulation;
@@ -24,7 +23,7 @@ public class Data {
 			for(int j=0 ; j<RunUrlSet[i].length; j++){
 				switch(j){
 				case 0:RunUrlSet[i][j]=Constant.SupportFuzzyUrl.get(Integer.valueOf(RunUrlSet[i][j]));break;
-				case 1:
+				case 2:
 					if(Integer.valueOf(RunUrlSet[i][j])==Constant.KeyValue.get("E_Commerce")){
 						RunUrlSet[i][j]=new String("电商");
 					}else if(Integer.valueOf(RunUrlSet[i][j])==Constant.KeyValue.get("Blog")){
@@ -46,7 +45,18 @@ public class Data {
 			}
 		}
 		return RunUrlSet;		
-	}	
+	}
+	//得到所有的任务集
+	public static String[][] getStopUrlSet(){
+		String send=ConvertJSON.toJSON(Constant.Agreement.get("StopUrlSet"),"");
+		String[] recv=ConvertJSON.toStringArray(Communication.SendAndRecv(send));
+		
+		String[][] StopUrlSet=StringManipulation.toTwoDimensionalArrays(recv,2);
+		for(int i=0 ; i<StopUrlSet.length; i++){
+			StopUrlSet[i][0]=Constant.SupportFuzzyUrl.get(Integer.valueOf(StopUrlSet[i][0]));
+		}
+		return StopUrlSet;
+	}
 	//得到所有的任务集
 	public static String[][] getALLUrlSet(){
 		String send=ConvertJSON.toJSON(Constant.Agreement.get("AllUrlSet"),"");
@@ -58,7 +68,18 @@ public class Data {
 		}
 		return AllUrlSet;
 	}
-	
+	//得到即时任务的结果数据   
+	public static String[][] getTimelyUrlData() {
+		String send=ConvertJSON.toJSON(Constant.Agreement.get("TimelyData"),"");
+		String[] recv=ConvertJSON.toStringArray(Communication.SendAndRecv(send));
+		
+		String[][] TimelyData=StringManipulation.toTwoDimensionalArrays(recv,3);
+		
+		
+				
+		return TimelyData;
+
+	}
 	//简化输出
 	public static void p(String str){
 		System.out.println(str);
@@ -75,7 +96,7 @@ public class Data {
 		
 		ArrayList<String[]> list = new ArrayList<String[]>();
 		for(int i=1 ; i<recv.length; i+=2){
-			list.add(new String[]{recv[i],url,recv[i+1]});
+			list.add(new String[]{recv[i],"任务url: "+url+"        关键字: "+keyWord,recv[i+1]});
 		}
 		
 		String[][] dataSet = new String[list.size()][3];
@@ -86,7 +107,7 @@ public class Data {
 		}
 		return dataSet;
 	}	
-	//得到下载历史数据
+	//得到下载历史数据(终止任务集)
 	public static String[][] getDownloadDataSet(){
 		String send=ConvertJSON.toJSON(Constant.Agreement.get("DownloadData"),"");
 		String[] recv=ConvertJSON.toStringArray(Communication.SendAndRecv(send));
@@ -103,10 +124,11 @@ public class Data {
 		String[] recv=ConvertJSON.toStringArray(Communication.SendAndRecv(send));
 	
 		ArrayList<String[]> list = new ArrayList<String[]>();
-		list.add(new String[]{"E-Commerce",recv[1]});
-		list.add(new String[]{"Blog",recv[2]});
-		list.add(new String[]{"News",recv[3]});
-
+		if(recv.length>3){
+			list.add(new String[]{"E-Commerce",recv[1]});
+			list.add(new String[]{"Blog",recv[2]});
+			list.add(new String[]{"News",recv[3]});
+		}
 		String[][] dataSet = new String[list.size()][2];
 		for(int i=0 ; i<list.size() ; i++){
 			for(int j=0 ; j<2 ; j++){
@@ -132,17 +154,19 @@ public class Data {
 		}
 		return resource;
 	}
-	//清空数据 ----参数（带清空数据据的url(String), 关键字keyWord(String))
-	public static boolean wipeData(String url,String keyWord){
-		int task = Constant.SupportFuzzyUrl.indexOf(url);//得到任务下标
-		//待转json发送
-//		String flag = Communication.SendAndRecv(ConvertJSON.toJSON(taskNumber,""));
-//		String[] str = ConvertJSON.toStringArray(flag);
-//		if(str[1].equals("0")){
-//			return false;
-//		}
-		return true;
+	
+	//查找url对应的关键字        参数--->带查找的任务url集(string))    查找的url
+	public static String[] getKeyWords(String[][] set,String url) {
+		ArrayList<String> list = new ArrayList<String>();
+		String[][] taskSet=set;
+		for(String[] str:taskSet){
+			if(url.equals(str[0])){
+				list.add(str[1]);
+			}
+		}
+		return list.toArray(new String[list.size()]);
 	}
+		
 	public static void main(String[] args){
 	}
 }
