@@ -2,28 +2,28 @@ package team.qep.crawler.ui;
 
 import java.awt.Color;
 import java.awt.Font;
-import java.awt.event.ItemEvent;
-import java.awt.event.ItemListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
-import java.io.UnsupportedEncodingException;
-import java.net.URLDecoder;
+import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Random;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
-import javax.swing.JComboBox;
-import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextArea;
+import javax.swing.RowSorter;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableModel;
+import javax.swing.table.TableRowSorter;
 
 import team.qep.crawler.server.Data;
 import team.qep.crawler.server.Task;
 import team.qep.crawler.util.Constant;
 import team.qep.crawler.util.ConvertJSON;
-import team.qep.crawler.util.Promptinformation;
 import team.qep.crawler.util.StringManipulation;
 
 public class IssueTasks2 extends JPanel implements MouseListener {
@@ -65,14 +65,18 @@ public class IssueTasks2 extends JPanel implements MouseListener {
 
 	private void loadingData() {// 装载数据
 		timelyTaskUrlSetModel = new DefaultTableModel(new String[0][], new String[]{"即时任务URL"}){
-//			public boolean isCellEditable(int row, int column) {
-//				return false;
-//			}
+			public void setValueAt(Object aValue, int row, int column){	
+			}
 		};
 		timelyTaskUrlSet.setModel(timelyTaskUrlSetModel);
 		
-		ecDataModel = new DefaultTableModel(new String[0][], Constant.E_CommerceCcolumnNames);
+		ecDataModel = new DefaultTableModel(new String[0][], Constant.E_CommerceCcolumnNames){
+			public void setValueAt(Object aValue, int row, int column){	
+			}
+		};
 		ecDataJT.setModel(ecDataModel);
+		
+
 	}
 
 	private void Init() {
@@ -90,6 +94,8 @@ public class IssueTasks2 extends JPanel implements MouseListener {
 		Init.initJTextArea(bnDataJTA, "bnDataJTA");
 		Init.initJScrollPane(bnDataJSP, "bnDataJSP");
 		bnDataJTA.setFont(new Font("微软雅黑", 0, 16));// 设置字体格式
+		bnDataJTA.setEditable(false);//屏蔽输入
+		bnDataJTA.setFocusable(false);//消除光标
 		timelyTaskUrlSet.setFont(new Font("serif", 0, 16));// 设置表格字体
 		ecDataJT.setFont(new Font("serif", 0, 16));// 设置表格字体
 	}
@@ -106,14 +112,14 @@ public class IssueTasks2 extends JPanel implements MouseListener {
 	}
 
 	private void setColour() {
-		this.setBackground(new Color(20, 20, 20));
+		this.setBackground(Theme.PanelColor);
 
-		refresh.setBackground(new Color(150, 150, 150));
-		refresh.setIcon(new ImageIcon(Constant.getIcon("refresh")));
-		timelyUrlPublish.setBackground(new Color(150, 150, 150));
-		timelyUrlPublish.setIcon(new ImageIcon(Constant.getIcon("timelyUrlPublish")));
-		export.setBackground(new Color(150, 150, 150));
-		export.setIcon(new ImageIcon(Constant.getIcon("export")));
+		refresh.setBackground(Theme.ButtonColor);
+		refresh.setIcon(Constant.getIcon("refresh"));
+		timelyUrlPublish.setBackground(Theme.ButtonColor);
+		timelyUrlPublish.setIcon(Constant.getIcon("timelyUrlPublish"));
+		export.setBackground(Theme.ButtonColor);
+		export.setIcon(Constant.getIcon("export"));
 	}
 
 	private void listener() {
@@ -142,34 +148,71 @@ public class IssueTasks2 extends JPanel implements MouseListener {
 			// 刷新获取数据
 			UrlData = Data.getTimelyUrlData();//得到总数据
 			String[][] data = StringManipulation.twoToTwo(UrlData, 0);
-			timelyTaskUrlSetModel = new DefaultTableModel(data, new String[]{"即时任务URL"});
+			timelyTaskUrlSetModel = new DefaultTableModel(data, new String[]{"即时任务URL"}){;
+				public void setValueAt(Object aValue, int row, int column){	
+				}
+			};
 			timelyTaskUrlSet.setModel(timelyTaskUrlSetModel);
 			
 			//初始化数据
-			ecDataModel = new DefaultTableModel(new String[0][], Constant.E_CommerceCcolumnNames);
+			ecDataModel = new DefaultTableModel(new String[0][], Constant.E_CommerceCcolumnNames){
+				public void setValueAt(Object aValue, int row, int column){	
+				}
+			};
 			ecDataJT.setModel(ecDataModel);
 			bnDataJTA.setText("");
 		}else if ("timelyTaskUrlSet".equals(e.getComponent().getName())) {
 			int selectedRow = timelyTaskUrlSet.getSelectedRow();
 			if (selectedRow != -1) {
-				this.remove(ecDataJSP);
-				this.remove(bnDataJSP);
-
+				if(UrlData[selectedRow][1].toString().equals(String.valueOf(Constant.KeyValue.get("EC")))){//电商
+					String str=UrlData[selectedRow][2].replace("'", "\"").replace("u\"", "\"");
+					System.out.println(str);
+					String[][] data = StringManipulation.toTwoDimensionalArrays(ConvertJSON.toStringArray(str),6);
+			
+					ecDataModel = new DefaultTableModel(data,Constant.E_CommerceCcolumnNames){
+						public void setValueAt(Object aValue, int row, int column){	
+						}
+					};
+					ecDataJT.setModel(ecDataModel);
+					System.out.println(ecDataJT.getRowCount());
+				}else if(UrlData[selectedRow][1].equals(String.valueOf(Constant.KeyValue.get("BN")))){//新闻
+					bnDataJTA.setText(UrlData[selectedRow][2].replace("\n", System.getProperty("line.separator")));
+					bnDataJTA.setCaretPosition(0);
+				}
+			}
+		}else if ("export".equals(e.getComponent().getName())) {//导出为文件
+			int selectedRow = timelyTaskUrlSet.getSelectedRow();
+			if (selectedRow != -1) {
 				if(UrlData[selectedRow][1].toString().equals(String.valueOf(Constant.KeyValue.get("EC")))){//电商
 					String str=UrlData[selectedRow][2].replace("'", "\"").replace("u\"", "\"");
 					String[][] data = StringManipulation.toTwoDimensionalArrays(ConvertJSON.toStringArray(str),6);
 			
-					ecDataModel = new DefaultTableModel(data,Constant.E_CommerceCcolumnNames);
-					ecDataJT.setModel(ecDataModel);
-					this.add(ecDataJSP);
+					if(Data.saveCSV(new SimpleDateFormat("yyyyMMddHHmmss").format(new Date())+".csv",Constant.E_CommerceCcolumnNames,data)){
+						new Promptinformation(null, "表格文件导出成功(./data/EC/),是否打开所在文件夹", Constant.KeyValue.get("Confirm"));
+						if(Promptinformation.flag){
+							try {
+								Runtime.getRuntime().exec("explorer.exe "+System.getProperty("user.dir")+"\\data\\EC\\");
+							} catch (IOException e1) {
+								e1.printStackTrace();
+							}
+						}
+					}
 				}else if(UrlData[selectedRow][1].equals(String.valueOf(Constant.KeyValue.get("BN")))){//新闻
-					bnDataJTA.setText(UrlData[selectedRow][2]);
-					this.add(bnDataJSP);
+					String filename=UrlData[selectedRow][2].substring(5,UrlData[selectedRow][2].indexOf("\n"));
+
+					if(Data.saveFile(filename+".txt",UrlData[selectedRow][2].replace("\n",System.getProperty("line.separator")))){
+						new Promptinformation(null, "表格文件导出成功(./data/BN/),是否打开所在文件夹", Constant.KeyValue.get("Confirm"));
+						if(Promptinformation.flag){
+							try {
+								Runtime.getRuntime().exec("explorer.exe "+System.getProperty("user.dir")+"\\data\\EC\\");
+							} catch (IOException e1) {
+								e1.printStackTrace();
+							}
+						}					
+					}
 				}
 				this.updateUI();
 			}
-		}else if ("export".equals(e.getComponent().getName())) {
-		
 		}
 	}
 
@@ -182,11 +225,11 @@ public class IssueTasks2 extends JPanel implements MouseListener {
 
 	public void mouseEntered(MouseEvent e) {// 进入
 		if ("timelyUrlPublish".equals(e.getComponent().getName())) {
-			timelyUrlPublish.setBackground(new Color(255, 255, 255));
+			timelyUrlPublish.setBackground(Color.WHITE);
 		} else if ("refresh".equals(e.getComponent().getName())) {
-			refresh.setBackground(new Color(255, 255, 255));
+			refresh.setBackground(Color.WHITE);
 		} else if ("export".equals(e.getComponent().getName())) {
-			export.setBackground(new Color(255, 255, 255));
+			export.setBackground(Color.WHITE);
 		}
 
 	}
@@ -195,9 +238,9 @@ public class IssueTasks2 extends JPanel implements MouseListener {
 		if ("timelyUrlPublish".equals(e.getComponent().getName())) {
 			timelyUrlPublish.setBackground(new Color(150, 150, 150));
 		} else if ("refresh".equals(e.getComponent().getName())) {
-			refresh.setBackground(new Color(150, 150, 150));
+			refresh.setBackground(Theme.ButtonColor);
 		}else if ("export".equals(e.getComponent().getName())) {
-			export.setBackground(new Color(150, 150, 150));
+			export.setBackground(Theme.ButtonColor);
 		}
 	}
 

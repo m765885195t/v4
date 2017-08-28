@@ -1,15 +1,17 @@
 package team.qep.crawler.server;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Random;
-
-import org.jfree.chart.editor.DefaultChartEditorFactory;
+import com.csvreader.CsvWriter;
 
 import team.qep.crawler.socket.Communication;
 import team.qep.crawler.util.Constant;
 import team.qep.crawler.util.ConvertJSON;
-import team.qep.crawler.util.Operationstring;
 import team.qep.crawler.util.StringManipulation;
 
 public class Data {
@@ -18,7 +20,7 @@ public class Data {
 		String send=ConvertJSON.toJSON(Constant.Agreement.get("RunUrlSet"),"");
 		String[] recv=ConvertJSON.toStringArray(Communication.SendAndRecv(send));
 		
-		String[][] RunUrlSet=StringManipulation.toTwoDimensionalArrays(recv,5);
+		String[][] RunUrlSet=StringManipulation.toTwoDimensionalArrays(recv,6);
 		for(int i=0 ; i<RunUrlSet.length; i++){
 			for(int j=0 ; j<RunUrlSet[i].length; j++){
 				switch(j){
@@ -32,7 +34,7 @@ public class Data {
 						RunUrlSet[i][j]=new String("新闻");
 					}
 					break;
-				case 4:
+				case 5:
 					if(Integer.valueOf(RunUrlSet[i][j])==Constant.KeyValue.get("Run")){
 						RunUrlSet[i][j]=new String("运行中");
 					}else if(Integer.valueOf(RunUrlSet[i][j])==Constant.KeyValue.get("Wait")){
@@ -75,10 +77,49 @@ public class Data {
 		
 		String[][] TimelyData=StringManipulation.toTwoDimensionalArrays(recv,3);
 		
-		
-				
 		return TimelyData;
 
+	}
+	//存储为文件  参数文件名,文件内容
+	public static boolean saveFile(String filename,String content) {
+		try {
+			File file = new File(filename);
+			if (!file.exists()) {
+		    	file.createNewFile();
+		    }
+			OutputStreamWriter osw = new OutputStreamWriter(new FileOutputStream("./data/BN/"+filename),"UTF-8");
+			osw.write(content);
+//			osw.flush();
+			osw.close();
+		} catch (IOException e) {
+			// TODO 自动生成的 catch 块
+			e.printStackTrace();
+		}
+		return true;
+
+	}	
+	//存储为csv文件  参数----表格名,表头,表格主体
+	public static boolean saveCSV(String filename,String[] head,String[][] content) {
+		try {
+            CsvWriter csvWriter = new CsvWriter("./data/EC/"+filename,',', Charset.forName("UTF-8"));
+            csvWriter.writeRecord(head);
+            for(int i=0 ; i<content.length ; i++){
+            	csvWriter.writeRecord(content[i]);
+            }
+            csvWriter.close();
+		} catch (IOException e) {
+			// TODO 自动生成的 catch 块
+			e.printStackTrace();
+		}
+		return true;
+
+	}
+	//得到该url对应的数据     keyword为空说明为模糊任务，否则为精确任务
+	public static String[][] getUrlData(String url, String keyWord) {
+		String send=ConvertJSON.toJSON(Constant.Agreement.get("urlkData"),"");
+		String[] recv=ConvertJSON.toStringArray(Communication.SendAndRecv(send));
+		String[][] TimelyData=StringManipulation.toTwoDimensionalArrays(recv,3);
+		return TimelyData;
 	}
 	//简化输出
 	public static void p(String str){
@@ -145,11 +186,11 @@ public class Data {
 		String[][] resource=StringManipulation.toTwoDimensionalArrays(recv,4);
 		for(int i=0 ; i<resource.length; i++){
 			if(resource[i][2].equals(String.valueOf(Constant.KeyValue.get("Start")))){
-				resource[i][2]="运行中";
-			}else if(resource[i][2].equals(String.valueOf(Constant.KeyValue.get("Ready")))){
-				resource[i][2]="就绪";
+				resource[i][2]="工作中";
+			}else if(resource[i][2].equals(String.valueOf(Constant.KeyValue.get("Abnormal")))){
+				resource[i][2]="终止";
 			}else if(resource[i][2].equals(String.valueOf(Constant.KeyValue.get("Stop")))){
-				resource[i][2]="已停止";
+				resource[i][2]="未工作";
 			}
 		}
 		return resource;
@@ -165,8 +206,5 @@ public class Data {
 			}
 		}
 		return list.toArray(new String[list.size()]);
-	}
-		
-	public static void main(String[] args){
 	}
 }

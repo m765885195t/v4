@@ -8,6 +8,7 @@ import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JRadioButton;
 import javax.swing.JRootPane;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
@@ -45,7 +46,7 @@ public class Init {
 
 	// 文本域初始化
 	public static void initJTextArea(JTextArea jta, String str) {
-		// jta.setOpaque(false);//设为透明
+//		 jta.setOpaque(false);//设为透明
 		jta.setFont(new Font("微软雅黑", 0, 20));// 设置字体格式
 		jta.setName(str);// 设置文本域的名字
 		jta.setForeground(Color.black);
@@ -61,7 +62,7 @@ public class Init {
 		jtf.setBorder(null);// 去掉边框
 		jtf.setFont(new Font("微软雅黑", 1,18));// 设置字体格式
 		jtf.setName(str);// 设置文本框的名字
-		jtf.setForeground(Color.black);// 设置前景色为灰
+		jtf.setForeground(Color.black);// 设置字体为黑色
 		jtf.setBackground(Color.white);// 设置背景色为白
 		// jtf.setEditable(false);//屏蔽输入
 		// jtf.setFocusable(false);//消除光标
@@ -82,7 +83,12 @@ public class Init {
 		jb.setBorder(null);// 去掉边框
 		jb.setFont(new Font("微软雅黑", 0, 20));
 	}
-
+	//单选按钮
+	public static void initJRadioButton(JRadioButton jrb, String string) {
+		jrb.setName(string);
+		jrb.setFocusable(false);// 消除光标
+		jrb.setFont(new Font("微软雅黑", 0, 20));
+	}
 	// ---------面板初始化
 	public static void initJPanel(JPanel jp, String str) {
 		// jp.setOpaque(false);//设置面板透明
@@ -125,10 +131,13 @@ public class Init {
 		 header.setDefaultRenderer(head);//为表头设置渲染器
 		jt.getTableHeader().setReorderingAllowed(false);//不可拖动列
 		jt.getSelectionModel().setSelectionMode(ListSelectionModel.SINGLE_SELECTION);//设置只能选中单行
+
 	}
 
 	public static void initJComboBox(JComboBox<String> choice, String str) {
 		choice.setName(str);
 		choice.setFont(new Font("微软雅黑", 0, 20));
 	}
+
+	
 }

@@ -11,8 +11,8 @@ import java.net.Socket;
 import java.net.SocketTimeoutException;
 import java.net.UnknownHostException;
 
+import team.qep.crawler.ui.Promptinformation;
 import team.qep.crawler.util.Constant;
-import team.qep.crawler.util.Promptinformation;
 
 public class Communication{
 	private static final String IP = "120.77.201.150";
@@ -25,7 +25,7 @@ public class Communication{
 //        	Socket socket =new Socket(IP,port);
         	Socket socket = new Socket();
         	InetSocketAddress address=new InetSocketAddress(IP, port);
-        	socket.connect(address,2000);//连接超时时长
+        	socket.connect(address,1000);//连接超时时长
         	//2.发送信息
         	OutputStream os=socket.getOutputStream();
         	PrintWriter pw=new PrintWriter(os);
@@ -35,7 +35,7 @@ public class Communication{
             System.out.println("我说:"+send);
 
         	//接受信息
-        	socket.setSoTimeout(3000);//读数据操作时,最多阻塞3秒钟 时间一到(不再等待读下去了),抛出IOException？
+        	socket.setSoTimeout(100000);//读数据操作时,最多阻塞3秒钟 时间一到(不再等待读下去了),抛出IOException？
         	InputStream is=socket.getInputStream();
         	BufferedReader br=new BufferedReader(new InputStreamReader(is));
         	

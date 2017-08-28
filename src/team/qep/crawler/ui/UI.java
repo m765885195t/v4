@@ -16,6 +16,8 @@ import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.UIManager;
+import javax.swing.UnsupportedLookAndFeelException;
 
 import team.qep.crawler.util.Constant;
 
@@ -50,6 +52,8 @@ public class UI implements MouseListener {
 	private JPanel helpDescriptionJP = new HelpDescription();
 	private JButton setting = new JButton();// 设置
 	private JPanel settingJP = new Setting();
+	private JButton feedback = new JButton();// 联系反馈
+	private JPanel feedbackJP = new Feedback();
 
 	public UI() {
 		this.Init();
@@ -59,7 +63,7 @@ public class UI implements MouseListener {
 
 		flag[Constant.UIKeyValue.get("issueTask1")] = true;
 		issueTask1.setBackground(new Color(20, 20, 20));
-		issueTask1.setIcon(new ImageIcon(Constant.getIcon("issueTask1w")));
+		issueTask1.setIcon(Constant.getIcon("issueTask1w"));
 
 		sidebarJP.add(issueTask1);
 		sidebarJP.add(issueTask2);
@@ -70,6 +74,7 @@ public class UI implements MouseListener {
 		sidebarJP.add(historyRecord);
 		sidebarJP.add(helpDescription);
 		sidebarJP.add(setting);
+		sidebarJP.add(feedback);
 
 		ctlJP.add(sidebarJP);
 		ctlJP.add(issueTask1JP);
@@ -87,7 +92,7 @@ public class UI implements MouseListener {
 		Init.initJButton(close, "close");
 		Init.initJButton(zoom, "zoom");
 		Init.initJLable(datetime, "datetime");
-		new Timer().schedule(new TimerTask() {
+		new Timer().scheduleAtFixedRate(new TimerTask() {
 			public void run() {
 				datetime.setText(new SimpleDateFormat("yyyy-MM-dd  HH:mm:ss").format(new Date()));
 			}
@@ -115,6 +120,8 @@ public class UI implements MouseListener {
 		Init.initJPanel(helpDescriptionJP, "helpDescriptionJP");
 		Init.initJButton(setting, "setting");
 		Init.initJPanel(settingJP, "settingJP");
+		Init.initJButton(feedback, "feedback");
+		Init.initJPanel(feedbackJP, "feedbackJP");
 	}
 
 	private void setBounds() {
@@ -131,6 +138,7 @@ public class UI implements MouseListener {
 		dataMonitoring.setBounds(0, 4 * 50, 50, 50);
 		historyRecord.setBounds(0, 5 * 50, 50, 50);
 		dataDisplay.setBounds(0, 6 * 50, 50, 50);
+		feedback.setBounds(0, Constant.JFrame_Height - 3 * 50, 50, 50);
 		helpDescription.setBounds(0, Constant.JFrame_Height - 2 * 50, 50, 50);
 		setting.setBounds(0, Constant.JFrame_Height - 1 * 50, 50, 50);
 
@@ -141,6 +149,7 @@ public class UI implements MouseListener {
 		dataMonitoringJP.setBounds(50, 30, Constant.JFrame_Width - 50, Constant.JFrame_Width - 30);
 		dataDisplayJP.setBounds(50, 30, Constant.JFrame_Width - 50, Constant.JFrame_Width - 30);
 		historyRecordJP.setBounds(50, 30, Constant.JFrame_Width - 50, Constant.JFrame_Width - 30);
+		feedbackJP.setBounds(50, 30, Constant.JFrame_Width - 50, Constant.JFrame_Width - 30);
 		helpDescriptionJP.setBounds(50, 30, Constant.JFrame_Width - 50, Constant.JFrame_Width - 30);
 		settingJP.setBounds(50, 30, Constant.JFrame_Width - 50, Constant.JFrame_Width - 30);
 	}
@@ -151,32 +160,34 @@ public class UI implements MouseListener {
 			flag[values] = false;
 		}
 		// 面板色
-		ctlJP.setBackground(new Color(20, 20, 20));
-		sidebarJP.setBackground(new Color(90, 90, 90));
-		prompt.setBackground(new Color(90, 90, 90));// 提示的标签色
+		ctlJP.setBackground(Theme.PanelColor);
+		sidebarJP.setBackground(Theme.SidebarColor);
+		prompt.setBackground(Theme.SidebarColor);// 提示的标签色
 		// 按键色与图片
-		close.setBackground(new Color(20, 20, 20));
-		close.setIcon(new ImageIcon(Constant.getIcon("closeb")));
-		zoom.setBackground(new Color(20, 20, 20));
-		zoom.setIcon(new ImageIcon(Constant.getIcon("zoomb")));
-		issueTask1.setBackground(new Color(90, 90, 90));
-		issueTask1.setIcon(new ImageIcon(Constant.getIcon("issueTask1b")));
-		issueTask2.setBackground(new Color(90, 90, 90));
-		issueTask2.setIcon(new ImageIcon(Constant.getIcon("issueTask2b")));
-		resourceScheduling.setBackground(new Color(90, 90, 90));
-		resourceScheduling.setIcon(new ImageIcon(Constant.getIcon("resourceSchedulingb")));
-		taskControl.setBackground(new Color(90, 90, 90));
-		taskControl.setIcon(new ImageIcon(Constant.getIcon("taskControlb")));
-		dataMonitoring.setBackground(new Color(90, 90, 90));
-		dataMonitoring.setIcon(new ImageIcon(Constant.getIcon("dataMonitoringb")));
-		dataDisplay.setBackground(new Color(90, 90, 90));
-		dataDisplay.setIcon(new ImageIcon(Constant.getIcon("dataDisplayb")));
-		historyRecord.setBackground(new Color(90, 90, 90));
-		historyRecord.setIcon(new ImageIcon(Constant.getIcon("historyRecordb")));
-		helpDescription.setBackground(new Color(90, 90, 90));
-		helpDescription.setIcon(new ImageIcon(Constant.getIcon("helpDescriptionb")));
-		setting.setBackground(new Color(90, 90, 90));
-		setting.setIcon(new ImageIcon(Constant.getIcon("settingb")));
+		close.setBackground(Theme.PanelColor);
+		close.setIcon(Constant.getIcon("closeb"));
+		zoom.setBackground(Theme.PanelColor);
+		zoom.setIcon(Constant.getIcon("zoomb"));
+		issueTask1.setBackground(Theme.SidebarColor);
+		issueTask1.setIcon(Constant.getIcon("issueTask1b"));
+		issueTask2.setBackground(Theme.SidebarColor);
+		issueTask2.setIcon(Constant.getIcon("issueTask2b"));
+		resourceScheduling.setBackground(Theme.SidebarColor);
+		resourceScheduling.setIcon(Constant.getIcon("resourceSchedulingb"));
+		taskControl.setBackground(Theme.SidebarColor);
+		taskControl.setIcon(Constant.getIcon("taskControlb"));
+		dataMonitoring.setBackground(Theme.SidebarColor);
+		dataMonitoring.setIcon(Constant.getIcon("dataMonitoringb"));
+		dataDisplay.setBackground(Theme.SidebarColor);
+		dataDisplay.setIcon(Constant.getIcon("dataDisplayb"));
+		historyRecord.setBackground(Theme.SidebarColor);
+		historyRecord.setIcon(Constant.getIcon("historyRecordb"));
+		feedback.setBackground(Theme.SidebarColor);
+		feedback.setIcon(Constant.getIcon("feedbackb"));
+		helpDescription.setBackground(Theme.SidebarColor);
+		helpDescription.setIcon(Constant.getIcon("helpDescriptionb"));
+		setting.setBackground(Theme.SidebarColor);
+		setting.setIcon(Constant.getIcon("settingb"));
 	}
 
 	private void listener() {
@@ -196,6 +207,7 @@ public class UI implements MouseListener {
 		dataMonitoring.addMouseListener(this);
 		dataDisplay.addMouseListener(this);
 		historyRecord.addMouseListener(this);
+		feedback.addMouseListener(this);
 		helpDescription.addMouseListener(this);
 		setting.addMouseListener(this);
 	}
@@ -204,7 +216,7 @@ public class UI implements MouseListener {
 		this.setColour();// 全部恢复为默认
 		jb.setContentAreaFilled(true);// 显示背景
 		jb.setBackground(new Color(20, 20, 20));// 设置背景色
-		jb.setIcon(new ImageIcon(Constant.getIcon(jb.getName() + "w")));// 设置图标icon
+		jb.setIcon(Constant.getIcon(jb.getName() + "w"));// 设置图标icon
 		flag[Constant.UIKeyValue.get(jb.getName())] = true;// 已使用此组件
 		ctlJP.remove(issueTask1JP);
 		ctlJP.remove(issueTask2JP);
@@ -212,6 +224,7 @@ public class UI implements MouseListener {
 		ctlJP.remove(taskControlJP);
 		ctlJP.remove(dataMonitoringJP);
 		ctlJP.remove(dataDisplayJP);
+		ctlJP.remove(feedbackJP);
 		ctlJP.remove(historyRecordJP);
 		ctlJP.remove(helpDescriptionJP);
 		ctlJP.remove(settingJP);
@@ -248,6 +261,10 @@ public class UI implements MouseListener {
 			this.toggleUIKeyValue(historyRecord, historyRecordJP);
 			ctlJF.getLayeredPane().remove(prompt);
 			ctlJF.repaint();
+		} else if ("feedback".equals(e.getComponent().getName())) {
+			this.toggleUIKeyValue(feedback, feedbackJP);
+			ctlJF.getLayeredPane().remove(prompt);
+			ctlJF.repaint();
 		} else if ("helpDescription".equals(e.getComponent().getName())) {
 			this.toggleUIKeyValue(helpDescription, helpDescriptionJP);
 			ctlJF.getLayeredPane().remove(prompt);
@@ -257,7 +274,7 @@ public class UI implements MouseListener {
 			ctlJF.getLayeredPane().remove(prompt);
 			ctlJF.repaint();
 		} else if ("zoom".equals(e.getComponent().getName())) {
-			zoom.setIcon(new ImageIcon(Constant.getIcon("zoom")));
+			zoom.setIcon(Constant.getIcon("zoom"));
 			ctlJF.setExtendedState(JFrame.ICONIFIED);
 		} else if ("close".equals(e.getComponent().getName())) {
 			System.exit(0);// 退出程序
@@ -279,6 +296,8 @@ public class UI implements MouseListener {
 			dataDisplay.setContentAreaFilled(false);
 		} else if ("historyRecord".equals(e.getComponent().getName())) {
 			historyRecord.setContentAreaFilled(false);
+		} else if ("feedback".equals(e.getComponent().getName())) {
+			feedback.setContentAreaFilled(false);
 		} else if ("helpDescription".equals(e.getComponent().getName())) {
 			helpDescription.setContentAreaFilled(false);
 		}  else if ("setting".equals(e.getComponent().getName())) {
@@ -295,78 +314,85 @@ public class UI implements MouseListener {
 	public void mouseEntered(MouseEvent e) {// 进入
 		if ("issueTask1".equals(e.getComponent().getName())) {
 			if (!flag[Constant.UIKeyValue.get(issueTask1.getName())]) {// 若未使用组件,显示提示
-				issueTask1.setIcon(new ImageIcon(Constant.getIcon("issueTask1w")));
-				prompt.setBounds(50, 0, 110, 50);
-				prompt.setText("全网爬取");
+				issueTask1.setIcon(Constant.getIcon("issueTask1w"));
+				prompt.setBounds(50, 0, 125, 50);
+				prompt.setText("全 网 爬 取");
 				ctlJF.getLayeredPane().add(prompt, Integer.MAX_VALUE + 1);
 			}
 		} else if ("issueTask2".equals(e.getComponent().getName())) {
 			if (!flag[Constant.UIKeyValue.get(issueTask2.getName())]) {// 只使用的组件
-				issueTask2.setIcon(new ImageIcon(Constant.getIcon("issueTask2w")));
-				prompt.setBounds(50, 1 * 50, 110, 50);
-				prompt.setText("即时爬取");
+				issueTask2.setIcon(Constant.getIcon("issueTask2w"));
+				prompt.setBounds(50, 1 * 50, 125, 50);
+				prompt.setText("即 时 爬 取");
 				ctlJF.getLayeredPane().add(prompt, Integer.MAX_VALUE + 1);
 			}
 		} else if ("resourceScheduling".equals(e.getComponent().getName())) {
 			if (!flag[Constant.UIKeyValue.get(resourceScheduling.getName())]) {// 只让为使用的组件
-				resourceScheduling.setIcon(new ImageIcon(Constant.getIcon("resourceSchedulingw")));
-				prompt.setBounds(50, 2 * 50, 110, 50);
-				prompt.setText("资源中心");
+				resourceScheduling.setIcon(Constant.getIcon("resourceSchedulingw"));
+				prompt.setBounds(50, 2 * 50, 125, 50);
+				prompt.setText("资 源 配 置");
 				ctlJF.getLayeredPane().add(prompt, Integer.MAX_VALUE + 1);
 			}
 		} else if ("taskControl".equals(e.getComponent().getName())) {
 			if (!flag[Constant.UIKeyValue.get(taskControl.getName())]) {// 只让为使用的组件
-				taskControl.setIcon(new ImageIcon(Constant.getIcon("taskControlw")));
-				prompt.setBounds(50, 3 * 50, 110, 50);
-				prompt.setText("任务中心");
+				taskControl.setIcon(Constant.getIcon("taskControlw"));
+				prompt.setBounds(50, 3 * 50, 125, 50);
+				prompt.setText("任 务 中 心");
 				ctlJF.getLayeredPane().add(prompt, Integer.MAX_VALUE + 1);
 			}
 		} else if ("dataMonitoring".equals(e.getComponent().getName())) {
 			if (!flag[Constant.UIKeyValue.get(dataMonitoring.getName())]) {// 只让为使用的组件
-				dataMonitoring.setIcon(new ImageIcon(Constant.getIcon("dataMonitoringw")));
-				prompt.setBounds(50, 4 * 50, 110, 50);
-				prompt.setText("数据监控");
+				dataMonitoring.setIcon(Constant.getIcon("dataMonitoringw"));
+				prompt.setBounds(50, 4 * 50, 125, 50);
+				prompt.setText("数 据 监 控");
 				ctlJF.getLayeredPane().add(prompt, Integer.MAX_VALUE + 1);
 			}
 		} else if ("dataDisplay".equals(e.getComponent().getName())) {
 			if (!flag[Constant.UIKeyValue.get(dataDisplay.getName())]) {// 只让为使用的组件
-				dataDisplay.setIcon(new ImageIcon(Constant.getIcon("dataDisplayw")));
-				prompt.setBounds(50, 6 * 50, 110, 50);
-				prompt.setText("数据展示");
+				dataDisplay.setIcon(Constant.getIcon("dataDisplayw"));
+				prompt.setBounds(50, 6 * 50, 125, 50);
+				prompt.setText("数 据 展 示");
 				ctlJF.getLayeredPane().add(prompt, Integer.MAX_VALUE + 1);
 			}
 		} else if ("historyRecord".equals(e.getComponent().getName())) {
 			if (!flag[Constant.UIKeyValue.get(historyRecord.getName())]) {// 只让为使用的组件
-				historyRecord.setIcon(new ImageIcon(Constant.getIcon("historyRecordw")));
-				prompt.setBounds(50, 5 * 50, 110, 50);
-				prompt.setText("数据记录");
+				historyRecord.setIcon(Constant.getIcon("historyRecordw"));
+				prompt.setBounds(50, 5 * 50, 125, 50);
+				prompt.setText("数 据 统 计");
 				ctlJF.getLayeredPane().add(prompt, Integer.MAX_VALUE + 1);
 			}
-		} else if ("helpDescription".equals(e.getComponent().getName())) {
+		} else if ("feedback".equals(e.getComponent().getName())) {
+			if (!flag[Constant.UIKeyValue.get(feedback.getName())]) {// 只让为使用的组件
+				feedback.setIcon(Constant.getIcon("feedbackw"));
+				prompt.setBounds(50, Constant.JFrame_Height - 3 * 50, 125, 50);
+				prompt.setText("功 能 建 议");
+				ctlJF.getLayeredPane().add(prompt, Integer.MAX_VALUE + 1);
+			}
+		}else if ("helpDescription".equals(e.getComponent().getName())) {
 			if (!flag[Constant.UIKeyValue.get(helpDescription.getName())]) {// 只让为使用的组件
-				helpDescription.setIcon(new ImageIcon(Constant.getIcon("helpDescriptionw")));
-				prompt.setBounds(50, Constant.JFrame_Height - 2 * 50, 110, 50);
-				prompt.setText("使用说明");
+				helpDescription.setIcon(Constant.getIcon("helpDescriptionw"));
+				prompt.setBounds(50, Constant.JFrame_Height - 2 * 50, 125, 50);
+				prompt.setText("使 用 说 明");
 				ctlJF.getLayeredPane().add(prompt, Integer.MAX_VALUE + 1);
 			}
 		}else if ("setting".equals(e.getComponent().getName())) {
 			if (!flag[Constant.UIKeyValue.get(setting.getName())]) {// 只让为使用的组件
-				setting.setIcon(new ImageIcon(Constant.getIcon("settingw")));
-				prompt.setBounds(50, Constant.JFrame_Height - 1 * 50, 110, 50);
-				prompt.setText("设置中心");
+				setting.setIcon(Constant.getIcon("settingw"));
+				prompt.setBounds(50, Constant.JFrame_Height - 1 * 50, 125, 50);
+				prompt.setText("设 置 中 心");
 				ctlJF.getLayeredPane().add(prompt, Integer.MAX_VALUE + 1);
 			}
 		} else if ("zoom".equals(e.getComponent().getName())) {
-			zoom.setIcon(new ImageIcon(Constant.getIcon("zoomw")));
+			zoom.setIcon(Constant.getIcon("zoomw"));
 		} else if ("close".equals(e.getComponent().getName())) {
-			close.setIcon(new ImageIcon(Constant.getIcon("closew")));
+			close.setIcon(Constant.getIcon("closew"));
 		}
 	}
 
 	public void mouseExited(MouseEvent e) {// 离开
 		if ("issueTask1".equals(e.getComponent().getName())) {
 			if (!flag[Constant.UIKeyValue.get(issueTask1.getName())]) {// 若未使用组件,恢复其颜色
-				issueTask1.setIcon(new ImageIcon(Constant.getIcon("issueTask1b")));
+				issueTask1.setIcon(Constant.getIcon("issueTask1b"));
 				ctlJF.getLayeredPane().remove(prompt);
 				ctlJF.repaint();
 			} else {
@@ -375,7 +401,7 @@ public class UI implements MouseListener {
 			}
 		} else if ("issueTask2".equals(e.getComponent().getName())) {
 			if (!flag[Constant.UIKeyValue.get(issueTask2.getName())]) {
-				issueTask2.setIcon(new ImageIcon(Constant.getIcon("issueTask2b")));
+				issueTask2.setIcon(Constant.getIcon("issueTask2b"));
 				ctlJF.getLayeredPane().remove(prompt);
 				ctlJF.repaint();
 			} else {
@@ -384,7 +410,7 @@ public class UI implements MouseListener {
 			}
 		} else if ("resourceScheduling".equals(e.getComponent().getName())) {
 			if (!flag[Constant.UIKeyValue.get(resourceScheduling.getName())]) {
-				resourceScheduling.setIcon(new ImageIcon(Constant.getIcon("resourceSchedulingb")));
+				resourceScheduling.setIcon(Constant.getIcon("resourceSchedulingb"));
 				ctlJF.getLayeredPane().remove(prompt);
 				ctlJF.repaint();
 
@@ -394,7 +420,7 @@ public class UI implements MouseListener {
 			}
 		} else if ("taskControl".equals(e.getComponent().getName())) {
 			if (!flag[Constant.UIKeyValue.get(taskControl.getName())]) {
-				taskControl.setIcon(new ImageIcon(Constant.getIcon("taskControlb")));
+				taskControl.setIcon(Constant.getIcon("taskControlb"));
 				ctlJF.getLayeredPane().remove(prompt);
 				ctlJF.repaint();
 
@@ -404,7 +430,7 @@ public class UI implements MouseListener {
 			}
 		} else if ("dataMonitoring".equals(e.getComponent().getName())) {
 			if (!flag[Constant.UIKeyValue.get(dataMonitoring.getName())]) {
-				dataMonitoring.setIcon(new ImageIcon(Constant.getIcon("dataMonitoringb")));
+				dataMonitoring.setIcon(Constant.getIcon("dataMonitoringb"));
 				ctlJF.getLayeredPane().remove(prompt);
 				ctlJF.repaint();
 
@@ -414,7 +440,7 @@ public class UI implements MouseListener {
 			}
 		} else if ("dataDisplay".equals(e.getComponent().getName())) {
 			if (!flag[Constant.UIKeyValue.get(dataDisplay.getName())]) {
-				dataDisplay.setIcon(new ImageIcon(Constant.getIcon("dataDisplayb")));
+				dataDisplay.setIcon(Constant.getIcon("dataDisplayb"));
 				ctlJF.getLayeredPane().remove(prompt);
 				ctlJF.repaint();
 
@@ -424,7 +450,7 @@ public class UI implements MouseListener {
 			}
 		} else if ("historyRecord".equals(e.getComponent().getName())) {
 			if (!flag[Constant.UIKeyValue.get(historyRecord.getName())]) {
-				historyRecord.setIcon(new ImageIcon(Constant.getIcon("historyRecordb")));
+				historyRecord.setIcon(Constant.getIcon("historyRecordb"));
 				ctlJF.getLayeredPane().remove(prompt);
 				ctlJF.repaint();
 
@@ -432,9 +458,19 @@ public class UI implements MouseListener {
 				historyRecord.setContentAreaFilled(true);// 显示背景
 				historyRecord.setBackground(new Color(20, 20, 20));// 设置背景色
 			}
+		} else if ("feedback".equals(e.getComponent().getName())) {
+			if (!flag[Constant.UIKeyValue.get(feedback.getName())]) {
+				feedback.setIcon(Constant.getIcon("feedbackb"));
+				ctlJF.getLayeredPane().remove(prompt);
+				ctlJF.repaint();
+
+			} else {
+				feedback.setContentAreaFilled(true);// 显示背景
+				feedback.setBackground(new Color(20, 20, 20));// 设置背景色
+			}
 		} else if ("helpDescription".equals(e.getComponent().getName())) {
 			if (!flag[Constant.UIKeyValue.get(helpDescription.getName())]) {
-				helpDescription.setIcon(new ImageIcon(Constant.getIcon("helpDescriptionb")));
+				helpDescription.setIcon(Constant.getIcon("helpDescriptionb"));
 				ctlJF.getLayeredPane().remove(prompt);
 				ctlJF.repaint();
 
@@ -444,7 +480,7 @@ public class UI implements MouseListener {
 			}
 		} else if ("setting".equals(e.getComponent().getName())) {
 			if (!flag[Constant.UIKeyValue.get(setting.getName())]) {
-				setting.setIcon(new ImageIcon(Constant.getIcon("settingb")));
+				setting.setIcon(Constant.getIcon("settingb"));
 				ctlJF.getLayeredPane().remove(prompt);
 				ctlJF.repaint();
 
@@ -454,11 +490,11 @@ public class UI implements MouseListener {
 			}
 		} else if ("zoom".equals(e.getComponent().getName())) {
 			if (!flag[Constant.UIKeyValue.get(zoom.getName())]) {
-				zoom.setIcon(new ImageIcon(Constant.getIcon("zoomb")));
+				zoom.setIcon(Constant.getIcon("zoomb"));
 			}
 		} else if ("close".equals(e.getComponent().getName())) {
 			if (!flag[Constant.UIKeyValue.get(close.getName())]) {
-				close.setIcon(new ImageIcon(Constant.getIcon("closeb")));
+				close.setIcon(Constant.getIcon("closeb"));
 			}
 		}
 	}
@@ -472,8 +508,9 @@ public class UI implements MouseListener {
 	}
 
 	public static void main(String[] args) {
-		// UIManager.setLookAndFeel("com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel");
-
-		new UI();
+		
+		if(Constant.exportSettings()){//设置导入成功
+			new UI();
+		}
 	}
 }

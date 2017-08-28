@@ -18,7 +18,6 @@ import javax.swing.table.DefaultTableModel;
 import team.qep.crawler.server.Task;
 import team.qep.crawler.util.Constant;
 import team.qep.crawler.util.MyDocument;
-import team.qep.crawler.util.Promptinformation;
 import team.qep.crawler.util.StringManipulation;
 
 public class IssueTasks1 extends JPanel implements MouseListener {
@@ -107,17 +106,17 @@ public class IssueTasks1 extends JPanel implements MouseListener {
 	}
 
 	private void setColour() {
-		this.setBackground(new Color(20, 20, 20));
+		this.setBackground(Theme.PanelColor);
 
-		fuzzy.setFont(new Font("微软雅黑", 0, 26));
-		fuzzy.setForeground(new Color(0, 255, 255));
-		fuzzyUrlPublish.setBackground(new Color(150, 150, 150));
-		fuzzyUrlPublish.setIcon(new ImageIcon(Constant.getIcon("fuzzyUrlPublish")));
+		fuzzy.setFont(Theme.TitleFont);
+		fuzzy.setForeground(Theme.TitleColor);
+		fuzzyUrlPublish.setBackground(Theme.ButtonColor);
+		fuzzyUrlPublish.setIcon(Constant.getIcon("fuzzyUrlPublish"));
 
-		exact.setFont(new Font("微软雅黑", 0, 26));
-		exact.setForeground(new Color(0, 255, 255));
-		exactUrlPublish.setBackground(new Color(150, 150, 150));
-		exactUrlPublish.setIcon(new ImageIcon(Constant.getIcon("exactUrlPublish")));
+		exact.setFont(Theme.TitleFont);
+		exact.setForeground(Theme.TitleColor);
+		exactUrlPublish.setBackground(Theme.ButtonColor);
+		exactUrlPublish.setIcon(Constant.getIcon("exactUrlPublish"));
 	}
 
 	private void listener() {
@@ -176,18 +175,18 @@ public class IssueTasks1 extends JPanel implements MouseListener {
 
 	public void mouseEntered(MouseEvent e) {// 进入
 		if ("fuzzyUrlPublish".equals(e.getComponent().getName())) {
-			fuzzyUrlPublish.setBackground(new Color(255, 255, 255));
+			fuzzyUrlPublish.setBackground(Color.WHITE);
 		} else if ("exactUrlPublish".equals(e.getComponent().getName())) {
-			exactUrlPublish.setBackground(new Color(255, 255, 255));
+			exactUrlPublish.setBackground(Color.WHITE);
 		}
 
 	}
 
 	public void mouseExited(MouseEvent e) {// 离开
 		if ("fuzzyUrlPublish".equals(e.getComponent().getName())) {
-			fuzzyUrlPublish.setBackground(new Color(150, 150, 150));
+			fuzzyUrlPublish.setBackground(Theme.ButtonColor);
 		} else if ("exactUrlPublish".equals(e.getComponent().getName())) {
-			exactUrlPublish.setBackground(new Color(150, 150, 150));
+			exactUrlPublish.setBackground(Theme.ButtonColor);
 		}
 	}
 

@@ -17,12 +17,11 @@ import team.qep.crawler.server.Data;
 import team.qep.crawler.server.Task;
 import team.qep.crawler.util.Constant;
 import team.qep.crawler.util.MyDocument;
-import team.qep.crawler.util.Promptinformation;
 import team.qep.crawler.util.Regex;
 
 public class ResourceScheduling extends JPanel implements MouseListener {
 
-	private JLabel resourceScheduling = new JLabel("资  源  中  心");//资源调度
+	private JLabel resourceScheduling = new JLabel("资  源  配  置");//资源调度
 
 	private String[] columnNames; // 表格列名
 	private String[][] data; // 表格数据
@@ -33,9 +32,9 @@ public class ResourceScheduling extends JPanel implements MouseListener {
 	private JButton refresh = new JButton();// 刷新
 	private JTextField ip = new JTextField(15);// 添加从机的ip (要端口号?)
 	private JButton add = new JButton();// 添加从机
-	private JButton delete = new JButton();// 删除从机
-	private JButton start = new JButton();// 启用从机(启用成功后状态为就绪状态)
-	private JButton stop = new JButton();// 终止从机(只能终止就绪状态的从机)
+	private JButton delete = new JButton();// 删除从机(只能删除未工作中的的从机)
+	private JButton start = new JButton();// 重启从机(只能启用未工作状态/终止状态的机子)
+	private JButton stop = new JButton();// 终止从机(只能终止工作中的的从机)
 
 	public ResourceScheduling() {
 		this.Init();
@@ -98,20 +97,20 @@ public class ResourceScheduling extends JPanel implements MouseListener {
 	}
 
 	private void setColour() {
-		this.setBackground(new Color(20, 20, 20));
-		resourceScheduling.setFont(new Font("微软雅黑", 0, 26));
-		resourceScheduling.setForeground(new Color(0, 255, 255));
+		this.setBackground(Theme.PanelColor);
+		resourceScheduling.setFont(Theme.TitleFont);
+		resourceScheduling.setForeground(Theme.TitleColor);
 		
-		refresh.setBackground(new Color(150, 150, 150));
-		refresh.setIcon(new ImageIcon(Constant.getIcon("refresh")));
-		add.setBackground(new Color(150, 150, 150));
-		add.setIcon(new ImageIcon(Constant.getIcon("add")));
-		delete.setBackground(new Color(150, 150, 150));
-		delete.setIcon(new ImageIcon(Constant.getIcon("delete")));
-		start.setBackground(new Color(150, 150, 150));
-		start.setIcon(new ImageIcon(Constant.getIcon("start")));
-		stop.setBackground(new Color(150, 150, 150));
-		stop.setIcon(new ImageIcon(Constant.getIcon("stop")));
+		refresh.setBackground(Theme.ButtonColor);
+		refresh.setIcon(Constant.getIcon("refresh"));
+		add.setBackground(Theme.ButtonColor);
+		add.setIcon(Constant.getIcon("add"));
+		delete.setBackground(Theme.ButtonColor);
+		delete.setIcon(Constant.getIcon("delete"));
+		start.setBackground(Theme.ButtonColor);
+		start.setIcon(Constant.getIcon("start"));
+		stop.setBackground(Theme.ButtonColor);
+		stop.setIcon(Constant.getIcon("stop"));
 	}
 
 	private void listener() {
@@ -131,11 +130,19 @@ public class ResourceScheduling extends JPanel implements MouseListener {
 				}
 			};
 			resourcesSet.setModel(taskDataSetModel);
+			
+			for(int i=0 ; i<resourcesSet.getRowCount() ; i++){
+				if(resourcesSet.getValueAt(i, 2).toString().equals("终止")){
+	 				new Promptinformation(null, "存在终止丛机,清立即进行重启", Constant.KeyValue.get("Info"));
+	 				resourcesSet.setRowSelectionInterval(i,i);
+	 				break;
+				}
+			}
 		} else if ("add".equals(e.getComponent().getName())) {
 			if(Regex.RE_matching(ip.getText(), Regex.regIP)){
 				if(Task.addDeleteResource(1,ip.getText())){
 					new Promptinformation(null, "添加成功", Constant.KeyValue.get("Info"));
-					
+				
 					data=Data.getResourceInformation();
 					taskDataSetModel = new DefaultTableModel(data, columnNames) {
 						public boolean isCellEditable(int row, int column) {
@@ -155,8 +162,8 @@ public class ResourceScheduling extends JPanel implements MouseListener {
 			int selectedRow = resourcesSet.getSelectedRow();
 			if (selectedRow != -1) {
 				String status=resourcesSet.getValueAt(selectedRow, 2).toString();
-				if(status.equals("已停止") || status.equals("就绪")){
-					new Promptinformation(null, "删除成功", Constant.KeyValue.get("Confirm"));
+				if(status.equals("未工作") || status.equals("终止")){
+					new Promptinformation(null, "是否删除此台丛机?", Constant.KeyValue.get("Confirm"));
 					if(Promptinformation.flag){
 						if(Task.addDeleteResource(0,resourcesSet.getValueAt(selectedRow, 0).toString())){
 							new Promptinformation(null, "删除成功", Constant.KeyValue.get("Info"));
@@ -168,21 +175,26 @@ public class ResourceScheduling extends JPanel implements MouseListener {
 								}
 							};
 							resourcesSet.setModel(taskDataSetModel);
-						
 						}else{
 							new Promptinformation(null, "删除失败,请检查网络连接", Constant.KeyValue.get("Info"));
 						}
 					}
 				}else{
-					new Promptinformation(null, "无法删除正在运行的从机", Constant.KeyValue.get("Info"));
+					new Promptinformation(null, "无法删除正在工作的从机", Constant.KeyValue.get("Info"));
 				}
 			}
 		} else if ("start".equals(e.getComponent().getName())) {
-			//只能启用状态为停止的  
+			//只能启用状态为未工作的  
 			int selectedRow = resourcesSet.getSelectedRow();
 			if (selectedRow != -1) {
-				if(resourcesSet.getValueAt(selectedRow, 2).toString().equals("已停止")){
+				if(resourcesSet.getValueAt(selectedRow, 2).toString().equals("未工作") || resourcesSet.getValueAt(selectedRow, 2).toString().equals("终止")){
 					if(Task.modifyResourceStatus(resourcesSet.getValueAt(selectedRow, 0).toString(),Constant.KeyValue.get("Start"))){
+						
+						try {
+							Thread.sleep(1000);
+						} catch (InterruptedException e1) {
+							e1.printStackTrace();
+						}
 						
 						data=Data.getResourceInformation();
 						taskDataSetModel = new DefaultTableModel(data, columnNames) {
@@ -192,20 +204,26 @@ public class ResourceScheduling extends JPanel implements MouseListener {
 						};
 						resourcesSet.setModel(taskDataSetModel);
 						
-						new Promptinformation(null, "启用成功", Constant.KeyValue.get("Info"));
+						new Promptinformation(null, "重启成功", Constant.KeyValue.get("Info"));
 					}else{
-						new Promptinformation(null, "启用失败,请检查网络连接", Constant.KeyValue.get("Info"));
+						new Promptinformation(null, "重启失败,请检查网络连接", Constant.KeyValue.get("Info"));
 					}
 				}else{
-					new Promptinformation(null, "无法启用,请重新选择", Constant.KeyValue.get("Info"));
+					new Promptinformation(null, "无法重启,请重新选择", Constant.KeyValue.get("Info"));
 				}
 			}
 		}else if ("stop".equals(e.getComponent().getName())) {
-			//只能停止状态为就绪的  
+			//只能终止状态为工作中的  
 			int selectedRow = resourcesSet.getSelectedRow();
 			if (selectedRow != -1) {
-				if(resourcesSet.getValueAt(selectedRow, 2).toString().equals("就绪")){
+				if(resourcesSet.getValueAt(selectedRow, 2).toString().equals("工作中")){
 					if(Task.modifyResourceStatus(resourcesSet.getValueAt(selectedRow, 0).toString(),Constant.KeyValue.get("Stop"))){
+						
+						try {
+							Thread.sleep(1000);
+						} catch (InterruptedException e1) {
+							e1.printStackTrace();
+						}
 						
 						data=Data.getResourceInformation();
 						taskDataSetModel = new DefaultTableModel(data, columnNames) {
@@ -215,12 +233,12 @@ public class ResourceScheduling extends JPanel implements MouseListener {
 						};
 						resourcesSet.setModel(taskDataSetModel);
 						
-						new Promptinformation(null, "停止成功", Constant.KeyValue.get("Info"));
+						new Promptinformation(null, "终止成功", Constant.KeyValue.get("Info"));
 					}else{
-						new Promptinformation(null, "停止失败,请检查网络连接", Constant.KeyValue.get("Info"));
+						new Promptinformation(null, "终止失败,请检查网络连接", Constant.KeyValue.get("Info"));
 					}
 				}else{
-					new Promptinformation(null, "无法停止,请重新选择", Constant.KeyValue.get("Info"));
+					new Promptinformation(null, "无法终止,请重新选择", Constant.KeyValue.get("Info"));
 				}
 			}
 		}
@@ -234,30 +252,30 @@ public class ResourceScheduling extends JPanel implements MouseListener {
 
 	public void mouseEntered(MouseEvent e) {// 进入
 		if ("refresh".equals(e.getComponent().getName())) {
-			refresh.setBackground(new Color(255, 255, 255));
+			refresh.setBackground(Color.WHITE);
 		} else if ("add".equals(e.getComponent().getName())) {
-			add.setBackground(new Color(255, 255, 255));
+			add.setBackground(Color.WHITE);
 		} else if ("delete".equals(e.getComponent().getName())) {
-			delete.setBackground(new Color(255, 255, 255));
+			delete.setBackground(Color.WHITE);
 		} else if ("start".equals(e.getComponent().getName())) {
-			start.setBackground(new Color(255, 255, 255));
+			start.setBackground(Color.WHITE);
 		} else if ("stop".equals(e.getComponent().getName())) {
-			stop.setBackground(new Color(255, 255, 255));
+			stop.setBackground(Color.WHITE);
 		}
 
 	}
 
 	public void mouseExited(MouseEvent e) {// 离开
 		if ("refresh".equals(e.getComponent().getName())) {
-			refresh.setBackground(new Color(150, 150, 150));
+			refresh.setBackground(Theme.ButtonColor);
 		}else if ("add".equals(e.getComponent().getName())) {
-			add.setBackground(new Color(150, 150, 150));
+			add.setBackground(Theme.ButtonColor);
 		} else if ("delete".equals(e.getComponent().getName())) {
-			delete.setBackground(new Color(150, 150, 150));
+			delete.setBackground(Theme.ButtonColor);
 		} else if ("start".equals(e.getComponent().getName())) {
-			start.setBackground(new Color(150, 150, 150));
+			start.setBackground(Theme.ButtonColor);
 		}else if ("stop".equals(e.getComponent().getName())) {
-			stop.setBackground(new Color(150, 150, 150));
+			stop.setBackground(Theme.ButtonColor);
 		}
 	}
 

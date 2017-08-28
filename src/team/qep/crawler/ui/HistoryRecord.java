@@ -13,7 +13,10 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
+import javax.swing.RowSorter;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableModel;
+import javax.swing.table.TableRowSorter;
 
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
@@ -23,11 +26,10 @@ import org.jfree.chart.plot.PiePlot;
 import team.qep.crawler.server.Data;
 import team.qep.crawler.server.Task;
 import team.qep.crawler.util.Constant;
-import team.qep.crawler.util.Promptinformation;
 
 public class HistoryRecord extends JPanel implements MouseListener {
 	private Timer temer = new Timer();
-	private JLabel historyRecord = new JLabel("数  据  记  录");
+	private JLabel historyRecord = new JLabel("数  据  统  计");
 
 	private String[] columnNames; // 表格列名
 	private String[][] data; // 表格数据
@@ -55,6 +57,13 @@ public class HistoryRecord extends JPanel implements MouseListener {
 	}
 
 	private void loadingData() {// 装载数据
+		if(!Constant.RefreshInterval.equals("0")){
+			 new Timer().scheduleAtFixedRate(new TimerTask() {
+				public void run() {
+					((PiePlot) pieChart.getPlot()).setDataset(CrawlerChart.getPieDataSet());
+				}
+			 },0,Integer.valueOf(Constant.RefreshInterval)*1000);
+		}
 		columnNames = Constant.HistoricalTaskCcolumnNames;
 		data=Data.getDownloadDataSet();
 		taskDataSetModel = new DefaultTableModel(data, columnNames){
@@ -71,7 +80,7 @@ public class HistoryRecord extends JPanel implements MouseListener {
 		Init.initJTable(taskDataSet, "taskDataSet");
 		Init.initJScrollPane(taskDataJSP, "taskDataJSP");
 		taskDataSet.setFont(new Font("serif", 0, 17));// 设置表格字体
-
+		
 		Init.initJButton(refresh, "refresh");
 		Init.initJButton(deleteData, "deleteData");
 
@@ -82,19 +91,19 @@ public class HistoryRecord extends JPanel implements MouseListener {
 		
 		taskDataJSP.setBounds(30, 50, 420, 520);
 		pieChartJP.setBounds(500, 50, 444, 450);
-		refresh.setBounds(500, 530, 170, 42);
-		deleteData.setBounds(770, 530, 170, 42);
+		refresh.setBounds(500, 530, 150, 42);
+		deleteData.setBounds(790, 530, 150, 42);
 	}
 
 	private void setColour() {
-		this.setBackground(new Color(20, 20, 20));
+		this.setBackground(Theme.PanelColor);
 
-		historyRecord.setFont(new Font("微软雅黑", 0, 26));
-		historyRecord.setForeground(new Color(0, 255, 255));
-		refresh.setBackground(new Color(150, 150, 150));
-		refresh.setIcon(new ImageIcon(Constant.getIcon("refresh")));
-		deleteData.setBackground(new Color(150, 150, 150));
-		deleteData.setIcon(new ImageIcon(Constant.getIcon("deleteData")));
+		historyRecord.setFont(Theme.TitleFont);
+		historyRecord.setForeground(Theme.TitleColor);
+		refresh.setBackground(Theme.ButtonColor);
+		refresh.setIcon(Constant.getIcon("refresh"));
+		deleteData.setBackground(Theme.ButtonColor);
+		deleteData.setIcon(Constant.getIcon("deleteData"));
 	}
 
 	private void listener() {
@@ -150,17 +159,17 @@ public class HistoryRecord extends JPanel implements MouseListener {
 
 	public void mouseEntered(MouseEvent e) {// 进入
 		if ("refresh".equals(e.getComponent().getName())) {
-			refresh.setBackground(new Color(255, 255, 255));
+			refresh.setBackground(Color.WHITE);
 		}else if ("deleteData".equals(e.getComponent().getName())) {
-			deleteData.setBackground(new Color(255, 255, 255));
+			deleteData.setBackground(Color.WHITE);
 		}
 	}
 
 	public void mouseExited(MouseEvent e) {// 离开
 		if ("refresh".equals(e.getComponent().getName())) {
-			refresh.setBackground(new Color(150, 150, 150));
+			refresh.setBackground(Theme.ButtonColor);
 		}else if ("deleteData".equals(e.getComponent().getName())) {
-			deleteData.setBackground(new Color(150, 150, 150));
+			deleteData.setBackground(Theme.ButtonColor);
 		}
 	}
 

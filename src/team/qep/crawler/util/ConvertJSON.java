@@ -20,6 +20,7 @@ public class ConvertJSON {
 		Gson gson = new Gson();  
 		ArrayList<String> list = new ArrayList<String>();  
         list = gson.fromJson(json, new TypeToken<ArrayList<String>>(){}.getType());  
+        
         return (String[])list.toArray(new String[list.size()]);
 	}
 }

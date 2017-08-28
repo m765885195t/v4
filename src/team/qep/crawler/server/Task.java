@@ -24,7 +24,8 @@ public class Task {
 		for(String url:set){
 			flag=true;
 			for(String[] str: runUrlSet){
-				if(url.equals(str[0]) && str[2].equals("")){
+				System.out.println(str[0]+"     "+url);
+				if(url.equals(str[0]) && str[1].equals("")){
 					 flag=false;
 					 break;
 				}
@@ -62,7 +63,7 @@ public class Task {
 		boolean flag=true;//重复标志
 		
 		for(String[] str: runUrlSet){
-			if(exactURL.equals(str[0]) && str[2].equals(keyWord)){//重复
+			if(exactURL.equals(str[0]) && str[1].equals(keyWord)){//重复
 				 flag=false;
 				 break;
 			}
@@ -115,7 +116,7 @@ public class Task {
 		return false;
 	}
 	
-	//更改从机状态       参数---->从机编号(String)  状态 (int)
+	//更改从机状态       参数---->从机编号(String)  状态 ---启用或终止(int)
 	public static boolean modifyResourceStatus(String number,int status) {
 		String send=ConvertJSON.toJSON(Constant.Agreement.get("ModifyResourceStatus"),number+","+status);
 		String[] recv=ConvertJSON.toStringArray(Communication.SendAndRecv(send));
@@ -160,9 +161,6 @@ public class Task {
 	public static void p(int str){
 		System.out.println(str);
 	}
-	//得到该url对应的数据     keyword为空说明为模糊任务，否则为精确任务
-	public static String[][] getUrlData(String url, String keyWord) {
-		return new String[][]{{"dsa"}};
-	}
+	
 
 }

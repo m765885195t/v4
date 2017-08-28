@@ -52,14 +52,14 @@ public class HelpDescription extends JPanel implements MouseListener {
 	}
 
 	private void setColour() {
-		this.setBackground(new Color(20, 20, 20));
+		this.setBackground(Theme.PanelColor);
 		
-		helpDescription.setFont(new Font("微软雅黑", 0, 26));
-		helpDescription.setForeground(new Color(0, 255, 255));
-		last.setBackground(new Color(150, 150, 150));
-		last.setIcon(new ImageIcon(Constant.getIcon("last")));
-		next.setBackground(new Color(150, 150, 150));
-		next.setIcon(new ImageIcon(Constant.getIcon("next")));
+		helpDescription.setFont(Theme.TitleFont);
+		helpDescription.setForeground(Theme.TitleColor);
+		last.setBackground(Theme.ButtonColor);
+		last.setIcon(Constant.getIcon("last"));
+		next.setBackground(Theme.ButtonColor);
+		next.setIcon(Constant.getIcon("next"));
 	}
 
 	private void listener() {
@@ -86,18 +86,18 @@ public class HelpDescription extends JPanel implements MouseListener {
 
 	public void mouseEntered(MouseEvent e) {// 进入
 		if ("last".equals(e.getComponent().getName())) {
-			last.setBackground(new Color(255, 255, 255));
+			last.setBackground(Color.WHITE);
 		} else if ("next".equals(e.getComponent().getName())) {
-			next.setBackground(new Color(255, 255, 255));
+			next.setBackground(Color.WHITE);
 		}
 
 	}
 
 	public void mouseExited(MouseEvent e) {// 离开
 		if ("last".equals(e.getComponent().getName())) {
-			last.setBackground(new Color(150, 150, 150));
+			last.setBackground(Theme.ButtonColor);
 		}else if ("next".equals(e.getComponent().getName())) {
-			next.setBackground(new Color(150, 150, 150));
+			next.setBackground(Theme.ButtonColor);
 		}
 	}
 

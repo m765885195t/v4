@@ -17,7 +17,10 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
+import javax.swing.RowSorter;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableModel;
+import javax.swing.table.TableRowSorter;
 
 import team.qep.crawler.server.Data;
 import team.qep.crawler.server.Task;
@@ -68,8 +71,13 @@ public class DataDisplay extends JPanel implements MouseListener {
 		}
 		columnNames = Constant.E_CommerceCcolumnNames;
 		data = new String[0][];//得到数据
-		taskDataSetModel = new DefaultTableModel(data, columnNames);
+		taskDataSetModel = new DefaultTableModel(data, columnNames){
+			public void setValueAt(Object aValue, int row, int column){	
+			}
+		};
 		taskDataSet.setModel(taskDataSetModel);
+		
+	
 	}
 
 	private void Init() {
@@ -92,12 +100,14 @@ public class DataDisplay extends JPanel implements MouseListener {
 	}
 
 	private void setColour() {
-		this.setBackground(new Color(20, 20, 20));
+		this.setBackground(Theme.PanelColor);
 
-		dataDisplay.setFont(new Font("微软雅黑", 0, 26));
-		dataDisplay.setForeground(new Color(0, 255, 255));
-		refresh.setBackground(new Color(150, 150, 150));
-		refresh.setIcon(new ImageIcon(Constant.getIcon("refresh")));
+		dataDisplay.setFont(Theme.TitleFont);
+		dataDisplay.setForeground(Theme.TitleColor);
+		refresh.setBackground(Theme.ButtonColor);
+		refresh.setIcon(Constant.getIcon("refresh"));
+		taskDataSet.setFont(Theme.Tablefont);// 设置表格字体
+
 	}
 
 	private void listener() {
@@ -126,13 +136,16 @@ public class DataDisplay extends JPanel implements MouseListener {
 			if(selectUrl.getItemCount()>0){
 				String url = selectUrl.getSelectedItem().toString();
 				String keyWord = selectKeyword.getSelectedItem().toString();
-				data=Task.getUrlData(url,keyWord);
+				data=Data.getUrlData(url,keyWord);
 				if(flag){
 					columnNames = Constant.E_CommerceCcolumnNames;
 				}else{
 					columnNames = Constant.BlogNewsCcolumnNames;
 				}
-				taskDataSetModel = new DefaultTableModel(data,columnNames);
+				taskDataSetModel = new DefaultTableModel(data,columnNames){
+					public void setValueAt(Object aValue, int row, int column){	
+					}
+				};
 				taskDataSet.setModel(taskDataSetModel);
 				
 				selectUrl.removeAllItems();
@@ -141,12 +154,24 @@ public class DataDisplay extends JPanel implements MouseListener {
 					selectUrl.addItem(str);
 				}
 				selectUrl.setSelectedItem(url);
-				//初始得到第一个url的关键字
 				selectKeyword.removeAllItems();
+				//空指针异常要终止程序?
 				for(String str:Data.getKeyWords(Data.getALLUrlSet(),selectUrl.getSelectedItem().toString())){
 					selectKeyword.addItem(str);
 				}
 				selectKeyword.setSelectedItem(keyWord);
+			}else{//初次刷新数据
+				selectUrl.removeAllItems();
+
+				String[] urlSet=StringManipulation.oneDuplicateRemoval(StringManipulation.toOneDimensionalArrays(Data.getALLUrlSet()));
+				for(String str:urlSet){//所有任务集
+					selectUrl.addItem(str);
+				}
+				selectKeyword.removeAllItems();
+				//空指针异常要终止程序?
+				for(String str:Data.getKeyWords(Data.getALLUrlSet(),selectUrl.getSelectedItem().toString())){
+					selectKeyword.addItem(str);
+				}
 			}
 		}
 	}
@@ -160,13 +185,13 @@ public class DataDisplay extends JPanel implements MouseListener {
 
 	public void mouseEntered(MouseEvent e) {// 进入
 		if ("refresh".equals(e.getComponent().getName())) {
-			refresh.setBackground(new Color(255, 255, 255));
+			refresh.setBackground(Color.WHITE);
 		}
 	}
 
 	public void mouseExited(MouseEvent e) {// 离开
 		if ("refresh".equals(e.getComponent().getName())) {
-			refresh.setBackground(new Color(150, 150, 150));
+			refresh.setBackground(Theme.ButtonColor);
 		}
 	}
 

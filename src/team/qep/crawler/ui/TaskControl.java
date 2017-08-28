@@ -10,12 +10,14 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
+import javax.swing.RowSorter;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableModel;
+import javax.swing.table.TableRowSorter;
 
 import team.qep.crawler.server.Data;
 import team.qep.crawler.server.Task;
 import team.qep.crawler.util.Constant;
-import team.qep.crawler.util.Promptinformation;
 
 public class TaskControl extends JPanel implements MouseListener {
 
@@ -57,6 +59,7 @@ public class TaskControl extends JPanel implements MouseListener {
 			}
 		};
 		taskDataSet.setModel(taskDataSetModel);
+
 	}
 
 	private void Init() {
@@ -64,7 +67,6 @@ public class TaskControl extends JPanel implements MouseListener {
 
 		Init.initJTable(taskDataSet, "taskDataSet");
 		Init.initJScrollPane(taskDataJSP, "taskDataJSP");
-
 		Init.initJButton(refresh, "refresh");
 		Init.initJButton(startTask, "startTask");
 		Init.initJButton(suspendTask, "suspendTask");
@@ -73,27 +75,29 @@ public class TaskControl extends JPanel implements MouseListener {
 
 	private void setBounds() {
 		task.setBounds(320, 0, 300, 40);
-		taskDataJSP.setBounds(20, 50, 934, 400);
+		taskDataJSP.setBounds(20, 50, 934, 420);
 
-		refresh.setBounds(30, 500, 180, 40);
-		startTask.setBounds(270, 500, 180, 40);
-		suspendTask.setBounds(515, 500, 180, 40);
-		endTask.setBounds(760, 500, 180, 40);
+		refresh.setBounds(40, 515, 150, 40);
+		startTask.setBounds(290, 515, 150, 40);
+		suspendTask.setBounds(535, 515, 150, 40);
+		endTask.setBounds(780, 515, 150, 40);
 	}
 
 	private void setColour() {
-		this.setBackground(new Color(20, 20, 20));
+		this.setBackground(Theme.PanelColor);
 
-		task.setFont(new Font("微软雅黑", 0, 26));
-		task.setForeground(new Color(0, 255, 255));
-		refresh.setBackground(new Color(150, 150, 150));
-		refresh.setIcon(new ImageIcon(Constant.getIcon("refresh")));
-		startTask.setBackground(new Color(150, 150, 150));
-		startTask.setIcon(new ImageIcon(Constant.getIcon("startTask")));
-		suspendTask.setBackground(new Color(150, 150, 150));
-		suspendTask.setIcon(new ImageIcon(Constant.getIcon("suspendTask")));
-		endTask.setBackground(new Color(150, 150, 150));
-		endTask.setIcon(new ImageIcon(Constant.getIcon("endTask")));
+		task.setFont(Theme.TitleFont);
+		task.setForeground(Theme.TitleColor);
+		refresh.setBackground(Theme.ButtonColor);
+		refresh.setIcon(Constant.getIcon("refresh"));
+		startTask.setBackground(Theme.ButtonColor);
+		startTask.setIcon(Constant.getIcon("startTask"));
+		suspendTask.setBackground(Theme.ButtonColor);
+		suspendTask.setIcon(Constant.getIcon("suspendTask"));
+		endTask.setBackground(Theme.ButtonColor);
+		endTask.setIcon(Constant.getIcon("endTask"));
+		taskDataSet.setFont(new Font("微软雅黑", 0, 16));// 设置字体格式
+
 	}
 
 	private void listener() {
@@ -116,8 +120,8 @@ public class TaskControl extends JPanel implements MouseListener {
 			//只能开始任务状态为暂停的  
 			int selectedRow = taskDataSet.getSelectedRow();
 			if (selectedRow != -1) {
-				if(taskDataSet.getValueAt(selectedRow, 4).toString().equals("暂停中")){
-					if(Task.modifyTaskStatus(taskDataSet.getValueAt(selectedRow, 0).toString(),taskDataSet.getValueAt(selectedRow, 2).toString(),Constant.KeyValue.get("Run"))){
+				if(taskDataSet.getValueAt(selectedRow, 5).toString().equals("暂停中")){
+					if(Task.modifyTaskStatus(taskDataSet.getValueAt(selectedRow, 0).toString(),taskDataSet.getValueAt(selectedRow, 1).toString(),Constant.KeyValue.get("Run"))){
 
 						data=Data.getRunUrlSet();
 						taskDataSetModel = new DefaultTableModel(data, columnNames) {
@@ -139,8 +143,8 @@ public class TaskControl extends JPanel implements MouseListener {
 			//只能暂停任务状态为运行中  
 			int selectedRow = taskDataSet.getSelectedRow();
 			if (selectedRow != -1) {
-				if(taskDataSet.getValueAt(selectedRow, 4).toString().equals("运行中")){
-					if(Task.modifyTaskStatus(taskDataSet.getValueAt(selectedRow, 0).toString(),taskDataSet.getValueAt(selectedRow, 2).toString(),Constant.KeyValue.get("Wait"))){
+				if(taskDataSet.getValueAt(selectedRow, 5).toString().equals("运行中")){
+					if(Task.modifyTaskStatus(taskDataSet.getValueAt(selectedRow, 0).toString(),taskDataSet.getValueAt(selectedRow, 1).toString(),Constant.KeyValue.get("Wait"))){
 
 						data=Data.getRunUrlSet();
 						taskDataSetModel = new DefaultTableModel(data, columnNames) {
@@ -165,7 +169,7 @@ public class TaskControl extends JPanel implements MouseListener {
 				if(Promptinformation.flag){
 					Promptinformation.flag=false;//状态改回去
 
-					if(Task.modifyTaskStatus(taskDataSet.getValueAt(selectedRow, 0).toString(),taskDataSet.getValueAt(selectedRow, 2).toString(),Constant.KeyValue.get("Complete"))){
+					if(Task.modifyTaskStatus(taskDataSet.getValueAt(selectedRow, 0).toString(),taskDataSet.getValueAt(selectedRow, 1).toString(),Constant.KeyValue.get("Complete"))){
 						data=Data.getRunUrlSet();
 						taskDataSetModel = new DefaultTableModel(data, columnNames) {
 							public boolean isCellEditable(int row, int column) {
@@ -192,26 +196,26 @@ public class TaskControl extends JPanel implements MouseListener {
 
 	public void mouseEntered(MouseEvent e) {// 进入
 		if ("refresh".equals(e.getComponent().getName())) {
-			refresh.setBackground(new Color(255, 255, 255));
+			refresh.setBackground(Color.WHITE);
 		} else if ("startTask".equals(e.getComponent().getName())) {
-			startTask.setBackground(new Color(255, 255, 255));
+			startTask.setBackground(Color.WHITE);
 		} else if ("suspendTask".equals(e.getComponent().getName())) {
-			suspendTask.setBackground(new Color(255, 255, 255));
+			suspendTask.setBackground(Color.WHITE);
 		} else if ("endTask".equals(e.getComponent().getName())) {
-			endTask.setBackground(new Color(255, 255, 255));
+			endTask.setBackground(Color.WHITE);
 		}
 
 	}
 
 	public void mouseExited(MouseEvent e) {// 离开
 		if ("refresh".equals(e.getComponent().getName())) {
-			refresh.setBackground(new Color(150, 150, 150));
+			refresh.setBackground(Theme.ButtonColor);
 		}else if ("startTask".equals(e.getComponent().getName())) {
-			startTask.setBackground(new Color(150, 150, 150));
+			startTask.setBackground(Theme.ButtonColor);
 		} else if ("suspendTask".equals(e.getComponent().getName())) {
-			suspendTask.setBackground(new Color(150, 150, 150));
+			suspendTask.setBackground(Theme.ButtonColor);
 		} else if ("endTask".equals(e.getComponent().getName())) {
-			endTask.setBackground(new Color(150, 150, 150));
+			endTask.setBackground(Theme.ButtonColor);
 		}
 	}
 
