@@ -13,21 +13,24 @@ import java.util.LinkedHashMap;
 import javax.swing.ImageIcon;
 
 public class Constant {
-	//窗口默认值
+	//主窗口默认值
 	public static final int JFrame_Width  = 1024;
 	public static final int JFrame_Height = 632;
-	public static String Theme;
-	public static String RefreshInterval;
+	//提示信息窗口
+	public static final int JDialog_Width  = 350;
+	public static final int JDialog_Height = 180;
+	public static String Theme="BlackWhite";
+	public static String RefreshInterval="0";
 	
 	//刷新间隔时间
 	public static final LinkedHashMap<String,String> Refresh  = new LinkedHashMap<String,String>(){
 		{
-			put("0" ,"  Not Refreshed");
-			put("3" ,"  3 seconds apart");
-			put("5" ,"  5 seconds apart");
-			put("10","10 seconds apart");
-			put("30","30 seconds apart");
-			put("60","60 seconds apart");
+			put("0" ,"    Not Refreshed");
+			put("3" ,"   3 seconds apart");
+			put("5" ,"   5 seconds apart");
+			put("10","  10 seconds apart");
+			put("30","  30 seconds apart");
+			put("60","  60 seconds apart");
 		}
 	};
 	//UI选项卡的键值对

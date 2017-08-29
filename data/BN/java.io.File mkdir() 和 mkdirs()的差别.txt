@@ -1,0 +1,48 @@
+标题:  java.io.File mkdir() 和 mkdirs()的差别
+
+发布时间:  2016-11-17 14:29
+
+类别:  原创
+
+标签:  mkdir   mkdirs   File
+
+阅读人数:  1023
+
+正文: 
+
+mkdirs()可以成功建立多级文件夹， mkdir()只能成功建立一级的文件夹，多层目录就不能创建成功
+
+
+
+private String path = "D:/folder/subFolder";
+private String fileName = "temp.txt";
+
+@Test
+public void testMkdir() throws Exception {
+
+    String tempPath = path.concat(File.separator).concat(fileName);
+
+    File file = new File(tempPath);
+    if (!file.getParentFile().exists()) {
+        file.getParentFile().mkdir();
+    }
+    file.createNewFile();
+}
+
+@Test
+public void testMkdirs() throws Exception {
+
+    String tempPath = path.concat(File.separator).concat(fileName);
+
+    File file = new File(tempPath);
+    if (!file.getParentFile().exists()) {
+        file.getParentFile().mkdirs();
+    }
+    file.createNewFile();
+
+}
+
+程序运行将抛出：java.io.IOException: 系统找不到指定的路径。因为mkdir()方法没有成功创建多层目录。
+
+建议使用：mkdirs()方法
+

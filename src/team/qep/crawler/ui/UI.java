@@ -52,7 +52,7 @@ public class UI implements MouseListener {
 	private JPanel helpDescriptionJP = new HelpDescription();
 	private JButton setting = new JButton();// 设置
 	private JPanel settingJP = new Setting();
-	private JButton feedback = new JButton();// 联系反馈
+	private JButton feedback = new JButton();// 功能建议
 	private JPanel feedbackJP = new Feedback();
 
 	public UI() {
@@ -62,7 +62,7 @@ public class UI implements MouseListener {
 		this.listener();
 
 		flag[Constant.UIKeyValue.get("issueTask1")] = true;
-		issueTask1.setBackground(new Color(20, 20, 20));
+		issueTask1.setBackground(Theme.PanelColor);
 		issueTask1.setIcon(Constant.getIcon("issueTask1w"));
 
 		sidebarJP.add(issueTask1);
@@ -344,7 +344,7 @@ public class UI implements MouseListener {
 			if (!flag[Constant.UIKeyValue.get(dataMonitoring.getName())]) {// 只让为使用的组件
 				dataMonitoring.setIcon(Constant.getIcon("dataMonitoringw"));
 				prompt.setBounds(50, 4 * 50, 125, 50);
-				prompt.setText("数 据 监 控");
+				prompt.setText("实 时 监 控");
 				ctlJF.getLayeredPane().add(prompt, Integer.MAX_VALUE + 1);
 			}
 		} else if ("dataDisplay".equals(e.getComponent().getName())) {
@@ -365,7 +365,7 @@ public class UI implements MouseListener {
 			if (!flag[Constant.UIKeyValue.get(feedback.getName())]) {// 只让为使用的组件
 				feedback.setIcon(Constant.getIcon("feedbackw"));
 				prompt.setBounds(50, Constant.JFrame_Height - 3 * 50, 125, 50);
-				prompt.setText("功 能 建 议");
+				prompt.setText("建 议 反 馈");
 				ctlJF.getLayeredPane().add(prompt, Integer.MAX_VALUE + 1);
 			}
 		}else if ("helpDescription".equals(e.getComponent().getName())) {

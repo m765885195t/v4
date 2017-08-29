@@ -16,29 +16,28 @@ import team.qep.crawler.util.Constant;
 
 //自定义消息提示框
 public class Promptinformation implements MouseListener {
-	public static boolean flag=true; //true是   false为否
+	public static boolean flag=false; //true是   false为否
 	private JDialog  infoJD = new JDialog();
 	private JPanel infoJP   = new JPanel();
-	private JButton  jb1  = new JButton();
-	private JButton  jb2  = new JButton();
-	private JButton  jb3  = new JButton();
+	private JButton  sure  = new JButton();
+	private JButton  yes  = new JButton();
+	private JButton  no  = new JButton();
 	private JTextArea  info = new JTextArea();
 				
 	public Promptinformation(JFrame jf,String str,int mode){
+		flag=false;
     	infoJD = new JDialog(jf,true);
     	this.Init();
 		this.setBounds();
 		this.setColour();
 		this.listener();
-		info.setText(str);
 		
 		infoJP.add(info);
-		
 		if(mode==Constant.KeyValue.get("Info")){
-			infoJP.add(jb1);
+			infoJP.add(sure);
 		}else if(mode==Constant.KeyValue.get("Confirm")){
-			infoJP.add(jb2);
-			infoJP.add(jb3);
+			infoJP.add(yes);
+			infoJP.add(no);
 		}
 		info.setText(str);
 		
@@ -48,67 +47,71 @@ public class Promptinformation implements MouseListener {
 	}
 
 	private void Init() {
-		Init.initJDialog(infoJD, "infoJD", 380, 150);
+		Init.initJDialog(infoJD, "infoJD", Constant.JDialog_Width, Constant.JDialog_Height);
 		Init.initJPanel(infoJP, "infoJP");
 		
 		Init.initJTextArea(info, "info");
 		info.setBorder(null);//去掉边框
 		info.setEditable(false);//屏蔽输入
 
-		Init.initJButton(jb1, "jb1");
-		Init.initJButton(jb2, "jb2");
-		Init.initJButton(jb3, "jb3");
+		Init.initJButton(sure, "sure");
+		Init.initJButton(yes, "yes");
+		Init.initJButton(no, "no");
 	}
 
 	private void setBounds() {
-		infoJP.setBounds(0, 0, 380, 150);
-		jb1.setBounds(160, 100, 32, 32);
-		jb2.setBounds(80, 100, 32, 32);
-		jb3.setBounds(260, 100, 32, 32);
-		info.setBounds(20, 10, 340,80);
+		infoJP.setBounds(0, 0, Constant.JDialog_Width, Constant.JDialog_Height);
+		info.setBounds(25, 15,  Constant.JDialog_Width-50,Constant.JDialog_Height-65);
+		sure.setBounds(140, 135, 60, 36);
+		yes.setBounds(60, 137, 60, 36);
+		no.setBounds(230, 137, 60, 36);
 	}
 
 	private void setColour() {
-		infoJP.setBackground(new Color(80,80,80));
-		
-		info.setFont(new Font("微软雅黑",0,20));
-		info.setForeground(Theme.ButtonColor);
+		infoJP.setBackground(Theme.InfoPanelColor);
+
+		info.setFont(new Font("微软雅黑",0,22));
+		info.setForeground(Color.WHITE);
 		info.setOpaque(false);//设为透明
-		jb1.setIcon(Constant.getIcon("jb1b"));
-//		jb1.setContentAreaFilled(false);//按键透明
-		jb2.setBackground(Theme.ButtonColor);
-		jb2.setIcon(Constant.getIcon("jb2b"));
-//		jb2.setContentAreaFilled(false);//按键透明
-		jb3.setBackground(Theme.ButtonColor);
-		jb3.setIcon(Constant.getIcon("jb3b"));
-//		jb3.setContentAreaFilled(false);//按键透明
+		
+		sure.setOpaque(false);
+		sure.setBackground(Theme.ButtonColor);
+		sure.setIcon(Constant.getIcon("sureb"));
+
+		yes.setOpaque(false);
+		yes.setBackground(Theme.ButtonColor);
+		yes.setIcon(Constant.getIcon("yesb"));
+		
+		no.setOpaque(false);
+		no.setBackground(Theme.ButtonColor);
+		no.setIcon(Constant.getIcon("nob"));
 	}
 
 	private void listener() {
-		jb1.addMouseListener(this);
-		jb2.addMouseListener(this);
-		jb3.addMouseListener(this);
+		sure.addMouseListener(this);
+		yes.addMouseListener(this);
+		no.addMouseListener(this);
 	}
 
 	public void mouseClicked(MouseEvent e) {// 单击
-		if("jb1".equals(e.getComponent().getName())){
+		if("sure".equals(e.getComponent().getName())){
 			infoJD.dispose() ;
-	    }else if("jb2".equals(e.getComponent().getName())){
+	    }else if("yes".equals(e.getComponent().getName())){
 	    	Promptinformation.flag=true;
 	    	infoJD.dispose();
-	    }else if("jb3".equals(e.getComponent().getName())){
+	    }else if("no".equals(e.getComponent().getName())){
 	    	Promptinformation.flag=false;
 	    	infoJD.dispose();
 	    }
 	}
 
 	public void mousePressed(MouseEvent e) {// 按下
-		if ("jb1".equals(e.getComponent().getName())) {
-			jb1.setContentAreaFilled(false);
-		} else if ("jb2".equals(e.getComponent().getName())) {
-			jb2.setContentAreaFilled(false);
-		} else if ("jb3".equals(e.getComponent().getName())) {
-			jb3.setContentAreaFilled(false);
+		if ("sure".equals(e.getComponent().getName())) {
+			sure.setContentAreaFilled(false);
+		} else if ("yes".equals(e.getComponent().getName())) {
+			yes.setContentAreaFilled(false);
+		} else if ("no".equals(e.getComponent().getName())) {
+			no.setContentAreaFilled(false);
 		} 
 	}
 
@@ -117,22 +120,22 @@ public class Promptinformation implements MouseListener {
 	}
 
 	public void mouseEntered(MouseEvent e) {// 进入
-		if ("jb1".equals(e.getComponent().getName())) {
-			jb1.setIcon(Constant.getIcon("issueTask1w"));
-		} else if ("jb2".equals(e.getComponent().getName())) {
-			jb2.setIcon(Constant.getIcon("issueTask2w"));
-		} else if ("jb3".equals(e.getComponent().getName())) {
-			jb3.setIcon(Constant.getIcon("resourceSchedulingw"));
+		if ("sure".equals(e.getComponent().getName())) {
+			sure.setIcon(Constant.getIcon("surew"));
+		} else if ("yes".equals(e.getComponent().getName())) {
+			yes.setIcon(Constant.getIcon("yesw"));
+		} else if ("no".equals(e.getComponent().getName())) {
+			no.setIcon(Constant.getIcon("now"));
 		} 
 	}
 
 	public void mouseExited(MouseEvent e) {// 离开
-		if ("jb1".equals(e.getComponent().getName())) {
-			jb1.setIcon(Constant.getIcon("jb1b"));
-		} else if ("jb2".equals(e.getComponent().getName())) {
-			jb2.setIcon(Constant.getIcon("jb2b"));
-		} else if ("jb3".equals(e.getComponent().getName())) {
-			jb3.setIcon(Constant.getIcon("jb3b"));
+		if ("sure".equals(e.getComponent().getName())) {
+			sure.setIcon(Constant.getIcon("sureb"));
+		} else if ("yes".equals(e.getComponent().getName())) {
+			yes.setIcon(Constant.getIcon("yesb"));
+		} else if ("no".equals(e.getComponent().getName())) {
+			no.setIcon(Constant.getIcon("nob"));
 		} 
 	}
 }

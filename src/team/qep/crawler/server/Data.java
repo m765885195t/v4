@@ -83,16 +83,14 @@ public class Data {
 	//存储为文件  参数文件名,文件内容
 	public static boolean saveFile(String filename,String content) {
 		try {
-			File file = new File(filename);
+			File file = new File("./data/BN/"+filename);
 			if (!file.exists()) {
 		    	file.createNewFile();
 		    }
-			OutputStreamWriter osw = new OutputStreamWriter(new FileOutputStream("./data/BN/"+filename),"UTF-8");
+			OutputStreamWriter osw = new OutputStreamWriter(new FileOutputStream(file),"UTF-8");
 			osw.write(content);
-//			osw.flush();
 			osw.close();
 		} catch (IOException e) {
-			// TODO 自动生成的 catch 块
 			e.printStackTrace();
 		}
 		return true;
@@ -108,7 +106,6 @@ public class Data {
             }
             csvWriter.close();
 		} catch (IOException e) {
-			// TODO 自动生成的 catch 块
 			e.printStackTrace();
 		}
 		return true;

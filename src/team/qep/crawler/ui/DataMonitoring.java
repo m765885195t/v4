@@ -23,7 +23,7 @@ import team.qep.crawler.util.Constant;
 import team.qep.crawler.util.StringManipulation;
 
 public class DataMonitoring extends JPanel implements MouseListener {
-	private JLabel dataMonitoring = new JLabel("数  据  监  控");
+	private JLabel dataMonitoring = new JLabel("实 时  监  控");
 	private String url=null;
 	private String keyWord=null;
 	
@@ -89,11 +89,11 @@ public class DataMonitoring extends JPanel implements MouseListener {
 
 	private void setBounds() {
 		dataMonitoring.setBounds(320, 0, 300, 40);
-		runTask.setBounds(60, 64, 200, 33);
-		selectKeyword.setBounds(330, 64, 180, 33);
-		savePicture.setBounds(590, 60, 120, 40);
-		refresh.setBounds(784, 60, 120, 40);
-		lineChartJP.setBounds(15, 130, 944, 430);
+		runTask.setBounds(60, 60, 200, 33);
+		selectKeyword.setBounds(330, 60, 180, 33);
+		savePicture.setBounds(590, 56, 120, 40);
+		refresh.setBounds(784, 56, 120, 40);
+		lineChartJP.setBounds(15, 125, 944, 440);
 	}
 
 	private void setColour() {

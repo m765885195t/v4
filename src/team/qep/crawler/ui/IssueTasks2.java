@@ -136,7 +136,6 @@ public class IssueTasks2 extends JPanel implements MouseListener {
 				if (Task.timelyUrlPublish(timelyURL)) {
 					new Promptinformation(null,"即时任务发布成功",Constant.KeyValue.get("Info"));// １为普通窗口2为确认对话窗口
 					timelyURLSet.setText("");
-
 				} else {
 					new Promptinformation(null, "请检查网络连接", Constant.KeyValue.get("Info"));// １为普通窗口2为确认对话窗口
 				}
@@ -164,9 +163,10 @@ public class IssueTasks2 extends JPanel implements MouseListener {
 		}else if ("timelyTaskUrlSet".equals(e.getComponent().getName())) {
 			int selectedRow = timelyTaskUrlSet.getSelectedRow();
 			if (selectedRow != -1) {
+				this.remove(ecDataJSP);
+				this.remove(bnDataJSP);
 				if(UrlData[selectedRow][1].toString().equals(String.valueOf(Constant.KeyValue.get("EC")))){//电商
 					String str=UrlData[selectedRow][2].replace("'", "\"").replace("u\"", "\"");
-					System.out.println(str);
 					String[][] data = StringManipulation.toTwoDimensionalArrays(ConvertJSON.toStringArray(str),6);
 			
 					ecDataModel = new DefaultTableModel(data,Constant.E_CommerceCcolumnNames){
@@ -174,11 +174,13 @@ public class IssueTasks2 extends JPanel implements MouseListener {
 						}
 					};
 					ecDataJT.setModel(ecDataModel);
-					System.out.println(ecDataJT.getRowCount());
+					this.add(ecDataJSP);
 				}else if(UrlData[selectedRow][1].equals(String.valueOf(Constant.KeyValue.get("BN")))){//新闻
 					bnDataJTA.setText(UrlData[selectedRow][2].replace("\n", System.getProperty("line.separator")));
 					bnDataJTA.setCaretPosition(0);
+					this.add(bnDataJSP);
 				}
+				this.updateUI();
 			}
 		}else if ("export".equals(e.getComponent().getName())) {//导出为文件
 			int selectedRow = timelyTaskUrlSet.getSelectedRow();
@@ -197,14 +199,14 @@ public class IssueTasks2 extends JPanel implements MouseListener {
 							}
 						}
 					}
-				}else if(UrlData[selectedRow][1].equals(String.valueOf(Constant.KeyValue.get("BN")))){//新闻
+				}else if(UrlData[selectedRow][1].equals(String.valueOf(Constant.KeyValue.get("BN")))){//新闻博客
 					String filename=UrlData[selectedRow][2].substring(5,UrlData[selectedRow][2].indexOf("\n"));
 
 					if(Data.saveFile(filename+".txt",UrlData[selectedRow][2].replace("\n",System.getProperty("line.separator")))){
-						new Promptinformation(null, "表格文件导出成功(./data/BN/),是否打开所在文件夹", Constant.KeyValue.get("Confirm"));
+						new Promptinformation(null, "文件导出成功(./data/BN/),是否打开所在文件夹", Constant.KeyValue.get("Confirm"));
 						if(Promptinformation.flag){
 							try {
-								Runtime.getRuntime().exec("explorer.exe "+System.getProperty("user.dir")+"\\data\\EC\\");
+								Runtime.getRuntime().exec("explorer.exe "+System.getProperty("user.dir")+"\\data\\BN\\");
 							} catch (IOException e1) {
 								e1.printStackTrace();
 							}
@@ -236,7 +238,7 @@ public class IssueTasks2 extends JPanel implements MouseListener {
 
 	public void mouseExited(MouseEvent e) {// 离开
 		if ("timelyUrlPublish".equals(e.getComponent().getName())) {
-			timelyUrlPublish.setBackground(new Color(150, 150, 150));
+			timelyUrlPublish.setBackground(Theme.ButtonColor);
 		} else if ("refresh".equals(e.getComponent().getName())) {
 			refresh.setBackground(Theme.ButtonColor);
 		}else if ("export".equals(e.getComponent().getName())) {

@@ -96,7 +96,7 @@ public class TaskControl extends JPanel implements MouseListener {
 		suspendTask.setIcon(Constant.getIcon("suspendTask"));
 		endTask.setBackground(Theme.ButtonColor);
 		endTask.setIcon(Constant.getIcon("endTask"));
-		taskDataSet.setFont(new Font("微软雅黑", 0, 16));// 设置字体格式
+		taskDataSet.setFont(Theme.Tablefont);// 设置字体格式
 
 	}
 

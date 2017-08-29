@@ -93,10 +93,10 @@ public class DataDisplay extends JPanel implements MouseListener {
 
 	private void setBounds() {
 		dataDisplay.setBounds(320, 0, 300, 40);
-		selectUrl.setBounds(130, 70, 200, 33);
-		selectKeyword.setBounds(430,70, 150, 33);
-		refresh.setBounds(700, 65, 150, 40);
-		taskDataJSP.setBounds(30, 140, 914, 430);
+		selectUrl.setBounds(130, 60, 200, 33);
+		selectKeyword.setBounds(430,60, 150, 33);
+		refresh.setBounds(700, 55, 150, 40);
+		taskDataJSP.setBounds(20, 125, 934, 440);
 	}
 
 	private void setColour() {
@@ -106,7 +106,7 @@ public class DataDisplay extends JPanel implements MouseListener {
 		dataDisplay.setForeground(Theme.TitleColor);
 		refresh.setBackground(Theme.ButtonColor);
 		refresh.setIcon(Constant.getIcon("refresh"));
-		taskDataSet.setFont(Theme.Tablefont);// 设置表格字体
+		taskDataSet.setFont(Theme.Tablefont);
 
 	}
 
@@ -168,9 +168,10 @@ public class DataDisplay extends JPanel implements MouseListener {
 					selectUrl.addItem(str);
 				}
 				selectKeyword.removeAllItems();
-				//空指针异常要终止程序?
-				for(String str:Data.getKeyWords(Data.getALLUrlSet(),selectUrl.getSelectedItem().toString())){
-					selectKeyword.addItem(str);
+				if(selectUrl.getItemCount()>0){
+					for(String str:Data.getKeyWords(Data.getALLUrlSet(),selectUrl.getSelectedItem().toString())){
+						selectKeyword.addItem(str);
+					}
 				}
 			}
 		}

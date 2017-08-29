@@ -91,7 +91,7 @@ public class Init {
 	}
 	// ---------面板初始化
 	public static void initJPanel(JPanel jp, String str) {
-		// jp.setOpaque(false);//设置面板透明
+//		 jp.setOpaque(false);//设置面板透明
 		jp.setName(str);// 设置面板名
 		jp.setLayout(null);// 清楚面板的布局方式
 	}
