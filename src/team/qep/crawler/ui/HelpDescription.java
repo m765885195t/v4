@@ -13,7 +13,7 @@ import team.qep.crawler.util.Constant;
 public class HelpDescription extends JPanel implements MouseListener {
 	private static int layer=0;
 	
-	private JLabel helpDescription = new JLabel("使  用  说  明");
+	private JLabel helpDescription = new JLabel("使   用   说   明");
 
 	private JLabel help = new JLabel();
 	private JButton last = new JButton();// 上一项
@@ -44,15 +44,15 @@ public class HelpDescription extends JPanel implements MouseListener {
 	}
 
 	private void setBounds() {
-		helpDescription.setBounds(320, 0, 300, 40);
+		helpDescription.setBounds(320, 0, 300, 35);
 
-		help.setBounds(80, 60, 800,420);
-		last.setBounds(254, 520, 120, 40);
-		next.setBounds(600, 520, 120, 40);
+		help.setBounds(80, 60, 800,450);
+		last.setBounds(244, 540, 120, 40);
+		next.setBounds(610, 540, 120, 40);
 	}
 
 	private void setColour() {
-		this.setBackground(Theme.PanelColor);
+		this.setBackground(Theme.Panel8);
 		
 		helpDescription.setFont(Theme.TitleFont);
 		helpDescription.setForeground(Theme.TitleColor);

@@ -22,7 +22,7 @@ import team.qep.crawler.util.Constant;
 
 public class Setting extends JPanel implements MouseListener {
 
-	private JLabel setting = new JLabel("设  置  中  心");
+	private JLabel setting = new JLabel("设   置   中   心");
 	
 	private JLabel refresh = new JLabel("Refresh Interval :");
 	private JComboBox<String> refreshInterval = new JComboBox<String>();//自动刷新间隔
@@ -87,7 +87,7 @@ public class Setting extends JPanel implements MouseListener {
 	}
 
 	private void setColour() {
-		this.setBackground(Theme.PanelColor);
+		this.setBackground(Theme.Panel9);
 		setting.setFont(Theme.TitleFont);
 		setting.setForeground(Theme.TitleColor);
 		refresh.setFont(Theme.TitleFont);

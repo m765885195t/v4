@@ -26,7 +26,6 @@ public class Constant {
 	public static final LinkedHashMap<String,String> Refresh  = new LinkedHashMap<String,String>(){
 		{
 			put("0" ,"    Not Refreshed");
-			put("3" ,"   3 seconds apart");
 			put("5" ,"   5 seconds apart");
 			put("10","  10 seconds apart");
 			put("30","  30 seconds apart");
@@ -108,7 +107,7 @@ public class Constant {
 			put("TimelyData", 35);//即时数据
 			put("ResourceInformation", 55);//从机资源信息
 			put("ModifyResourceStatus", 56);//修改从机状态
-			put("AddDeleteResource", 57);//添加从机资源
+			put("AddDeleteResource", 57);//添加或删除从机资源
 			put("DeleteTaskData", 89);//删除任务数据
 			put("urlkData", 144);//删除任务数据
 		}

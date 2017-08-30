@@ -80,8 +80,7 @@ public class CrawlerChart {
 				BasicStroke.JOIN_ROUND, // 折点风格
 				8f, dashes, 0.6f);
 
-		renderer.setSeriesStroke(0, brokenLine); // 第一条线用虚线绘
-		renderer.setSeriesStroke(1, realLine); // 第二条线用实线绘
+//		renderer.setSeriesStroke(0, brokenLine); // 第一条线用虚线绘
 
 		return jfreechart;
 	}

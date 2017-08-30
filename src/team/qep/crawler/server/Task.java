@@ -56,7 +56,6 @@ public class Task {
 		}
 		return false;
 	}
-	
 	//发布精确任务      参数--->(精确任务url(string)  关键字(string)    优先度(int))
 	public static boolean exactUrlPublish(String exactURL, String keyWord, int priority){
 		String[][] runUrlSet=Data.getRunUrlSet();//正在运行的任务集
@@ -87,7 +86,6 @@ public class Task {
 		}
 		return false;
 	}
-	
 	//发布及时任务      参数--->(及时任务url集(string)  模板配置(string))
 	public static boolean timelyUrlPublish(String timelyURL) {
 		//1---分割为数组同时去掉重复的url
@@ -115,7 +113,6 @@ public class Task {
 		}	
 		return false;
 	}
-	
 	//更改从机状态       参数---->从机编号(String)  状态 ---启用或终止(int)
 	public static boolean modifyResourceStatus(String number,int status) {
 		String send=ConvertJSON.toJSON(Constant.Agreement.get("ModifyResourceStatus"),number+","+status);
@@ -127,7 +124,6 @@ public class Task {
 		}	
 		return false;
 	}
-	
 	//增删从机       参数---->状态add   1/delete  0(int) 增加的ip(String)/删除的从机编号
 	public static boolean addDeleteResource(int status,String number) {
 		String send=ConvertJSON.toJSON(Constant.Agreement.get("AddDeleteResource"),status+","+number);
@@ -139,11 +135,9 @@ public class Task {
 		}	
 		return false;
 	}
-	
 	//删除任务数据      参数--->(url(string) 关键字keyWord(string))
 	public static boolean deleteTaskData (String url,String keyWord) {
 		String send=ConvertJSON.toJSON(Constant.Agreement.get("DeleteTaskData"),Constant.SupportFuzzyUrl.indexOf(url)+","+keyWord);
-		p(send);
 		String[] recv=ConvertJSON.toStringArray(Communication.SendAndRecv(send));
 		if(recv.length>0){//<0 说明服务器无响应
 			if(recv[0].equals(String.valueOf(Constant.Agreement.get("DeleteTaskData"))) && recv[1].equals(String.valueOf(Constant.KeyValue.get("Success")))){
@@ -152,15 +146,4 @@ public class Task {
 		}	
 		return false;
 	}
-		
-	
-	//简化输出
-	public static void p(String str){
-		System.out.println(str);
-	}
-	public static void p(int str){
-		System.out.println(str);
-	}
-	
-
 }

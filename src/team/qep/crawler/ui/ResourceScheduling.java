@@ -21,7 +21,7 @@ import team.qep.crawler.util.Regex;
 
 public class ResourceScheduling extends JPanel implements MouseListener {
 
-	private JLabel resourceScheduling = new JLabel("资  源  配  置");//资源调度
+	private JLabel resourceScheduling = new JLabel("资   源   配   置");//资源调度
 
 	private String[] columnNames; // 表格列名
 	private String[][] data; // 表格数据
@@ -29,8 +29,8 @@ public class ResourceScheduling extends JPanel implements MouseListener {
 	private JTable resourcesSet = new JTable();//从机资源集合
 	private JScrollPane resourcesJSP = new JScrollPane(resourcesSet); // 未终止的任务数据集
 	
-	private JButton refresh = new JButton();// 刷新
-	private JTextField ip = new JTextField(15);// 添加从机的ip (要端口号?)
+	private JButton resourceSchedulingRefresh = new JButton();// 刷新
+	private JTextField ip = new JTextField(15);// 添加从机的ip
 	private JButton add = new JButton();// 添加从机
 	private JButton delete = new JButton();// 删除从机(只能删除未工作中的的从机)
 	private JButton start = new JButton();// 重启从机(只能启用未工作状态/终止状态的机子)
@@ -46,7 +46,7 @@ public class ResourceScheduling extends JPanel implements MouseListener {
 		this.add(resourceScheduling);
 		this.add(resourcesJSP);
 
-		this.add(refresh);
+		this.add(resourceSchedulingRefresh);
 		this.add(ip);
 		this.add(add);
 		this.add(delete);
@@ -71,7 +71,7 @@ public class ResourceScheduling extends JPanel implements MouseListener {
 		Init.initJTable(resourcesSet, "resourcesSet");
 		Init.initJScrollPane(resourcesJSP, "resourcesJSP");
 
-		Init.initJButton(refresh, "refresh");
+		Init.initJButton(resourceSchedulingRefresh, "resourceSchedulingRefresh");
 		Init.initJTextField(ip,"ip");
 		ip.setDocument(new MyDocument(15));
 
@@ -82,11 +82,11 @@ public class ResourceScheduling extends JPanel implements MouseListener {
 	}
 
 	private void setBounds() {
-		resourceScheduling.setBounds(320, 0, 300, 40);
+		resourceScheduling.setBounds(320, 0, 300, 35);
 		
 		resourcesJSP.setBounds(50, 50, 670, 520);
 		
-		refresh.setBounds(770, 100, 150, 40);
+		resourceSchedulingRefresh.setBounds(770, 100, 150, 40);
 		start.setBounds(770, 170, 150, 40);
 		stop.setBounds(770,240, 150, 40);
 		
@@ -97,12 +97,12 @@ public class ResourceScheduling extends JPanel implements MouseListener {
 	}
 
 	private void setColour() {
-		this.setBackground(Theme.PanelColor);
+		this.setBackground(Theme.Panel3);
 		resourceScheduling.setFont(Theme.TitleFont);
 		resourceScheduling.setForeground(Theme.TitleColor);
 		
-		refresh.setBackground(Theme.ButtonColor);
-		refresh.setIcon(Constant.getIcon("refresh"));
+		resourceSchedulingRefresh.setBackground(Theme.ButtonColor);
+		resourceSchedulingRefresh.setIcon(Constant.getIcon("resourceSchedulingRefresh"));
 		add.setBackground(Theme.ButtonColor);
 		add.setIcon(Constant.getIcon("add"));
 		delete.setBackground(Theme.ButtonColor);
@@ -114,7 +114,7 @@ public class ResourceScheduling extends JPanel implements MouseListener {
 	}
 
 	private void listener() {
-		refresh.addMouseListener(this);
+		resourceSchedulingRefresh.addMouseListener(this);
 		add.addMouseListener(this);
 		delete.addMouseListener(this);
 		start.addMouseListener(this);
@@ -122,7 +122,7 @@ public class ResourceScheduling extends JPanel implements MouseListener {
 	}
 
 	public void mouseClicked(MouseEvent e) {// 单击
-		if ("refresh".equals(e.getComponent().getName())) {
+		if ("resourceSchedulingRefresh".equals(e.getComponent().getName())) {
 			data=Data.getResourceInformation();
 			taskDataSetModel = new DefaultTableModel(data, columnNames) {
 				public boolean isCellEditable(int row, int column) {
@@ -141,7 +141,7 @@ public class ResourceScheduling extends JPanel implements MouseListener {
 		} else if ("add".equals(e.getComponent().getName())) {
 			if(Regex.RE_matching(ip.getText(), Regex.regIP)){
 				if(Task.addDeleteResource(1,ip.getText())){
-					new Promptinformation(null, "添加成功", Constant.KeyValue.get("Info"));
+					new Promptinformation(null, "添加成功,请重启从机", Constant.KeyValue.get("Info"));
 				
 					data=Data.getResourceInformation();
 					taskDataSetModel = new DefaultTableModel(data, columnNames) {
@@ -251,8 +251,8 @@ public class ResourceScheduling extends JPanel implements MouseListener {
 	}
 
 	public void mouseEntered(MouseEvent e) {// 进入
-		if ("refresh".equals(e.getComponent().getName())) {
-			refresh.setBackground(Color.WHITE);
+		if ("resourceSchedulingRefresh".equals(e.getComponent().getName())) {
+			resourceSchedulingRefresh.setBackground(Color.WHITE);
 		} else if ("add".equals(e.getComponent().getName())) {
 			add.setBackground(Color.WHITE);
 		} else if ("delete".equals(e.getComponent().getName())) {
@@ -266,8 +266,8 @@ public class ResourceScheduling extends JPanel implements MouseListener {
 	}
 
 	public void mouseExited(MouseEvent e) {// 离开
-		if ("refresh".equals(e.getComponent().getName())) {
-			refresh.setBackground(Theme.ButtonColor);
+		if ("resourceSchedulingRefresh".equals(e.getComponent().getName())) {
+			resourceSchedulingRefresh.setBackground(Theme.ButtonColor);
 		}else if ("add".equals(e.getComponent().getName())) {
 			add.setBackground(Theme.ButtonColor);
 		} else if ("delete".equals(e.getComponent().getName())) {

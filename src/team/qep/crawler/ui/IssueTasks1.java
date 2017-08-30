@@ -1,10 +1,8 @@
 package team.qep.crawler.ui;
 
 import java.awt.Color;
-import java.awt.Font;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
-import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
@@ -15,6 +13,7 @@ import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.table.DefaultTableModel;
 
+import team.qep.crawler.server.Data;
 import team.qep.crawler.server.Task;
 import team.qep.crawler.util.Constant;
 import team.qep.crawler.util.MyDocument;
@@ -29,14 +28,14 @@ public class IssueTasks1 extends JPanel implements MouseListener {
 	});
 	private JScrollPane supportedJSP = new JScrollPane(supportUrlSet); // 支持的url集合
 
-	private JLabel fuzzy = new JLabel("模 糊 爬 取");
+	private JLabel fuzzy = new JLabel("模  糊  爬  取");
 
 	private JTextArea fuzzyURLSet = new JTextArea();
 	private JScrollPane fuzzyURLSetJSP = new JScrollPane(fuzzyURLSet); // 待发布的模糊url集合
 	private JComboBox<String> fuzzyUrlPriority = new JComboBox<String>(); // 模糊任务优先度
 	private JButton fuzzyUrlPublish = new JButton(); // 模糊任务发布
 
-	private JLabel exact = new JLabel("精 确 爬 取");
+	private JLabel exact = new JLabel("精  确  爬  取");
 	private JComboBox<String> exactURLSet = new JComboBox<String>(); // 待发布的精确url
 	private JTextField keyWord = new JTextField(); // 关键字
 	private JComboBox<String> exactUrlPriority = new JComboBox<String>(); // 精确任务优先度
@@ -106,7 +105,7 @@ public class IssueTasks1 extends JPanel implements MouseListener {
 	}
 
 	private void setColour() {
-		this.setBackground(Theme.PanelColor);
+		this.setBackground(Theme.Panel1);
 
 		fuzzy.setFont(Theme.TitleFont);
 		fuzzy.setForeground(Theme.TitleColor);
@@ -135,12 +134,18 @@ public class IssueTasks1 extends JPanel implements MouseListener {
 			String fuzzyURL = fuzzyURLSet.getText();
 			int priority = fuzzyUrlPriority.getSelectedIndex() + 1;
 			if (!fuzzyURL.equals("")) {
-				if (Task.fuzzyUrlPublish(fuzzyURL, priority)) {
-					new Promptinformation(null,"模糊任务发布成功,已自动修正链接",Constant.KeyValue.get("Info"));
-					fuzzyURLSet.setText("");
-					fuzzyUrlPriority.setSelectedIndex(0);
-				} else {
-					new Promptinformation(null, "任务发送失败,可能原因:  已发布过or服务器已断开", Constant.KeyValue.get("Info"));
+				int num=Data.isFfectiveResource();
+				if(num>0){
+					priority=Math.min(num,priority);
+					if (Task.fuzzyUrlPublish(fuzzyURL, priority)) {
+						new Promptinformation(null,"模糊任务发布成功,已自动修正链接",Constant.KeyValue.get("Info"));
+						fuzzyURLSet.setText("");
+						fuzzyUrlPriority.setSelectedIndex(0);
+					} else {
+						new Promptinformation(null, "任务发送失败,可能原因:  已发布过or服务器已断开", Constant.KeyValue.get("Info"));
+					}
+				}else{
+					new Promptinformation(null, "任务发送失败,不存在正在工作的从机,请添加一台从机", Constant.KeyValue.get("Info"));
 				}
 				
 			} else {

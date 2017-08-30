@@ -21,7 +21,7 @@ import team.qep.crawler.util.Constant;
 
 public class TaskControl extends JPanel implements MouseListener {
 
-	private JLabel task = new JLabel("任  务  中  心");
+	private JLabel task = new JLabel("任   务   中  心");
 
 	private String[] columnNames; // 表格列名
 	private String[][] data; // 表格数据
@@ -29,7 +29,7 @@ public class TaskControl extends JPanel implements MouseListener {
 	private JTable taskDataSet = new JTable();
 	private JScrollPane taskDataJSP = new JScrollPane(taskDataSet); // 未终止的任务数据集
 	
-	private JButton refresh = new JButton();// 刷新
+	private JButton TaskControlRefresh = new JButton();// 刷新
 	private JButton startTask = new JButton();// 开始任务
 	private JButton suspendTask = new JButton();// 暂停任务
 	private JButton endTask = new JButton();// 结束任务
@@ -44,7 +44,7 @@ public class TaskControl extends JPanel implements MouseListener {
 		this.add(task);
 		this.add(taskDataJSP);
 
-		this.add(refresh);
+		this.add(TaskControlRefresh);
 		this.add(startTask);
 		this.add(suspendTask);
 		this.add(endTask);
@@ -67,29 +67,29 @@ public class TaskControl extends JPanel implements MouseListener {
 
 		Init.initJTable(taskDataSet, "taskDataSet");
 		Init.initJScrollPane(taskDataJSP, "taskDataJSP");
-		Init.initJButton(refresh, "refresh");
+		Init.initJButton(TaskControlRefresh, "TaskControlRefresh");
 		Init.initJButton(startTask, "startTask");
 		Init.initJButton(suspendTask, "suspendTask");
 		Init.initJButton(endTask, "endTask");
 	}
 
 	private void setBounds() {
-		task.setBounds(320, 0, 300, 40);
+		task.setBounds(320, 0, 300, 35);
 		taskDataJSP.setBounds(20, 50, 934, 420);
 
-		refresh.setBounds(40, 515, 150, 40);
+		TaskControlRefresh.setBounds(40, 515, 150, 40);
 		startTask.setBounds(290, 515, 150, 40);
 		suspendTask.setBounds(535, 515, 150, 40);
 		endTask.setBounds(780, 515, 150, 40);
 	}
 
 	private void setColour() {
-		this.setBackground(Theme.PanelColor);
+		this.setBackground(Theme.Panel4);
 
 		task.setFont(Theme.TitleFont);
 		task.setForeground(Theme.TitleColor);
-		refresh.setBackground(Theme.ButtonColor);
-		refresh.setIcon(Constant.getIcon("refresh"));
+		TaskControlRefresh.setBackground(Theme.ButtonColor);
+		TaskControlRefresh.setIcon(Constant.getIcon("TaskControlRefresh"));
 		startTask.setBackground(Theme.ButtonColor);
 		startTask.setIcon(Constant.getIcon("startTask"));
 		suspendTask.setBackground(Theme.ButtonColor);
@@ -101,14 +101,14 @@ public class TaskControl extends JPanel implements MouseListener {
 	}
 
 	private void listener() {
-		refresh.addMouseListener(this);
+		TaskControlRefresh.addMouseListener(this);
 		startTask.addMouseListener(this);
 		suspendTask.addMouseListener(this);
 		endTask.addMouseListener(this);
 	}
 
 	public void mouseClicked(MouseEvent e) {// 单击
-		if ("refresh".equals(e.getComponent().getName())) {
+		if ("TaskControlRefresh".equals(e.getComponent().getName())) {
 			data=Data.getRunUrlSet();
 			taskDataSetModel = new DefaultTableModel(data, columnNames) {
 				public boolean isCellEditable(int row, int column) {
@@ -195,8 +195,8 @@ public class TaskControl extends JPanel implements MouseListener {
 	}
 
 	public void mouseEntered(MouseEvent e) {// 进入
-		if ("refresh".equals(e.getComponent().getName())) {
-			refresh.setBackground(Color.WHITE);
+		if ("TaskControlRefresh".equals(e.getComponent().getName())) {
+			TaskControlRefresh.setBackground(Color.WHITE);
 		} else if ("startTask".equals(e.getComponent().getName())) {
 			startTask.setBackground(Color.WHITE);
 		} else if ("suspendTask".equals(e.getComponent().getName())) {
@@ -208,8 +208,8 @@ public class TaskControl extends JPanel implements MouseListener {
 	}
 
 	public void mouseExited(MouseEvent e) {// 离开
-		if ("refresh".equals(e.getComponent().getName())) {
-			refresh.setBackground(Theme.ButtonColor);
+		if ("TaskControlRefresh".equals(e.getComponent().getName())) {
+			TaskControlRefresh.setBackground(Theme.ButtonColor);
 		}else if ("startTask".equals(e.getComponent().getName())) {
 			startTask.setBackground(Theme.ButtonColor);
 		} else if ("suspendTask".equals(e.getComponent().getName())) {

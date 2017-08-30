@@ -29,7 +29,8 @@ import team.qep.crawler.util.Constant;
 
 public class HistoryRecord extends JPanel implements MouseListener {
 	private Timer temer = new Timer();
-	private JLabel historyRecord = new JLabel("数  据  统  计");
+	private JLabel historyRecord = new JLabel("数   据   统   计");
+	private Timer timer =null;
 
 	private String[] columnNames; // 表格列名
 	private String[][] data; // 表格数据
@@ -39,7 +40,7 @@ public class HistoryRecord extends JPanel implements MouseListener {
 	
 	private JFreeChart pieChart = CrawlerChart.getPieChart();
 	private JPanel pieChartJP=new ChartPanel(pieChart);// 历史任务记录
-	private JButton refresh = new JButton();// 刷新
+	private JButton historyRecordRefresh = new JButton();// 刷新
 	private JButton deleteData = new JButton();// 删除数据
 
 	public HistoryRecord() {
@@ -52,18 +53,11 @@ public class HistoryRecord extends JPanel implements MouseListener {
 		this.add(historyRecord);
 		this.add(taskDataJSP);
 		this.add(pieChartJP);
-		this.add(refresh);
+		this.add(historyRecordRefresh);
 		this.add(deleteData);
 	}
 
 	private void loadingData() {// 装载数据
-		if(!Constant.RefreshInterval.equals("0")){
-			 new Timer().scheduleAtFixedRate(new TimerTask() {
-				public void run() {
-					((PiePlot) pieChart.getPlot()).setDataset(CrawlerChart.getPieDataSet());
-				}
-			 },0,Integer.valueOf(Constant.RefreshInterval)*1000);
-		}
 		columnNames = Constant.HistoricalTaskCcolumnNames;
 		data=Data.getDownloadDataSet();
 		taskDataSetModel = new DefaultTableModel(data, columnNames){
@@ -72,6 +66,7 @@ public class HistoryRecord extends JPanel implements MouseListener {
 			}
 		};
 		taskDataSet.setModel(taskDataSetModel);
+		((PiePlot) pieChart.getPlot()).setDataset(CrawlerChart.getPieDataSet());
 	}
 
 	private void Init() {
@@ -81,46 +76,52 @@ public class HistoryRecord extends JPanel implements MouseListener {
 		Init.initJScrollPane(taskDataJSP, "taskDataJSP");
 		taskDataSet.setFont(new Font("serif", 0, 17));// 设置表格字体
 		
-		Init.initJButton(refresh, "refresh");
+		Init.initJButton(historyRecordRefresh, "historyRecordRefresh");
 		Init.initJButton(deleteData, "deleteData");
 
 	}
 
 	private void setBounds() {
-		historyRecord.setBounds(320, 0, 300, 40);
+		historyRecord.setBounds(320, 0, 300, 35);
 		
 		taskDataJSP.setBounds(30, 50, 420, 520);
 		pieChartJP.setBounds(500, 50, 444, 450);
-		refresh.setBounds(500, 530, 150, 42);
+		historyRecordRefresh.setBounds(500, 530, 150, 42);
 		deleteData.setBounds(790, 530, 150, 42);
 	}
 
 	private void setColour() {
-		this.setBackground(Theme.PanelColor);
+		this.setBackground(Theme.Panel6);
 
 		historyRecord.setFont(Theme.TitleFont);
 		historyRecord.setForeground(Theme.TitleColor);
-		refresh.setBackground(Theme.ButtonColor);
-		refresh.setIcon(Constant.getIcon("refresh"));
+		historyRecordRefresh.setBackground(Theme.ButtonColor);
+		historyRecordRefresh.setIcon(Constant.getIcon("historyRecordRefresh"));
 		deleteData.setBackground(Theme.ButtonColor);
 		deleteData.setIcon(Constant.getIcon("deleteData"));
 	}
 
 	private void listener() {
-		refresh.addMouseListener(this);
+		historyRecordRefresh.addMouseListener(this);
 		deleteData.addMouseListener(this);
 	}
 
 	public void mouseClicked(MouseEvent e) {// 单击
-		if ("refresh".equals(e.getComponent().getName())) {
-			data=Data.getDownloadDataSet();
-			taskDataSetModel = new DefaultTableModel(data, columnNames) {
-				public boolean isCellEditable(int row, int column) {
-					return false;
-				}
-			};
-			taskDataSet.setModel(taskDataSetModel);
-			((PiePlot) pieChart.getPlot()).setDataset(CrawlerChart.getPieDataSet());
+		if ("historyRecordRefresh".equals(e.getComponent().getName())) {
+			if(timer!=null){//取消定时任务
+				timer.cancel();
+				timer=null;
+			}
+			if(!Constant.RefreshInterval.equals("0")){
+				timer = new Timer();
+				timer.scheduleAtFixedRate(new TimerTask() {
+					public void run() {
+						loadingData();
+					}
+				 },0,Integer.valueOf(Constant.RefreshInterval)*1000);
+			}else{
+				loadingData();
+			}
 		}else if ("deleteData".equals(e.getComponent().getName())) {
 			int selectedRow = taskDataSet.getSelectedRow();
 			if (selectedRow != -1) {
@@ -158,16 +159,16 @@ public class HistoryRecord extends JPanel implements MouseListener {
 	}
 
 	public void mouseEntered(MouseEvent e) {// 进入
-		if ("refresh".equals(e.getComponent().getName())) {
-			refresh.setBackground(Color.WHITE);
+		if ("historyRecordRefresh".equals(e.getComponent().getName())) {
+			historyRecordRefresh.setBackground(Color.WHITE);
 		}else if ("deleteData".equals(e.getComponent().getName())) {
 			deleteData.setBackground(Color.WHITE);
 		}
 	}
 
 	public void mouseExited(MouseEvent e) {// 离开
-		if ("refresh".equals(e.getComponent().getName())) {
-			refresh.setBackground(Theme.ButtonColor);
+		if ("historyRecordRefresh".equals(e.getComponent().getName())) {
+			historyRecordRefresh.setBackground(Theme.ButtonColor);
 		}else if ("deleteData".equals(e.getComponent().getName())) {
 			deleteData.setBackground(Theme.ButtonColor);
 		}

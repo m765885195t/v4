@@ -33,7 +33,7 @@ public class IssueTasks2 extends JPanel implements MouseListener {
 	private JScrollPane timelyURLSetJSP = new JScrollPane(timelyURLSet); // 待发布的及时url集合
 
 	private JButton timelyUrlPublish = new JButton(); // 即时任务发布
-	private JButton refresh = new JButton(); // 刷新数据
+	private JButton timelyUrlPublishRefresh = new JButton(); // 刷新数据
 	private JButton export = new JButton(); // 导出为文件或excel
 
 	private String[][] UrlData; // 即时爬取的数据
@@ -57,7 +57,7 @@ public class IssueTasks2 extends JPanel implements MouseListener {
 
 		this.add(timelyURLSetJSP);
 		this.add(timelyUrlPublish);
-		this.add(refresh);
+		this.add(timelyUrlPublishRefresh);
 		this.add(export);
 		this.add(timelyTaskUrlSetJSP);
 		this.add(ecDataJSP);
@@ -84,7 +84,7 @@ public class IssueTasks2 extends JPanel implements MouseListener {
 		Init.initJScrollPane(timelyURLSetJSP, "timelyURLSetJSP");
 
 		Init.initJButton(timelyUrlPublish, "timelyUrlPublish");
-		Init.initJButton(refresh, "refresh");
+		Init.initJButton(timelyUrlPublishRefresh, "timelyUrlPublishRefresh");
 		Init.initJButton(export, "export");
 		Init.initJTable(timelyTaskUrlSet, "timelyTaskUrlSet");
 		Init.initJScrollPane(timelyTaskUrlSetJSP, "timelyTaskUrlSetJSP");
@@ -93,17 +93,17 @@ public class IssueTasks2 extends JPanel implements MouseListener {
 		Init.initJScrollPane(ecDataJSP, "ecDataJSP");
 		Init.initJTextArea(bnDataJTA, "bnDataJTA");
 		Init.initJScrollPane(bnDataJSP, "bnDataJSP");
-		bnDataJTA.setFont(new Font("微软雅黑", 0, 16));// 设置字体格式
+		bnDataJTA.setFont(Theme.Tablefont);// 设置字体格式
 		bnDataJTA.setEditable(false);//屏蔽输入
 		bnDataJTA.setFocusable(false);//消除光标
 		timelyTaskUrlSet.setFont(new Font("serif", 0, 16));// 设置表格字体
-		ecDataJT.setFont(new Font("serif", 0, 16));// 设置表格字体
+		ecDataJT.setFont(Theme.Tablefont);// 设置表格字体
 	}
 
 	private void setBounds() {
 		timelyURLSetJSP.setBounds(30, 20, 800, 220);
 		timelyUrlPublish.setBounds(850,40,94, 40);
-		refresh.setBounds(850, 110, 94, 40);
+		timelyUrlPublishRefresh.setBounds(850, 110, 94, 40);
 		export.setBounds(850, 180, 94, 40);
 	
 		timelyTaskUrlSetJSP.setBounds(20, 262, 190, 320);
@@ -112,10 +112,10 @@ public class IssueTasks2 extends JPanel implements MouseListener {
 	}
 
 	private void setColour() {
-		this.setBackground(Theme.PanelColor);
+		this.setBackground(Theme.Panel2);
 
-		refresh.setBackground(Theme.ButtonColor);
-		refresh.setIcon(Constant.getIcon("refresh"));
+		timelyUrlPublishRefresh.setBackground(Theme.ButtonColor);
+		timelyUrlPublishRefresh.setIcon(Constant.getIcon("timelyUrlPublishRefresh"));
 		timelyUrlPublish.setBackground(Theme.ButtonColor);
 		timelyUrlPublish.setIcon(Constant.getIcon("timelyUrlPublish"));
 		export.setBackground(Theme.ButtonColor);
@@ -124,7 +124,7 @@ public class IssueTasks2 extends JPanel implements MouseListener {
 
 	private void listener() {
 		timelyUrlPublish.addMouseListener(this);
-		refresh.addMouseListener(this);
+		timelyUrlPublishRefresh.addMouseListener(this);
 		export.addMouseListener(this);
 		timelyTaskUrlSet.addMouseListener(this);
 	}
@@ -143,7 +143,7 @@ public class IssueTasks2 extends JPanel implements MouseListener {
 				// 空任务
 				new Promptinformation(null, "请输入混合url", Constant.KeyValue.get("Info"));// １为普通窗口2为确认对话窗口
 			}
-		} else if ("refresh".equals(e.getComponent().getName())) {
+		} else if ("timelyUrlPublishRefresh".equals(e.getComponent().getName())) {
 			// 刷新获取数据
 			UrlData = Data.getTimelyUrlData();//得到总数据
 			String[][] data = StringManipulation.twoToTwo(UrlData, 0);
@@ -228,8 +228,8 @@ public class IssueTasks2 extends JPanel implements MouseListener {
 	public void mouseEntered(MouseEvent e) {// 进入
 		if ("timelyUrlPublish".equals(e.getComponent().getName())) {
 			timelyUrlPublish.setBackground(Color.WHITE);
-		} else if ("refresh".equals(e.getComponent().getName())) {
-			refresh.setBackground(Color.WHITE);
+		} else if ("timelyUrlPublishRefresh".equals(e.getComponent().getName())) {
+			timelyUrlPublishRefresh.setBackground(Color.WHITE);
 		} else if ("export".equals(e.getComponent().getName())) {
 			export.setBackground(Color.WHITE);
 		}
@@ -239,8 +239,8 @@ public class IssueTasks2 extends JPanel implements MouseListener {
 	public void mouseExited(MouseEvent e) {// 离开
 		if ("timelyUrlPublish".equals(e.getComponent().getName())) {
 			timelyUrlPublish.setBackground(Theme.ButtonColor);
-		} else if ("refresh".equals(e.getComponent().getName())) {
-			refresh.setBackground(Theme.ButtonColor);
+		} else if ("timelyUrlPublishRefresh".equals(e.getComponent().getName())) {
+			timelyUrlPublishRefresh.setBackground(Theme.ButtonColor);
 		}else if ("export".equals(e.getComponent().getName())) {
 			export.setBackground(Theme.ButtonColor);
 		}

@@ -68,7 +68,7 @@ public class Promptinformation implements MouseListener {
 	}
 
 	private void setColour() {
-		infoJP.setBackground(Theme.InfoPanelColor);
+		infoJP.setBackground(Theme.PromptPanelColor);
 
 		info.setFont(new Font("微软雅黑",0,22));
 		info.setForeground(Color.WHITE);
