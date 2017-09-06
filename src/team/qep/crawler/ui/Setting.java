@@ -1,27 +1,20 @@
 package team.qep.crawler.ui;
 
 import java.awt.Color;
-import java.awt.Font;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.util.HashMap;
-import java.util.Iterator;
-
 import javax.swing.ButtonGroup;
-import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
+import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
-import javax.swing.JScrollPane;
-import javax.swing.JTable;
-import javax.swing.table.DefaultTableModel;
-
 import team.qep.crawler.util.Constant;
 
 public class Setting extends JPanel implements MouseListener {
-
+	private JFrame JF;
 	private JLabel setting = new JLabel("设   置   中   心");
 	
 	private JLabel refresh = new JLabel("Refresh Interval :");
@@ -32,7 +25,8 @@ public class Setting extends JPanel implements MouseListener {
 	private JRadioButton color = new JRadioButton("炫 彩");
 	private ButtonGroup group = new ButtonGroup();
 
-	public Setting() {
+	public Setting(JFrame ctlJF) {
+		this.JF=ctlJF;
 		this.Init();
 		this.loadingData();
 		this.setBounds();
@@ -48,7 +42,6 @@ public class Setting extends JPanel implements MouseListener {
 		this.add(refresh);
 		this.add(refreshInterval);
 		this.add(apply);
-		
 	}
 
 	private void loadingData() {// 装载数据
@@ -97,7 +90,7 @@ public class Setting extends JPanel implements MouseListener {
 		bw.setBackground(Theme.ButtonColor);
 		color.setBackground(Theme.ButtonColor);
 		apply.setBackground(Theme.ButtonColor);
-		apply.setIcon(Constant.getIcon("apply"));
+		apply.setIcon(Constant.getIcon(apply,"apply"));
 	}
 	private void listener() {
 		apply.addMouseListener(this);
@@ -121,11 +114,14 @@ public class Setting extends JPanel implements MouseListener {
 				}
 			}
 			if(Constant.importSettings(theme,refresh)){
-				new Promptinformation(null, "更新成功,需重起生效", Constant.KeyValue.get("Info"));
+				Constant.exportSettings();// 导入设置
+				Theme.setTheme(Constant.Theme);// 应用主题
+				new UI();
+				JF.dispose();
+				new Promptinformation(null, "              更新成功", Constant.KeyValue.get("Info"));
 			}else{
-				new Promptinformation(null, "更新失败,请检查配置文件", Constant.KeyValue.get("Info"));
+				new Promptinformation(null, "      更新失败,请检查配置文件", Constant.KeyValue.get("Info"));
 			}
-			System.out.println(refresh);
 		} 
 	}
 
@@ -133,14 +129,12 @@ public class Setting extends JPanel implements MouseListener {
 	}
 
 	public void mouseReleased(MouseEvent e) {// 释放
-
 	}
 
 	public void mouseEntered(MouseEvent e) {// 进入
 		if ("apply".equals(e.getComponent().getName())) {
 			apply.setBackground(Color.WHITE);
 		}
-
 	}
 
 	public void mouseExited(MouseEvent e) {// 离开
@@ -148,5 +142,4 @@ public class Setting extends JPanel implements MouseListener {
 			apply.setBackground(Theme.ButtonColor);
 		}
 	}
-
 }

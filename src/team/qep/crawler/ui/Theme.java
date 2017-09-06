@@ -3,8 +3,6 @@ package team.qep.crawler.ui;
 import java.awt.Color;
 import java.awt.Font;
 
-import team.qep.crawler.util.Constant;
-
 //主题
 public class Theme {
 	public static Font TitleFont = new Font("微软雅黑", 0, 26);// 标题字体
@@ -65,24 +63,23 @@ public class Theme {
 			Panel1 = new Color(30, 144, 255); 
 			Panel2 = new Color(69,137,148);
 			Panel3 = new Color(117,36,35); 
-			Panel4 = new Color(227,160,93);
+			Panel4 = new Color(20,68,106);
 			Panel5 = new Color(64,116,52);
 			Panel6 = new Color(84,57,138);
 			Panel7 = new Color(102,4,69);
 			Panel8 = new Color(50,50,50);
 			Panel9 = new Color(1,1,76); 
 			PromptPanelColor=new Color(90, 90, 90);
-			SidebarPanelColor = new Color(235,235,235);// 侧边栏面板色
-			SidebarButton1 = new Color(235,235,235);// 侧边栏按钮1的颜色
-			SidebarButton2 = new Color(235,235,235);// 侧边栏按钮2的颜色
-			SidebarButton3 = new Color(235,235,235);// 侧边栏按钮3的颜色
-			SidebarButton4 = new Color(235,235,235);// 侧边栏按钮4的颜色
-			SidebarButton5 = new Color(235,235,235);// 侧边栏按钮5的颜色
-			SidebarButton6 = new Color(235,235,235);// 侧边栏按钮6的颜色
-			SidebarButton7 = new Color(235,235,235);// 侧边栏按钮7的颜色
-			SidebarButton8 = new Color(235,235,235);// 侧边栏按钮8的颜色
-			SidebarButton9 = new Color(235,235,235);// 侧边栏按钮9的颜色
+			SidebarPanelColor = new Color(200,200,200);// 侧边栏面板色
+			SidebarButton1 = new Color(200,200,200);// 侧边栏按钮1的颜色
+			SidebarButton2 = new Color(200,200,200);// 侧边栏按钮2的颜色
+			SidebarButton3 = new Color(200,200,200);// 侧边栏按钮3的颜色
+			SidebarButton4 = new Color(200,200,200);// 侧边栏按钮4的颜色
+			SidebarButton5 = new Color(200,200,200);// 侧边栏按钮5的颜色
+			SidebarButton6 = new Color(200,200,200);// 侧边栏按钮6的颜色
+			SidebarButton7 = new Color(200,200,200);// 侧边栏按钮7的颜色
+			SidebarButton8 = new Color(200,200,200);// 侧边栏按钮8的颜色
+			SidebarButton9 = new Color(200,200,200);// 侧边栏按钮9的颜色
 		}
-
 	}
 }

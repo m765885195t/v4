@@ -5,7 +5,6 @@ import java.awt.Font;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 
-import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
@@ -61,7 +60,7 @@ public class Promptinformation implements MouseListener {
 
 	private void setBounds() {
 		infoJP.setBounds(0, 0, Constant.JDialog_Width, Constant.JDialog_Height);
-		info.setBounds(25, 15,  Constant.JDialog_Width-50,Constant.JDialog_Height-65);
+		info.setBounds(25, 35,  Constant.JDialog_Width-50,Constant.JDialog_Height-90);
 		sure.setBounds(140, 135, 60, 36);
 		yes.setBounds(60, 137, 60, 36);
 		no.setBounds(230, 137, 60, 36);
@@ -71,20 +70,19 @@ public class Promptinformation implements MouseListener {
 		infoJP.setBackground(Theme.PromptPanelColor);
 
 		info.setFont(new Font("微软雅黑",0,22));
-		info.setForeground(Color.WHITE);
+		info.setForeground(Color.black);
+		info.setForeground(Color.white);
 		info.setOpaque(false);//设为透明
 		
 		sure.setOpaque(false);
 		sure.setBackground(Theme.ButtonColor);
-		sure.setIcon(Constant.getIcon("sureb"));
-
+		sure.setIcon(Constant.getIcon(sure,"sureb"));
 		yes.setOpaque(false);
 		yes.setBackground(Theme.ButtonColor);
-		yes.setIcon(Constant.getIcon("yesb"));
-		
+		yes.setIcon(Constant.getIcon(yes,"yesb"));
 		no.setOpaque(false);
 		no.setBackground(Theme.ButtonColor);
-		no.setIcon(Constant.getIcon("nob"));
+		no.setIcon(Constant.getIcon(no,"nob"));
 	}
 
 	private void listener() {
@@ -121,21 +119,21 @@ public class Promptinformation implements MouseListener {
 
 	public void mouseEntered(MouseEvent e) {// 进入
 		if ("sure".equals(e.getComponent().getName())) {
-			sure.setIcon(Constant.getIcon("surew"));
+			sure.setIcon(Constant.getIcon(sure,"surew"));
 		} else if ("yes".equals(e.getComponent().getName())) {
-			yes.setIcon(Constant.getIcon("yesw"));
+			yes.setIcon(Constant.getIcon(yes,"yesw"));
 		} else if ("no".equals(e.getComponent().getName())) {
-			no.setIcon(Constant.getIcon("now"));
+			no.setIcon(Constant.getIcon(no,"now"));
 		} 
 	}
 
 	public void mouseExited(MouseEvent e) {// 离开
 		if ("sure".equals(e.getComponent().getName())) {
-			sure.setIcon(Constant.getIcon("sureb"));
+			sure.setIcon(Constant.getIcon(sure,"sureb"));
 		} else if ("yes".equals(e.getComponent().getName())) {
-			yes.setIcon(Constant.getIcon("yesb"));
+			yes.setIcon(Constant.getIcon(yes,"yesb"));
 		} else if ("no".equals(e.getComponent().getName())) {
-			no.setIcon(Constant.getIcon("nob"));
+			no.setIcon(Constant.getIcon(no,"nob"));
 		} 
 	}
 }

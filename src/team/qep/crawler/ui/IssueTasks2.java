@@ -7,19 +7,12 @@ import java.awt.event.MouseListener;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.Random;
-
-import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextArea;
-import javax.swing.RowSorter;
 import javax.swing.table.DefaultTableModel;
-import javax.swing.table.TableModel;
-import javax.swing.table.TableRowSorter;
-
 import team.qep.crawler.server.Data;
 import team.qep.crawler.server.Task;
 import team.qep.crawler.util.Constant;
@@ -94,8 +87,8 @@ public class IssueTasks2 extends JPanel implements MouseListener {
 		Init.initJTextArea(bnDataJTA, "bnDataJTA");
 		Init.initJScrollPane(bnDataJSP, "bnDataJSP");
 		bnDataJTA.setFont(Theme.Tablefont);// 设置字体格式
+//		bnDataJTA.setLineWrap(false);
 		bnDataJTA.setEditable(false);//屏蔽输入
-		bnDataJTA.setFocusable(false);//消除光标
 		timelyTaskUrlSet.setFont(new Font("serif", 0, 16));// 设置表格字体
 		ecDataJT.setFont(Theme.Tablefont);// 设置表格字体
 	}
@@ -115,11 +108,11 @@ public class IssueTasks2 extends JPanel implements MouseListener {
 		this.setBackground(Theme.Panel2);
 
 		timelyUrlPublishRefresh.setBackground(Theme.ButtonColor);
-		timelyUrlPublishRefresh.setIcon(Constant.getIcon("timelyUrlPublishRefresh"));
+		timelyUrlPublishRefresh.setIcon(Constant.getIcon(timelyUrlPublishRefresh,"timelyUrlPublishRefresh"));
 		timelyUrlPublish.setBackground(Theme.ButtonColor);
-		timelyUrlPublish.setIcon(Constant.getIcon("timelyUrlPublish"));
+		timelyUrlPublish.setIcon(Constant.getIcon(timelyUrlPublish,"timelyUrlPublish"));
 		export.setBackground(Theme.ButtonColor);
-		export.setIcon(Constant.getIcon("export"));
+		export.setIcon(Constant.getIcon(export,"export"));
 	}
 
 	private void listener() {
@@ -134,14 +127,14 @@ public class IssueTasks2 extends JPanel implements MouseListener {
 			String timelyURL = timelyURLSet.getText();
 			if (!timelyURL.equals("")) {
 				if (Task.timelyUrlPublish(timelyURL)) {
-					new Promptinformation(null,"即时任务发布成功",Constant.KeyValue.get("Info"));// １为普通窗口2为确认对话窗口
+					new Promptinformation(null,"      即时任务发布成功",Constant.KeyValue.get("Info"));// １为普通窗口2为确认对话窗口
 					timelyURLSet.setText("");
 				} else {
-					new Promptinformation(null, "请检查网络连接", Constant.KeyValue.get("Info"));// １为普通窗口2为确认对话窗口
+					new Promptinformation(null, "      请检查网络连接", Constant.KeyValue.get("Info"));// １为普通窗口2为确认对话窗口
 				}
 			} else {
 				// 空任务
-				new Promptinformation(null, "请输入混合url", Constant.KeyValue.get("Info"));// １为普通窗口2为确认对话窗口
+				new Promptinformation(null, "      请输入混合url", Constant.KeyValue.get("Info"));// １为普通窗口2为确认对话窗口
 			}
 		} else if ("timelyUrlPublishRefresh".equals(e.getComponent().getName())) {
 			// 刷新获取数据
@@ -190,7 +183,7 @@ public class IssueTasks2 extends JPanel implements MouseListener {
 					String[][] data = StringManipulation.toTwoDimensionalArrays(ConvertJSON.toStringArray(str),6);
 			
 					if(Data.saveCSV(new SimpleDateFormat("yyyyMMddHHmmss").format(new Date())+".csv",Constant.E_CommerceCcolumnNames,data)){
-						new Promptinformation(null, "表格文件导出成功(./data/EC/),是否打开所在文件夹", Constant.KeyValue.get("Confirm"));
+						new Promptinformation(null, "      表格文件导出成功(./data/EC/),是否打开所在文件夹", Constant.KeyValue.get("Confirm"));
 						if(Promptinformation.flag){
 							try {
 								Runtime.getRuntime().exec("explorer.exe "+System.getProperty("user.dir")+"\\data\\EC\\");
@@ -203,7 +196,7 @@ public class IssueTasks2 extends JPanel implements MouseListener {
 					String filename=UrlData[selectedRow][2].substring(5,UrlData[selectedRow][2].indexOf("\n"));
 
 					if(Data.saveFile(filename+".txt",UrlData[selectedRow][2].replace("\n",System.getProperty("line.separator")))){
-						new Promptinformation(null, "文件导出成功(./data/BN/),是否打开所在文件夹", Constant.KeyValue.get("Confirm"));
+						new Promptinformation(null, "      文件导出成功(./data/BN/),是否打开所在文件夹", Constant.KeyValue.get("Confirm"));
 						if(Promptinformation.flag){
 							try {
 								Runtime.getRuntime().exec("explorer.exe "+System.getProperty("user.dir")+"\\data\\BN\\");

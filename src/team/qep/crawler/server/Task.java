@@ -24,7 +24,6 @@ public class Task {
 		for(String url:set){
 			flag=true;
 			for(String[] str: runUrlSet){
-				System.out.println(str[0]+"     "+url);
 				if(url.equals(str[0]) && str[1].equals("")){
 					 flag=false;
 					 break;

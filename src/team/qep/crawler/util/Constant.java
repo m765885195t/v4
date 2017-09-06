@@ -11,25 +11,31 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 
 import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JLabel;
 
 public class Constant {
 	//主窗口默认值
-	public static final int JFrame_Width  = 1024;
-	public static final int JFrame_Height = 632;
-	//提示信息窗口
-	public static final int JDialog_Width  = 350;
-	public static final int JDialog_Height = 180;
 	public static String Theme="BlackWhite";
 	public static String RefreshInterval="0";
-	
+
+	public static final int JFrame_Width  = 1024;
+	public static final int JFrame_Height = 632;
+	public static final int JDialog_Width  = 350;
+	public static final int JDialog_Height = 180;
+	public static final String[] E_CommerceCcolumnNames = new String[]{"商品url","商品名","商品价格","店铺名","店铺url","店铺综合评分"};//电商数据列名
+	public static final String[] BlogNewsCcolumnNames = new String[]{"标题","发布时间","类别","标签","阅读人数","正文摘要"};//博客新闻数据列名
+	public static final String[] TaskCcolumnNames = new String[]{"URL","关键字","任务类别","所在从机编号","发布时间","任务状态"};//任务数据列名
+	public static final String[] HistoricalTaskCcolumnNames = new String[]{"URL","关键字","总数"};//下载数据列名
+	public static final String[] ResourceSchedulingCcolumnNames = new String[]{"从机编号","IP","状态","任务数"};//历史任务数据列名
+
 	//刷新间隔时间
 	public static final LinkedHashMap<String,String> Refresh  = new LinkedHashMap<String,String>(){
 		{
-			put("0" ,"    Not Refreshed");
-			put("5" ,"   5 seconds apart");
-			put("10","  10 seconds apart");
-			put("30","  30 seconds apart");
-			put("60","  60 seconds apart");
+			put("0" ,"   Not Refreshed");
+			put("15"," 15 seconds apart");
+			put("30"," 30 seconds apart");
+			put("60"," 60 seconds apart");
 		}
 	};
 	//UI选项卡的键值对
@@ -53,43 +59,37 @@ public class Constant {
 	//模糊任务集 
 	public static final ArrayList<String> SupportFuzzyUrl = new ArrayList<String>(){{
 		add("www.taobao.com");
-		add("www.tmall.com");
-		add("www.jd.com");
-		add("www.suning.com");
-		add("www.gome.com");
-		add("www.amazon.cn");
-		add("www.dangdang.com");
-		add("www.cnblogs.com");
-		add("blog.csdn.net");
+		add("www.tmall.com");//1
+		add("www.jd.com");//2
+		add("www.cnblogs.com");//3
+		add("blog.csdn.net");//4
 		add("blog.sina.com.cn");
-		add("blog.51cto.com");
-		add("blog.hexun.com");
-		add("www.chinanews.com");
-		add("www.chinadaily.com.cn");
-		add("www.eastday.com");
-		add("www.huanqiu.com");
-		add("news.sina.com.cn");
+		add("blog.51cto.com");//6
+		add("www.chinanews.com");//7
+		add("www.chinadaily.com.cn");//8
+		add("www.eastday.com");//9
+		add("www.huanqiu.com");//10
+		add("news.sina.com.cn");//11
 	}};
 	//模糊任务集上电商与博客新闻的分割线
-	public static final int division = 7;
+	public static final int division = 3;
 	//精确任务集-------模糊任务集的子集
 	public static final ArrayList<String> SupportExactUrl = new ArrayList<String>(){{
 		add("www.taobao.com");
 		add("www.tmall.com");
 		add("www.jd.com");
-		add("www.suning.com");
-		add("www.gome.com");
-		add("www.amazon.cn");
-		add("www.dangdang.com");
+		add("www.cnblogs.com");
+		add("blog.csdn.net");
+		add("blog.sina.com.cn");
+		add("blog.51cto.com");
+		add("news.sina.com.cn");
 	}};
 
-	//及时任务的配置模板
-	public static final ArrayList<String> Template = new ArrayList<String>(){{
-		add("taobao");
-		add("tmall");
-		add("blog.csdn");
-		add("news.sina");
-		add("blog.sina");
+	//从机资源表
+	public static final ArrayList<String> Resource = new ArrayList<String>(){{
+		add("101.200.55.43");
+		add("47.94.155.238");
+		add("47.93.198.31");
 	}};
 	//协议表
 	public static final HashMap<String, Integer> Agreement = new HashMap<String, Integer>() {
@@ -101,15 +101,15 @@ public class Constant {
 			put("exactUrlPublish", 5);//发布精确任务
 			put("timelyUrlPublish", 8);//发布即时任务
 			put("ModifyTaskStatus", 9);//修改任务状态
-			put("DownloadData", 13);//下载的数据量
-			put("ProgressData", 21);//爬取的数据量
-			put("TotalData", 34);//三大类别数据量
-			put("TimelyData", 35);//即时数据
+			put("DownloadData", 13);//数据统计表的数据量
+			put("ProgressData", 21);//进度折线图的数据量
+			put("TotalData", 34);//数据统计饼状图数据量
+			put("TimelyData", 35);///即时任务的数据量
+			put("urlData", 36);//模糊任务与精确任务的数据量
 			put("ResourceInformation", 55);//从机资源信息
 			put("ModifyResourceStatus", 56);//修改从机状态
 			put("AddDeleteResource", 57);//添加或删除从机资源
 			put("DeleteTaskData", 89);//删除任务数据
-			put("urlkData", 144);//删除任务数据
 		}
 	};
 	
@@ -134,21 +134,15 @@ public class Constant {
 			
 			put("Info", 89);//信息窗口
 			put("Confirm", 144);//确认对话窗口
-			
 		}
 	};
 	
-	public static final String[] E_CommerceCcolumnNames = new String[]{"商品url","商品名","商品价格","店铺名","店铺url","店铺综合评分"};//电商数据列名
-	public static final String[] BlogNewsCcolumnNames = new String[]{"标题","发布时间","类别","标签","阅读人数","正文摘要"};//博客新闻数据列名
-	public static final String[] TaskCcolumnNames = new String[]{"URL","关键字","任务类别","所在从机","发布时间","任务状态"};//任务数据列名
-	public static final String[] HistoricalTaskCcolumnNames = new String[]{"URL","关键字","总数"};//下载数据列名
-	public static final String[] ResourceSchedulingCcolumnNames = new String[]{"从机编号","IP","状态","任务数"};//历史任务数据列名
-
-	public static ImageIcon getIcon(String path) {// 得到icon
-		return new ImageIcon("./image/icon/"+Theme+"/"+ path + ".png");
+	public static ImageIcon getIcon(JButton jb,String path) {// 得到icon
+		return new ImageIcon(jb.getClass().getResource("/image/icon/"+Theme+"/"+ path + ".png"));
 	}
-	public static String getHelpPicturePath(int layer) {// 得到提示框路径
-		return "./image/help/"+layer+".jpg";
+	public static ImageIcon getHelpPicturePath(JLabel jl,int layer) {// 得到帮助说明路径
+		return new ImageIcon(jl.getClass().getResource("/image/help/"+layer+".jpg"));
+
 	}
 	//导出设置
 	public static boolean exportSettings () {// 得到主题名

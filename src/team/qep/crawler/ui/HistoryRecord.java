@@ -1,26 +1,19 @@
 package team.qep.crawler.ui;
 
 import java.awt.Color;
-import java.awt.Font;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
-import javax.swing.RowSorter;
 import javax.swing.table.DefaultTableModel;
-import javax.swing.table.TableModel;
-import javax.swing.table.TableRowSorter;
-
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
-import org.jfree.chart.plot.CategoryPlot;
 import org.jfree.chart.plot.PiePlot;
 
 import team.qep.crawler.server.Data;
@@ -28,18 +21,16 @@ import team.qep.crawler.server.Task;
 import team.qep.crawler.util.Constant;
 
 public class HistoryRecord extends JPanel implements MouseListener {
-	private Timer temer = new Timer();
 	private JLabel historyRecord = new JLabel("数   据   统   计");
 	private Timer timer =null;
 
-	private String[] columnNames; // 表格列名
 	private String[][] data; // 表格数据
 	private DefaultTableModel taskDataSetModel;
 	private JTable taskDataSet = new JTable();
 	private JScrollPane taskDataJSP = new JScrollPane(taskDataSet); // 历史人任务记录
 	
 	private JFreeChart pieChart = CrawlerChart.getPieChart();
-	private JPanel pieChartJP=new ChartPanel(pieChart);// 历史任务记录
+	private JPanel pieChartJP= new ChartPanel(pieChart);// 历史任务记录
 	private JButton historyRecordRefresh = new JButton();// 刷新
 	private JButton deleteData = new JButton();// 删除数据
 
@@ -58,15 +49,13 @@ public class HistoryRecord extends JPanel implements MouseListener {
 	}
 
 	private void loadingData() {// 装载数据
-		columnNames = Constant.HistoricalTaskCcolumnNames;
-		data=Data.getDownloadDataSet();
-		taskDataSetModel = new DefaultTableModel(data, columnNames){
+		taskDataSetModel = new DefaultTableModel(new String[0][], Constant.HistoricalTaskCcolumnNames){
 			public boolean isCellEditable(int row, int column) {
 				return false;
 			}
 		};
 		taskDataSet.setModel(taskDataSetModel);
-		((PiePlot) pieChart.getPlot()).setDataset(CrawlerChart.getPieDataSet());
+	
 	}
 
 	private void Init() {
@@ -74,11 +63,9 @@ public class HistoryRecord extends JPanel implements MouseListener {
 
 		Init.initJTable(taskDataSet, "taskDataSet");
 		Init.initJScrollPane(taskDataJSP, "taskDataJSP");
-		taskDataSet.setFont(new Font("serif", 0, 17));// 设置表格字体
-		
+		taskDataSet.setFont(Theme.Tablefont);// 设置表格字体
 		Init.initJButton(historyRecordRefresh, "historyRecordRefresh");
 		Init.initJButton(deleteData, "deleteData");
-
 	}
 
 	private void setBounds() {
@@ -96,9 +83,9 @@ public class HistoryRecord extends JPanel implements MouseListener {
 		historyRecord.setFont(Theme.TitleFont);
 		historyRecord.setForeground(Theme.TitleColor);
 		historyRecordRefresh.setBackground(Theme.ButtonColor);
-		historyRecordRefresh.setIcon(Constant.getIcon("historyRecordRefresh"));
+		historyRecordRefresh.setIcon(Constant.getIcon(historyRecordRefresh,"historyRecordRefresh"));
 		deleteData.setBackground(Theme.ButtonColor);
-		deleteData.setIcon(Constant.getIcon("deleteData"));
+		deleteData.setIcon(Constant.getIcon(deleteData,"deleteData"));
 	}
 
 	private void listener() {
@@ -108,7 +95,7 @@ public class HistoryRecord extends JPanel implements MouseListener {
 
 	public void mouseClicked(MouseEvent e) {// 单击
 		if ("historyRecordRefresh".equals(e.getComponent().getName())) {
-			if(timer!=null){//取消定时任务
+			if(timer!=null){
 				timer.cancel();
 				timer=null;
 			}
@@ -116,35 +103,54 @@ public class HistoryRecord extends JPanel implements MouseListener {
 				timer = new Timer();
 				timer.scheduleAtFixedRate(new TimerTask() {
 					public void run() {
-						loadingData();
-					}
-				 },0,Integer.valueOf(Constant.RefreshInterval)*1000);
-			}else{
-				loadingData();
-			}
-		}else if ("deleteData".equals(e.getComponent().getName())) {
-			int selectedRow = taskDataSet.getSelectedRow();
-			if (selectedRow != -1) {
-				String url=taskDataSet.getValueAt(selectedRow, 0).toString();
-				String keyWord=taskDataSet.getValueAt(selectedRow, 1).toString();
-				
-				new Promptinformation(null, "确定要删除此任务的所有数据?", Constant.KeyValue.get("Confirm"));
-				if(Promptinformation.flag){
-					Promptinformation.flag=false;//状态改回去
-
-					if(Task.deleteTaskData(url, keyWord)){
-						new Promptinformation(null, "删除成功", Constant.KeyValue.get("Info"));
-
 						data=Data.getDownloadDataSet();
-						taskDataSetModel = new DefaultTableModel(data, columnNames) {
+						taskDataSetModel = new DefaultTableModel(data, Constant.HistoricalTaskCcolumnNames){
 							public boolean isCellEditable(int row, int column) {
 								return false;
 							}
 						};
 						taskDataSet.setModel(taskDataSetModel);
 						((PiePlot) pieChart.getPlot()).setDataset(CrawlerChart.getPieDataSet());
-					}else{
-						new Promptinformation(null, "删除失败,请检查网络连接", Constant.KeyValue.get("Info"));
+						if(data.length<=0){//停止刷新
+							if(timer!=null){
+								timer.cancel();
+								timer=null;
+							}
+						}					}
+				 },0,Integer.valueOf(Constant.RefreshInterval)*1000);
+			}else{
+				data=Data.getDownloadDataSet();
+				taskDataSetModel = new DefaultTableModel(data, Constant.HistoricalTaskCcolumnNames){
+					public boolean isCellEditable(int row, int column) {
+						return false;
+					}
+				};
+				taskDataSet.setModel(taskDataSetModel);
+				((PiePlot) pieChart.getPlot()).setDataset(CrawlerChart.getPieDataSet());
+				if(data.length<=0){//停止刷新
+					if(timer!=null){
+						timer.cancel();
+						timer=null;
+					}
+				}			}
+		}else if ("deleteData".equals(e.getComponent().getName())) {
+			int selectedRow = taskDataSet.getSelectedRow();
+			if (selectedRow != -1) {
+				String url=taskDataSet.getValueAt(selectedRow, 0).toString();
+				String keyWord=taskDataSet.getValueAt(selectedRow, 1).toString();
+				
+				new Promptinformation(null, "      确定要删除此任务的所有数据?", Constant.KeyValue.get("Confirm"));
+				if(Promptinformation.flag){
+					if(Task.deleteTaskData(url, keyWord)){
+						data=Data.getDownloadDataSet();
+						taskDataSetModel = new DefaultTableModel(data, Constant.HistoricalTaskCcolumnNames) {
+							public boolean isCellEditable(int row, int column) {
+								return false;
+							}
+						};
+						taskDataSet.setModel(taskDataSetModel);
+						((PiePlot) pieChart.getPlot()).setDataset(CrawlerChart.getPieDataSet());
+						new Promptinformation(null, "      删除成功", Constant.KeyValue.get("Info"));
 					}
 				}
 			}

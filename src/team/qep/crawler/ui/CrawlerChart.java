@@ -7,24 +7,15 @@ import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.Random;
-
-import javax.swing.JPanel;
-
 import org.jfree.chart.ChartFactory;
-import org.jfree.chart.ChartFrame;
-import org.jfree.chart.ChartPanel;
 import org.jfree.chart.ChartUtilities;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.axis.CategoryAxis;
-import org.jfree.chart.axis.CategoryLabelPositions;
 import org.jfree.chart.axis.NumberAxis;
-import org.jfree.chart.axis.NumberTickUnit;
 import org.jfree.chart.labels.StandardCategoryItemLabelGenerator;
 import org.jfree.chart.labels.StandardPieSectionLabelGenerator;
 import org.jfree.chart.plot.CategoryPlot;
 import org.jfree.chart.plot.PiePlot;
-import org.jfree.chart.plot.PiePlot3D;
 import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.chart.renderer.category.LineAndShapeRenderer;
 import org.jfree.data.category.DefaultCategoryDataset;
@@ -38,8 +29,6 @@ public class CrawlerChart {
 		// JFreeChart对象 参数：标题，目录轴显示标签，数据轴显示标签，数据集，是否显示图例，是否生成工具，是否生成URL连接
 		JFreeChart jfreechart = ChartFactory.createLineChart("Task Schedule", "", "", null,
 				PlotOrientation.VERTICAL, true, true, false);
-		// jfreechart = ChartFactory.createLineChart3D("", "", "",getDataSet(),
-		// PlotOrientation.VERTICAL, true, true, false);
 
 		// jfreechart.setBorderVisible(true);// 边框可见
 		jfreechart.getLegend().setItemFont(new Font("微软雅黑", 1, 15));// 图例字体
@@ -80,13 +69,11 @@ public class CrawlerChart {
 				BasicStroke.JOIN_ROUND, // 折点风格
 				8f, dashes, 0.6f);
 
-//		renderer.setSeriesStroke(0, brokenLine); // 第一条线用虚线绘
-
 		return jfreechart;
 	}
 	//得到饼状图
 	public static JFreeChart getPieChart() {
-		JFreeChart chart = ChartFactory.createPieChart("Total Data Weight ", getPieDataSet(), true, true, false);
+		JFreeChart chart = ChartFactory.createPieChart("Total Data Weight ", null, true, true, false);
 
 		chart.getTitle().setFont(new Font("微软雅黑", Font.BOLD, 18));// 标题字体
 		chart.getLegend().setItemFont(new Font("微软雅黑", Font.BOLD, 15));// 图例字体
@@ -100,8 +87,8 @@ public class CrawlerChart {
 		categoryPlot.setNoDataMessagePaint(Color.RED);// 字体颜色
 
 		// 设置图形的数据格式为(电商--总数(百分比))
-		categoryPlot.setLabelGenerator(new StandardPieSectionLabelGenerator("{1}条({2})"));
-
+		categoryPlot.setLabelGenerator(new StandardPieSectionLabelGenerator("{1}({2})"));
+		
 		return chart;
 	}
 	
@@ -126,7 +113,7 @@ public class CrawlerChart {
 
 	// 保存为图片
 	public static boolean savePicture(JFreeChart jfreechart) {
-		File file = new File("./image/schedule/" + new SimpleDateFormat("yyyyMMddHHmmss").format(new Date()) + ".jpg");
+		File file = new File("./data/schedule/" + new SimpleDateFormat("yyyyMMddHHmmss").format(new Date()) + ".jpg");
 		if (!file.exists()) {// 文件不存在则创建
 			try {
 				file.getParentFile().mkdirs();
@@ -138,15 +125,5 @@ public class CrawlerChart {
 			}
 		}
 		return true;
-	}
-
-	public static void main(String[] args) {
-		// 使用ChartFrame对象显示图像
-		ChartFrame frame1 = new ChartFrame("xyz", getLineChart());
-		frame1.setVisible(true);
-		frame1.pack();
-		ChartFrame frame2 = new ChartFrame("xyz", getPieChart());
-		frame2.setVisible(true);
-		frame2.pack();
 	}
 }

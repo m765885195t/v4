@@ -20,6 +20,8 @@ import team.qep.crawler.util.MyDocument;
 import team.qep.crawler.util.StringManipulation;
 
 public class IssueTasks1 extends JPanel implements MouseListener {
+	private JLabel support = new JLabel("支 持 列 表");
+
 	private JTable supportUrlSet = new JTable(new DefaultTableModel(
 			StringManipulation.toTwoDimensionalArrays(Constant.SupportFuzzyUrl), new String[] { "SupportURL" }) {
 		public boolean isCellEditable(int row, int column) {
@@ -27,7 +29,6 @@ public class IssueTasks1 extends JPanel implements MouseListener {
 		}
 	});
 	private JScrollPane supportedJSP = new JScrollPane(supportUrlSet); // 支持的url集合
-
 	private JLabel fuzzy = new JLabel("模  糊  爬  取");
 
 	private JTextArea fuzzyURLSet = new JTextArea();
@@ -48,6 +49,7 @@ public class IssueTasks1 extends JPanel implements MouseListener {
 		this.setColour();
 		this.listener();
 
+		this.add(support);
 		this.add(fuzzy);
 		this.add(supportedJSP);
 		this.add(fuzzyURLSetJSP);
@@ -62,7 +64,7 @@ public class IssueTasks1 extends JPanel implements MouseListener {
 	}
 
 	private void loadingData() {// 装载数据
-		for (int i = 1; i <= 5; i++) {
+		for (int i = 1; i <= 3; i++) {
 			fuzzyUrlPriority.addItem("      优先级      " + String.valueOf(i));
 			exactUrlPriority.addItem("      优先级      " + String.valueOf(i));
 		}
@@ -75,6 +77,7 @@ public class IssueTasks1 extends JPanel implements MouseListener {
 		Init.initJTable(supportUrlSet, "supportUrlSet");
 		Init.initJScrollPane(supportedJSP, "supportedJSP");
 
+		Init.initJLable(support, "support");
 		Init.initJLable(fuzzy, "fuzzy");
 		Init.initJTextArea(fuzzyURLSet, "fuzzyURLSet");
 		Init.initJScrollPane(fuzzyURLSetJSP, "fuzzyURLSetJSP");
@@ -90,7 +93,8 @@ public class IssueTasks1 extends JPanel implements MouseListener {
 	}
 
 	private void setBounds() {
-		supportedJSP.setBounds(50, 35, 200, 508);
+		support.setBounds(55, 10, 200, 32);
+		supportedJSP.setBounds(50, 60, 210, 480);
 
 		fuzzy.setBounds(360, 10, 200, 32);
 		fuzzyURLSetJSP.setBounds(350, 60, 230, 330);
@@ -107,15 +111,17 @@ public class IssueTasks1 extends JPanel implements MouseListener {
 	private void setColour() {
 		this.setBackground(Theme.Panel1);
 
+		support.setFont(Theme.TitleFont);
+		support.setForeground(Theme.TitleColor);
 		fuzzy.setFont(Theme.TitleFont);
 		fuzzy.setForeground(Theme.TitleColor);
 		fuzzyUrlPublish.setBackground(Theme.ButtonColor);
-		fuzzyUrlPublish.setIcon(Constant.getIcon("fuzzyUrlPublish"));
+		fuzzyUrlPublish.setIcon(Constant.getIcon(fuzzyUrlPublish,"fuzzyUrlPublish"));
 
 		exact.setFont(Theme.TitleFont);
 		exact.setForeground(Theme.TitleColor);
 		exactUrlPublish.setBackground(Theme.ButtonColor);
-		exactUrlPublish.setIcon(Constant.getIcon("exactUrlPublish"));
+		exactUrlPublish.setIcon(Constant.getIcon(exactUrlPublish,"exactUrlPublish"));
 	}
 
 	private void listener() {
@@ -137,19 +143,20 @@ public class IssueTasks1 extends JPanel implements MouseListener {
 				int num=Data.isFfectiveResource();
 				if(num>0){
 					priority=Math.min(num,priority);
+					System.out.println(priority+"从机数");
 					if (Task.fuzzyUrlPublish(fuzzyURL, priority)) {
-						new Promptinformation(null,"模糊任务发布成功,已自动修正链接",Constant.KeyValue.get("Info"));
+						new Promptinformation(null,"      模糊任务发布成功,已自动修正链接与去重",Constant.KeyValue.get("Info"));
 						fuzzyURLSet.setText("");
 						fuzzyUrlPriority.setSelectedIndex(0);
 					} else {
-						new Promptinformation(null, "任务发送失败,可能原因:  已发布过or服务器已断开", Constant.KeyValue.get("Info"));
+						new Promptinformation(null, "      任务发送失败,已存在该任务", Constant.KeyValue.get("Info"));
 					}
 				}else{
-					new Promptinformation(null, "任务发送失败,不存在正在工作的从机,请添加一台从机", Constant.KeyValue.get("Info"));
+					new Promptinformation(null, "      任务发送失败,无正在工作的从机,请添加一台从机", Constant.KeyValue.get("Info"));
 				}
 				
 			} else {
-				new Promptinformation(null, "请选择混合url", Constant.KeyValue.get("Info"));
+				new Promptinformation(null, "      请输入url(可混合输入)", Constant.KeyValue.get("Info"));
 			}
 		} else if ("exactUrlPublish".equals(e.getComponent().getName())) {
 			String exactURL = exactURLSet.getSelectedItem().toString();
@@ -157,16 +164,21 @@ public class IssueTasks1 extends JPanel implements MouseListener {
 			int priority = exactUrlPriority.getSelectedIndex() + 1;
 
 			if (!key.equals("")) {
-				if (Task.exactUrlPublish(exactURL, key, priority)) {
-					new Promptinformation(null,"精确任务发布成功",Constant.KeyValue.get("Info"));
-					exactURLSet.setSelectedIndex(0);
-					keyWord.setText("");
-					exactUrlPriority.setSelectedIndex(0);
-				} else {
-					new Promptinformation(null, "任务发送失败,可能原因:  已发布过or服务器已断开", Constant.KeyValue.get("Info"));
+				int num=Data.isFfectiveResource();
+				if(num>0){
+					if (Task.exactUrlPublish(exactURL, key, priority)) {
+						new Promptinformation(null,"      精确任务发布成功",Constant.KeyValue.get("Info"));
+						exactURLSet.setSelectedIndex(0);
+						keyWord.setText("");
+						exactUrlPriority.setSelectedIndex(0);
+					} else {
+						new Promptinformation(null, "      任务发送失败,已存在该任务", Constant.KeyValue.get("Info"));
+					}
+				}else{
+					new Promptinformation(null, "      任务发送失败,无正在工作的从机,请添加一台从机", Constant.KeyValue.get("Info"));
 				}
 			} else {
-				new Promptinformation(null, "请输入关键字", Constant.KeyValue.get("Info"));
+				new Promptinformation(null, "      请输入关键字", Constant.KeyValue.get("Info"));
 			}
 		}
 	}
@@ -184,7 +196,6 @@ public class IssueTasks1 extends JPanel implements MouseListener {
 		} else if ("exactUrlPublish".equals(e.getComponent().getName())) {
 			exactUrlPublish.setBackground(Color.WHITE);
 		}
-
 	}
 
 	public void mouseExited(MouseEvent e) {// 离开
@@ -194,5 +205,4 @@ public class IssueTasks1 extends JPanel implements MouseListener {
 			exactUrlPublish.setBackground(Theme.ButtonColor);
 		}
 	}
-
 }

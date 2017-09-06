@@ -1,7 +1,6 @@
 package team.qep.crawler.ui;
 
 import java.awt.Color;
-import java.awt.Font;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import javax.swing.ImageIcon;
@@ -13,8 +12,6 @@ import team.qep.crawler.util.Constant;
 public class HelpDescription extends JPanel implements MouseListener {
 	private static int layer=0;
 	
-	private JLabel helpDescription = new JLabel("使   用   说   明");
-
 	private JLabel help = new JLabel();
 	private JButton last = new JButton();// 上一项
 	private JButton next = new JButton();// 下一项
@@ -26,40 +23,34 @@ public class HelpDescription extends JPanel implements MouseListener {
 		this.setColour();
 		this.listener();
 
-		this.add(helpDescription);
 		this.add(help);
 		this.add(last);
 		this.add(next);
 	}
 
 	private void loadingData() {// 装载数据
-		help.setIcon(new ImageIcon(Constant.getHelpPicturePath(layer)));
+		help.setIcon(Constant.getHelpPicturePath(help,layer));
 	}
 
 	private void Init() {
-		Init.initJLable(helpDescription, "helpDescription");
 		Init.initJLable(help, "help");
 		Init.initJButton(last, "last");
 		Init.initJButton(next, "next");
 	}
 
 	private void setBounds() {
-		helpDescription.setBounds(320, 0, 300, 35);
-
-		help.setBounds(80, 60, 800,450);
-		last.setBounds(244, 540, 120, 40);
+		help.setBounds(80, 15, 798,493);
+		last.setBounds(234, 540, 120, 40);
 		next.setBounds(610, 540, 120, 40);
 	}
 
 	private void setColour() {
 		this.setBackground(Theme.Panel8);
 		
-		helpDescription.setFont(Theme.TitleFont);
-		helpDescription.setForeground(Theme.TitleColor);
 		last.setBackground(Theme.ButtonColor);
-		last.setIcon(Constant.getIcon("last"));
+		last.setIcon(Constant.getIcon(last,"last"));
 		next.setBackground(Theme.ButtonColor);
-		next.setIcon(Constant.getIcon("next"));
+		next.setIcon(Constant.getIcon(next,"next"));
 	}
 
 	private void listener() {
@@ -70,29 +61,19 @@ public class HelpDescription extends JPanel implements MouseListener {
 	public void mouseClicked(MouseEvent e) {// 单击
 		if ("last".equals(e.getComponent().getName())) {
 			layer=(layer+6)%7;
-			help.setIcon(new ImageIcon(Constant.getHelpPicturePath(layer)));
+			loadingData();
 		} else if ("next".equals(e.getComponent().getName())) {
 			layer=(layer+1)%7;
-			help.setIcon(new ImageIcon(Constant.getHelpPicturePath(layer)));
+			loadingData();
 		}
 	}
-
-	public void mousePressed(MouseEvent e) {// 按下
-	}
-
-	public void mouseReleased(MouseEvent e) {// 释放
-
-	}
-
 	public void mouseEntered(MouseEvent e) {// 进入
 		if ("last".equals(e.getComponent().getName())) {
 			last.setBackground(Color.WHITE);
 		} else if ("next".equals(e.getComponent().getName())) {
 			next.setBackground(Color.WHITE);
 		}
-
 	}
-
 	public void mouseExited(MouseEvent e) {// 离开
 		if ("last".equals(e.getComponent().getName())) {
 			last.setBackground(Theme.ButtonColor);
@@ -100,5 +81,7 @@ public class HelpDescription extends JPanel implements MouseListener {
 			next.setBackground(Theme.ButtonColor);
 		}
 	}
+	public void mousePressed(MouseEvent e) {}
+	public void mouseReleased(MouseEvent e) {}
 
 }

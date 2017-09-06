@@ -1,36 +1,33 @@
-package team.qep.crawler.ui;
+ package team.qep.crawler.ui;
 
 import java.awt.Color;
-import java.awt.Font;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
-import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
-import javax.swing.JTextField;
 import javax.swing.table.DefaultTableModel;
 
 import team.qep.crawler.server.Data;
 import team.qep.crawler.server.Task;
 import team.qep.crawler.util.Constant;
-import team.qep.crawler.util.MyDocument;
-import team.qep.crawler.util.Regex;
+import team.qep.crawler.util.StringManipulation;
 
 public class ResourceScheduling extends JPanel implements MouseListener {
 
 	private JLabel resourceScheduling = new JLabel("资   源   配   置");//资源调度
 
-	private String[] columnNames; // 表格列名
+	private String[] columnNames = Constant.ResourceSchedulingCcolumnNames; // 表格列名
 	private String[][] data; // 表格数据
 	private DefaultTableModel taskDataSetModel;
 	private JTable resourcesSet = new JTable();//从机资源集合
 	private JScrollPane resourcesJSP = new JScrollPane(resourcesSet); // 未终止的任务数据集
 	
 	private JButton resourceSchedulingRefresh = new JButton();// 刷新
-	private JTextField ip = new JTextField(15);// 添加从机的ip
+	private JComboBox<String> ip = new JComboBox<String>();// 添加从机的ip
 	private JButton add = new JButton();// 添加从机
 	private JButton delete = new JButton();// 删除从机(只能删除未工作中的的从机)
 	private JButton start = new JButton();// 重启从机(只能启用未工作状态/终止状态的机子)
@@ -55,14 +52,17 @@ public class ResourceScheduling extends JPanel implements MouseListener {
 	}
 
 	private void loadingData() {// 装载数据
-		columnNames = Constant.ResourceSchedulingCcolumnNames;
-		data=Data.getResourceInformation();
-		taskDataSetModel = new DefaultTableModel(data, columnNames) {
+		taskDataSetModel = new DefaultTableModel(new String[0][], columnNames) {
 			public boolean isCellEditable(int row, int column) {
 				return false;
 			}
 		};
 		resourcesSet.setModel(taskDataSetModel);
+		
+		for(String str:Constant.Resource){
+			ip.addItem(str);
+//			Task.addDeleteResource(1,str);
+		}
 	}
 
 	private void Init() {
@@ -72,8 +72,7 @@ public class ResourceScheduling extends JPanel implements MouseListener {
 		Init.initJScrollPane(resourcesJSP, "resourcesJSP");
 
 		Init.initJButton(resourceSchedulingRefresh, "resourceSchedulingRefresh");
-		Init.initJTextField(ip,"ip");
-		ip.setDocument(new MyDocument(15));
+		Init.initJComboBox(ip,"ip");
 
 		Init.initJButton(add, "add");
 		Init.initJButton(delete, "delete");
@@ -90,7 +89,7 @@ public class ResourceScheduling extends JPanel implements MouseListener {
 		start.setBounds(770, 170, 150, 40);
 		stop.setBounds(770,240, 150, 40);
 		
-		ip.setBounds(770, 350, 150, 30);
+		ip.setBounds(765, 340, 160, 35);
 		add.setBounds(770, 410, 150, 40);
 		delete.setBounds(770, 480, 150, 40);
 		
@@ -102,15 +101,15 @@ public class ResourceScheduling extends JPanel implements MouseListener {
 		resourceScheduling.setForeground(Theme.TitleColor);
 		
 		resourceSchedulingRefresh.setBackground(Theme.ButtonColor);
-		resourceSchedulingRefresh.setIcon(Constant.getIcon("resourceSchedulingRefresh"));
+		resourceSchedulingRefresh.setIcon(Constant.getIcon(resourceSchedulingRefresh,"resourceSchedulingRefresh"));
 		add.setBackground(Theme.ButtonColor);
-		add.setIcon(Constant.getIcon("add"));
+		add.setIcon(Constant.getIcon(add,"add"));
 		delete.setBackground(Theme.ButtonColor);
-		delete.setIcon(Constant.getIcon("delete"));
+		delete.setIcon(Constant.getIcon(delete,"delete"));
 		start.setBackground(Theme.ButtonColor);
-		start.setIcon(Constant.getIcon("start"));
+		start.setIcon(Constant.getIcon(start,"start"));
 		stop.setBackground(Theme.ButtonColor);
-		stop.setIcon(Constant.getIcon("stop"));
+		stop.setIcon(Constant.getIcon(stop,"stop"));
 	}
 
 	private void listener() {
@@ -133,40 +132,36 @@ public class ResourceScheduling extends JPanel implements MouseListener {
 			
 			for(int i=0 ; i<resourcesSet.getRowCount() ; i++){
 				if(resourcesSet.getValueAt(i, 2).toString().equals("终止")){
-	 				new Promptinformation(null, "存在终止丛机,清立即进行重启", Constant.KeyValue.get("Info"));
+	 				new Promptinformation(null, "      存在终止丛机,清立即进行重启或删除", Constant.KeyValue.get("Info"));
 	 				resourcesSet.setRowSelectionInterval(i,i);
 	 				break;
 				}
 			}
 		} else if ("add".equals(e.getComponent().getName())) {
-			if(Regex.RE_matching(ip.getText(), Regex.regIP)){
-				if(Task.addDeleteResource(1,ip.getText())){
-					new Promptinformation(null, "添加成功,请重启从机", Constant.KeyValue.get("Info"));
+			if(!StringManipulation.duplicateDetection(Data.getResourceInformation(),ip.getSelectedItem().toString())){
+				if(Task.addDeleteResource(1,ip.getSelectedItem().toString())){
+					new Promptinformation(null, "      添加成功,请重启从机使之正常工作", Constant.KeyValue.get("Info"));
 				
 					data=Data.getResourceInformation();
-					taskDataSetModel = new DefaultTableModel(data, columnNames) {
+					taskDataSetModel = new DefaultTableModel(data, columnNames){
 						public boolean isCellEditable(int row, int column) {
 							return false;
 						}
 					};
 					resourcesSet.setModel(taskDataSetModel);
-					
-					ip.setText("");
-				}else{
-	 				new Promptinformation(null, "添加失败,请检查网络连接", Constant.KeyValue.get("Info"));
 				}
 			}else{
- 				new Promptinformation(null, "请输入正确的IP地址", Constant.KeyValue.get("Info"));
+ 				new Promptinformation(null, "      添加失败,该从机已添加过", Constant.KeyValue.get("Info"));
 			}
 		} else if ("delete".equals(e.getComponent().getName())) {
 			int selectedRow = resourcesSet.getSelectedRow();
 			if (selectedRow != -1) {
 				String status=resourcesSet.getValueAt(selectedRow, 2).toString();
 				if(status.equals("未工作") || status.equals("终止")){
-					new Promptinformation(null, "是否删除此台丛机?", Constant.KeyValue.get("Confirm"));
+					new Promptinformation(null, "      是否删除此台从机?", Constant.KeyValue.get("Confirm"));
 					if(Promptinformation.flag){
 						if(Task.addDeleteResource(0,resourcesSet.getValueAt(selectedRow, 0).toString())){
-							new Promptinformation(null, "删除成功", Constant.KeyValue.get("Info"));
+							new Promptinformation(null, "      删除成功", Constant.KeyValue.get("Info"));
 						
 							data=Data.getResourceInformation();
 							taskDataSetModel = new DefaultTableModel(data, columnNames) {
@@ -175,12 +170,10 @@ public class ResourceScheduling extends JPanel implements MouseListener {
 								}
 							};
 							resourcesSet.setModel(taskDataSetModel);
-						}else{
-							new Promptinformation(null, "删除失败,请检查网络连接", Constant.KeyValue.get("Info"));
 						}
 					}
 				}else{
-					new Promptinformation(null, "无法删除正在工作的从机", Constant.KeyValue.get("Info"));
+					new Promptinformation(null, "      无法删除正在工作的从机", Constant.KeyValue.get("Info"));
 				}
 			}
 		} else if ("start".equals(e.getComponent().getName())) {
@@ -204,12 +197,10 @@ public class ResourceScheduling extends JPanel implements MouseListener {
 						};
 						resourcesSet.setModel(taskDataSetModel);
 						
-						new Promptinformation(null, "重启成功", Constant.KeyValue.get("Info"));
-					}else{
-						new Promptinformation(null, "重启失败,请检查网络连接", Constant.KeyValue.get("Info"));
+						new Promptinformation(null, "      重启成功", Constant.KeyValue.get("Info"));
 					}
 				}else{
-					new Promptinformation(null, "无法重启,请重新选择", Constant.KeyValue.get("Info"));
+					new Promptinformation(null, "      无法重启,请重新选择", Constant.KeyValue.get("Info"));
 				}
 			}
 		}else if ("stop".equals(e.getComponent().getName())) {
@@ -233,12 +224,10 @@ public class ResourceScheduling extends JPanel implements MouseListener {
 						};
 						resourcesSet.setModel(taskDataSetModel);
 						
-						new Promptinformation(null, "终止成功", Constant.KeyValue.get("Info"));
-					}else{
-						new Promptinformation(null, "终止失败,请检查网络连接", Constant.KeyValue.get("Info"));
+						new Promptinformation(null, "      终止成功", Constant.KeyValue.get("Info"));
 					}
 				}else{
-					new Promptinformation(null, "无法终止,请重新选择", Constant.KeyValue.get("Info"));
+					new Promptinformation(null, "      无法终止,请重新选择", Constant.KeyValue.get("Info"));
 				}
 			}
 		}
@@ -247,7 +236,6 @@ public class ResourceScheduling extends JPanel implements MouseListener {
 	}
 
 	public void mouseReleased(MouseEvent e) {// 释放
-
 	}
 
 	public void mouseEntered(MouseEvent e) {// 进入
@@ -262,7 +250,6 @@ public class ResourceScheduling extends JPanel implements MouseListener {
 		} else if ("stop".equals(e.getComponent().getName())) {
 			stop.setBackground(Color.WHITE);
 		}
-
 	}
 
 	public void mouseExited(MouseEvent e) {// 离开
@@ -278,5 +265,4 @@ public class ResourceScheduling extends JPanel implements MouseListener {
 			stop.setBackground(Theme.ButtonColor);
 		}
 	}
-
 }

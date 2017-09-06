@@ -17,10 +17,12 @@ import team.qep.crawler.util.StringManipulation;
 public class Data {
 	//得到运行的任务集
 	public static String[][] getRunUrlSet(){
+	
 		String send=ConvertJSON.toJSON(Constant.Agreement.get("RunUrlSet"),"");
 		String[] recv=ConvertJSON.toStringArray(Communication.SendAndRecv(send));
 		
 		String[][] RunUrlSet=StringManipulation.toTwoDimensionalArrays(recv,6);
+		RunUrlSet=StringManipulation.mergeResources(RunUrlSet);//合并机子
 		for(int i=0 ; i<RunUrlSet.length; i++){
 			for(int j=0 ; j<RunUrlSet[i].length; j++){
 				switch(j){
@@ -51,6 +53,7 @@ public class Data {
 
 	//得到所有的任务集
 	public static String[][] getALLUrlSet(){
+	
 		String send=ConvertJSON.toJSON(Constant.Agreement.get("AllUrlSet"),"");
 		String[] recv=ConvertJSON.toStringArray(Communication.SendAndRecv(send));
 		
@@ -62,21 +65,24 @@ public class Data {
 	}
 	//得到即时任务的结果数据   
 	public static String[][] getTimelyUrlData() {
+		
 		String send=ConvertJSON.toJSON(Constant.Agreement.get("TimelyData"),"");
 		String[] recv=ConvertJSON.toStringArray(Communication.SendAndRecv(send));
 		
 		String[][] TimelyData=StringManipulation.toTwoDimensionalArrays(recv,3);
-		
 		return TimelyData;
-
 	}
 	//存储为文件  参数文件名,文件内容
 	public static boolean saveFile(String filename,String content) {
 		try {
+			File path = new File("./data/BN/");
+			if (!path.exists()) {
+				path.mkdirs();
+			}
 			File file = new File("./data/BN/"+filename);
 			if (!file.exists()) {
 		    	file.createNewFile();
-		    }
+			}
 			OutputStreamWriter osw = new OutputStreamWriter(new FileOutputStream(file),"UTF-8");
 			osw.write(content);
 			osw.close();
@@ -89,6 +95,10 @@ public class Data {
 	//存储为csv文件  参数----表格名,表头,表格主体
 	public static boolean saveCSV(String filename,String[] head,String[][] content) {
 		try {
+			File path = new File("./data/EC/");
+			if (!path.exists()) {
+				path.mkdirs();
+			}
             CsvWriter csvWriter = new CsvWriter("./data/EC/"+filename,',', Charset.forName("UTF-8"));
             csvWriter.writeRecord(head);
             for(int i=0 ; i<content.length ; i++){
@@ -103,18 +113,23 @@ public class Data {
 	}
 	//得到该url对应的数据     keyword为空说明为模糊任务，否则为精确任务
 	public static String[][] getUrlData(String url, String keyWord) {
-		String send=ConvertJSON.toJSON(Constant.Agreement.get("urlkData"),"");
+		String[] task = new String[]{String.valueOf(Constant.SupportFuzzyUrl.indexOf(url)),keyWord};
+		String content=Arrays.toString(task).substring(1,Arrays.toString(task).length()-1);
+
+		String send=ConvertJSON.toJSON(Constant.Agreement.get("urlData"),content);
 		String[] recv=ConvertJSON.toStringArray(Communication.SendAndRecv(send));
-		String[][] TimelyData=StringManipulation.toTwoDimensionalArrays(recv,3);
-		return TimelyData;
+	
+		String[][] urlData=StringManipulation.toTwoDimensionalArrays(recv,6);
+		return urlData;
 	}
 	//得到进度数据生成折线图
 	public static String[][] getScheduleData(String url,String keyWord){
+		
 		String[] task = new String[]{String.valueOf(Constant.SupportFuzzyUrl.indexOf(url)),keyWord};
 		String content=Arrays.toString(task).substring(1,Arrays.toString(task).length()-1);
 		String send=ConvertJSON.toJSON(Constant.Agreement.get("ProgressData"),content);
 		String[] recv=ConvertJSON.toStringArray(Communication.SendAndRecv(send));
-		System.out.println("sda");
+
 		ArrayList<String[]> list = new ArrayList<String[]>();
 		for(int i=1 ; i<recv.length; i+=2){
 			list.add(new String[]{recv[i],"任务url: "+url+"        关键字: "+keyWord,recv[i+1]});
@@ -126,9 +141,11 @@ public class Data {
 				dataSet[i][j] = list.get(i)[j];
 			}
 		}
+		StringManipulation.sortByColumn(dataSet,new int[]{2});
+		
 		return dataSet;
 	}	
-	//得到下载历史数据(终止任务集)
+	//得到下载历史数据(包括终止任务集)
 	public static String[][] getDownloadDataSet(){
 		String send=ConvertJSON.toJSON(Constant.Agreement.get("DownloadData"),"");
 		String[] recv=ConvertJSON.toStringArray(Communication.SendAndRecv(send));
@@ -141,6 +158,7 @@ public class Data {
 	}
 	//得到总下载量数据生成饼状图
 	public static String[][] downloadData(){
+	
 		String send=ConvertJSON.toJSON(Constant.Agreement.get("TotalData"),"");
 		String[] recv=ConvertJSON.toStringArray(Communication.SendAndRecv(send));
 	
@@ -160,6 +178,7 @@ public class Data {
 	}
 	//得到从机资源信息
 		public static String[][] getResourceInformation(){
+			
 			String send=ConvertJSON.toJSON(Constant.Agreement.get("ResourceInformation"),"");
 			String[] recv=ConvertJSON.toStringArray(Communication.SendAndRecv(send));
 			
@@ -175,20 +194,21 @@ public class Data {
 			}
 			return resource;
 		}
-		//返回有效的从机的数量
-		public static int isFfectiveResource(){
-			int flag=0;
-			String send=ConvertJSON.toJSON(Constant.Agreement.get("ResourceInformation"),"");
-			String[] recv=ConvertJSON.toStringArray(Communication.SendAndRecv(send));
-			
-			String[][] resource=StringManipulation.toTwoDimensionalArrays(recv,4);
-			for(int i=0 ; i<resource.length; i++){
-				if(resource[i][2].equals(String.valueOf(Constant.KeyValue.get("Start")))){
-					flag++;
-				}
+	//返回有效的从机的数量
+	public static int isFfectiveResource(){
+		
+		int flag=0;
+		String send=ConvertJSON.toJSON(Constant.Agreement.get("ResourceInformation"),"");
+		String[] recv=ConvertJSON.toStringArray(Communication.SendAndRecv(send));
+		
+		String[][] resource=StringManipulation.toTwoDimensionalArrays(recv,4);
+		for(int i=0 ; i<resource.length; i++){
+			if(resource[i][2].equals(String.valueOf(Constant.KeyValue.get("Start")))){
+				flag++;
 			}
-			return flag;
 		}
+		return flag;
+	}
 	
 	//查找url对应的关键字        参数--->带查找的任务url集(string))    查找的url
 	public static String[] getKeyWords(String[][] set,String url) {
@@ -199,6 +219,6 @@ public class Data {
 				list.add(str[1]);
 			}
 		}
-		return list.toArray(new String[list.size()]);
+		return StringManipulation.oneDuplicateRemoval(list.toArray(new String[list.size()]));
 	}
 }

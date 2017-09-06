@@ -20,11 +20,9 @@ import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.JTableHeader;
 
 public class Init {
-	// ---------窗口的初始化方式
 	public static void initJFrame(JFrame jf, String str, int x, int y) {// 主窗口,窗口名,窗口大小
 		jf.getRootPane().setWindowDecorationStyle(JRootPane.NONE);
 		jf.setLayout(null);// 清除布局方式
-		// jf.setResizable(false);//不可改变大小
 		jf.setSize(x, y);
 		jf.setName(str);// 设置窗口名
 		jf.setTitle(str);// 窗口标题
@@ -35,7 +33,6 @@ public class Init {
 
 	public static void initJDialog(JDialog jd, String str, int x, int y) {// 主窗口,窗口名,窗口大小
 		jd.setLayout(null);// 清除布局方式
-		// jf.setResizable(false);//不可改变大小
 		jd.setSize(x, y);
 		jd.setName(str);// 设置窗口名
 		jd.setTitle(str);// 窗口标题

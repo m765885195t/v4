@@ -1,20 +1,14 @@
 package team.qep.crawler.ui;
 
 import java.awt.Color;
-import java.awt.Font;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
-import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
-import javax.swing.RowSorter;
 import javax.swing.table.DefaultTableModel;
-import javax.swing.table.TableModel;
-import javax.swing.table.TableRowSorter;
-
 import team.qep.crawler.server.Data;
 import team.qep.crawler.server.Task;
 import team.qep.crawler.util.Constant;
@@ -23,7 +17,6 @@ public class TaskControl extends JPanel implements MouseListener {
 
 	private JLabel task = new JLabel("任   务   中  心");
 
-	private String[] columnNames; // 表格列名
 	private String[][] data; // 表格数据
 	private DefaultTableModel taskDataSetModel;
 	private JTable taskDataSet = new JTable();
@@ -51,15 +44,12 @@ public class TaskControl extends JPanel implements MouseListener {
 	}
 
 	private void loadingData() {// 装载数据
-		columnNames = Constant.TaskCcolumnNames;
-		data=Data.getRunUrlSet();
-		taskDataSetModel = new DefaultTableModel(data, columnNames) {
+		taskDataSetModel = new DefaultTableModel(new String[0][], Constant.TaskCcolumnNames) {
 			public boolean isCellEditable(int row, int column) {
 				return false;
 			}
 		};
 		taskDataSet.setModel(taskDataSetModel);
-
 	}
 
 	private void Init() {
@@ -89,15 +79,14 @@ public class TaskControl extends JPanel implements MouseListener {
 		task.setFont(Theme.TitleFont);
 		task.setForeground(Theme.TitleColor);
 		TaskControlRefresh.setBackground(Theme.ButtonColor);
-		TaskControlRefresh.setIcon(Constant.getIcon("TaskControlRefresh"));
+		TaskControlRefresh.setIcon(Constant.getIcon(TaskControlRefresh,"TaskControlRefresh"));
 		startTask.setBackground(Theme.ButtonColor);
-		startTask.setIcon(Constant.getIcon("startTask"));
+		startTask.setIcon(Constant.getIcon(startTask,"startTask"));
 		suspendTask.setBackground(Theme.ButtonColor);
-		suspendTask.setIcon(Constant.getIcon("suspendTask"));
+		suspendTask.setIcon(Constant.getIcon(suspendTask,"suspendTask"));
 		endTask.setBackground(Theme.ButtonColor);
-		endTask.setIcon(Constant.getIcon("endTask"));
+		endTask.setIcon(Constant.getIcon(endTask,"endTask"));
 		taskDataSet.setFont(Theme.Tablefont);// 设置字体格式
-
 	}
 
 	private void listener() {
@@ -110,7 +99,7 @@ public class TaskControl extends JPanel implements MouseListener {
 	public void mouseClicked(MouseEvent e) {// 单击
 		if ("TaskControlRefresh".equals(e.getComponent().getName())) {
 			data=Data.getRunUrlSet();
-			taskDataSetModel = new DefaultTableModel(data, columnNames) {
+			taskDataSetModel = new DefaultTableModel(data,  Constant.TaskCcolumnNames) {
 				public boolean isCellEditable(int row, int column) {
 					return false;
 				}
@@ -124,19 +113,17 @@ public class TaskControl extends JPanel implements MouseListener {
 					if(Task.modifyTaskStatus(taskDataSet.getValueAt(selectedRow, 0).toString(),taskDataSet.getValueAt(selectedRow, 1).toString(),Constant.KeyValue.get("Run"))){
 
 						data=Data.getRunUrlSet();
-						taskDataSetModel = new DefaultTableModel(data, columnNames) {
+						taskDataSetModel = new DefaultTableModel(data,  Constant.TaskCcolumnNames) {
 							public boolean isCellEditable(int row, int column) {
 								return false;
 							}
 						};
 						taskDataSet.setModel(taskDataSetModel);
 						
-						new Promptinformation(null, "运行成功", Constant.KeyValue.get("Info"));
-					}else{
-						new Promptinformation(null, "启用失败,请检查网络连接", Constant.KeyValue.get("Info"));
+						new Promptinformation(null, "      任务运行成功", Constant.KeyValue.get("Info"));
 					}
 				}else{
-					new Promptinformation(null, "无法启用,请重新选择", Constant.KeyValue.get("Info"));
+					new Promptinformation(null, "      无法运行,请重新选择", Constant.KeyValue.get("Info"));
 				}
 			}
 		} else if ("suspendTask".equals(e.getComponent().getName())) {
@@ -147,19 +134,17 @@ public class TaskControl extends JPanel implements MouseListener {
 					if(Task.modifyTaskStatus(taskDataSet.getValueAt(selectedRow, 0).toString(),taskDataSet.getValueAt(selectedRow, 1).toString(),Constant.KeyValue.get("Wait"))){
 
 						data=Data.getRunUrlSet();
-						taskDataSetModel = new DefaultTableModel(data, columnNames) {
+						taskDataSetModel = new DefaultTableModel(data,  Constant.TaskCcolumnNames) {
 							public boolean isCellEditable(int row, int column) {
 								return false;
 							}
 						};
 						taskDataSet.setModel(taskDataSetModel);
 						
-						new Promptinformation(null, "暂停成功", Constant.KeyValue.get("Info"));
-					}else{
-						new Promptinformation(null, "暂停失败,请检查网络连接", Constant.KeyValue.get("Info"));
+						new Promptinformation(null, "      任务暂停成功", Constant.KeyValue.get("Info"));
 					}
 				}else{
-					new Promptinformation(null, "无法暂停,请重新选择", Constant.KeyValue.get("Info"));
+					new Promptinformation(null, "      无法暂停,请重新选择", Constant.KeyValue.get("Info"));
 				}
 			}
 		} else if ("endTask".equals(e.getComponent().getName())) {
@@ -167,20 +152,15 @@ public class TaskControl extends JPanel implements MouseListener {
 			if (selectedRow != -1) {
 				new Promptinformation(null, "确定要终止此任务?", Constant.KeyValue.get("Confirm"));
 				if(Promptinformation.flag){
-					Promptinformation.flag=false;//状态改回去
-
 					if(Task.modifyTaskStatus(taskDataSet.getValueAt(selectedRow, 0).toString(),taskDataSet.getValueAt(selectedRow, 1).toString(),Constant.KeyValue.get("Complete"))){
 						data=Data.getRunUrlSet();
-						taskDataSetModel = new DefaultTableModel(data, columnNames) {
+						taskDataSetModel = new DefaultTableModel(data,  Constant.TaskCcolumnNames) {
 							public boolean isCellEditable(int row, int column) {
 								return false;
 							}
 						};
 						taskDataSet.setModel(taskDataSetModel);
-						
-						new Promptinformation(null, "终止成功", Constant.KeyValue.get("Info"));
-					}else{
-						new Promptinformation(null, "终止失败,请检查网络连接", Constant.KeyValue.get("Info"));
+						new Promptinformation(null, "      任务终止成功", Constant.KeyValue.get("Info"));
 					}
 				}
 			}
@@ -191,7 +171,6 @@ public class TaskControl extends JPanel implements MouseListener {
 	}
 
 	public void mouseReleased(MouseEvent e) {// 释放
-
 	}
 
 	public void mouseEntered(MouseEvent e) {// 进入
@@ -204,7 +183,6 @@ public class TaskControl extends JPanel implements MouseListener {
 		} else if ("endTask".equals(e.getComponent().getName())) {
 			endTask.setBackground(Color.WHITE);
 		}
-
 	}
 
 	public void mouseExited(MouseEvent e) {// 离开
@@ -218,5 +196,4 @@ public class TaskControl extends JPanel implements MouseListener {
 			endTask.setBackground(Theme.ButtonColor);
 		}
 	}
-
 }

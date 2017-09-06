@@ -1,15 +1,14 @@
 package team.qep.crawler.ui;
 
 import java.awt.Color;
-import java.awt.Font;
-import java.awt.event.ItemEvent;
-import java.awt.event.ItemListener;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.io.IOException;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
@@ -22,7 +21,7 @@ import team.qep.crawler.server.Data;
 import team.qep.crawler.util.Constant;
 import team.qep.crawler.util.StringManipulation;
 
-public class DataMonitoring extends JPanel implements MouseListener {
+public class DataMonitoring extends JPanel implements MouseListener, ActionListener {
 	private JLabel dataMonitoring = new JLabel("实   时   监    控");
 	private String url=null;
 	private String keyWord=null;
@@ -51,24 +50,13 @@ public class DataMonitoring extends JPanel implements MouseListener {
 	}
 
 	private void loadingData() {// 装载数据
-		runTask.removeAllItems();//更新任务列表
-		String[] urlSet=StringManipulation.oneDuplicateRemoval(StringManipulation.toOneDimensionalArrays(Data.getALLUrlSet()));
-		for(String str:urlSet){
-			runTask.addItem(str);
-		}
-		selectKeyword.removeAllItems();
-		if(runTask.getItemCount()>0){
-			for(String str:Data.getKeyWords(Data.getRunUrlSet(),runTask.getSelectedItem().toString())){
-				selectKeyword.addItem(str);
-			}
-		}
+
 	}
 	private void Init() {
 		Init.initJLable(dataMonitoring, "dataMonitoring");
 
 		Init.initJComboBox(runTask, "runTask");
 		Init.initJComboBox(selectKeyword, "selectKeyword");
-
 		Init.initJButton(savePicture, "savePicture");
 		Init.initJButton(dataMonitoringRefresh, "dataMonitoringRefresh");
 	}
@@ -88,61 +76,85 @@ public class DataMonitoring extends JPanel implements MouseListener {
 		dataMonitoring.setFont(Theme.TitleFont);
 		dataMonitoring.setForeground(Theme.TitleColor);
 		savePicture.setBackground(Theme.ButtonColor);
-		savePicture.setIcon(Constant.getIcon("savePicture"));
+		savePicture.setIcon(Constant.getIcon(savePicture,"savePicture"));
 		dataMonitoringRefresh.setBackground(Theme.ButtonColor);
-		dataMonitoringRefresh.setIcon(Constant.getIcon("dataMonitoringRefresh"));
+		dataMonitoringRefresh.setIcon(Constant.getIcon(dataMonitoringRefresh,"dataMonitoringRefresh"));
 	}
 
 	private void listener() {
-		runTask.addItemListener(new ItemListener(){
-			public void itemStateChanged(ItemEvent e){
-				selectKeyword.removeAllItems();
-				if(runTask.getItemCount()>0){
-					//初始得到第一个url的关键字
-					for(String str:Data.getKeyWords(Data.getRunUrlSet(),runTask.getSelectedItem().toString())){
-						selectKeyword.addItem(str);
-					}
-				}
-			}
-		});
+		runTask.addActionListener(this);
+		selectKeyword.addActionListener(this);
+		
 		savePicture.addMouseListener(this);
 		dataMonitoringRefresh.addMouseListener(this);
 	}
-
-	public void mouseClicked(MouseEvent e) {// 单击
-		if ("savePicture".equals(e.getComponent().getName())) {
-			if(CrawlerChart.savePicture(lineChart)){
-				new Promptinformation(null, "当前进度图图片保存成功(./image/schedule/)", Constant.KeyValue.get("Info"));
+	public void actionPerformed(ActionEvent e) {
+		if (e.getSource() == runTask) {
+			selectKeyword.removeAllItems();
+			if(runTask.getItemCount()>0){
+				for(String str:Data.getKeyWords(Data.getRunUrlSet(),runTask.getSelectedItem().toString())){
+					selectKeyword.addItem(str);
+				}
 			}
-		} else if ("dataMonitoringRefresh".equals(e.getComponent().getName())) {
+		}else if(e.getSource() == selectKeyword) {
 			if(timer!=null){//取消定时任务
 				timer.cancel();
 				timer=null;
 			}
-			if(runTask.getItemCount()>0){//存在任务url
-				url=runTask.getSelectedItem().toString();//得到选择
-				keyWord=selectKeyword.getSelectedItem().toString();
-				
-				if(!Constant.RefreshInterval.equals("0")){//更新数据
-					timer = new Timer();
-					timer.scheduleAtFixedRate(new TimerTask() {
-						public void run() {
-							((CategoryPlot) lineChart.getPlot()).setDataset(CrawlerChart.getLineDataSet(url,keyWord));
-						}
-					},0,Integer.valueOf(Constant.RefreshInterval)*1000);
-				}else{
-					((CategoryPlot) lineChart.getPlot()).setDataset(CrawlerChart.getLineDataSet(url,keyWord));
+			if(selectKeyword.getItemCount()>0){//存在任务url
+				if(selectKeyword.getItemCount()>0){
+					url=runTask.getSelectedItem().toString();//得到选择
+					keyWord=selectKeyword.getSelectedItem().toString();
+					
+					if(!Constant.RefreshInterval.equals("0")){//更新数据
+						timer = new Timer();
+						timer.scheduleAtFixedRate(new TimerTask() {
+							public void run() {
+								((CategoryPlot) lineChart.getPlot()).setDataset(CrawlerChart.getLineDataSet(url,keyWord));
+							}
+						},0,Integer.valueOf(Constant.RefreshInterval)*1000);
+					}else{
+						((CategoryPlot) lineChart.getPlot()).setDataset(CrawlerChart.getLineDataSet(url,keyWord));
+					}
 				}
 			}
-			loadingData();//更新任务列表
 		}
 	}
-	public void mousePressed(MouseEvent e) {// 按下
+	public void mouseClicked(MouseEvent e) {// 单击
+		if ("savePicture".equals(e.getComponent().getName())) {
+			if(CrawlerChart.savePicture(lineChart)){
+				new Promptinformation(null, "      当前进度图图片保存成功(./data/schedule/),是否打开所在文件夹", Constant.KeyValue.get("Confirm"));
+				if(Promptinformation.flag){
+					try {
+						Runtime.getRuntime().exec("explorer.exe "+System.getProperty("user.dir")+"\\data\\schedule\\");
+					} catch (IOException e1) {
+						e1.printStackTrace();
+					}
+				}	
+			}
+		} else if ("dataMonitoringRefresh".equals(e.getComponent().getName())) {
+			runTask.removeAllItems();//更新任务列表
+			String[] urlSet=StringManipulation.oneDuplicateRemoval(StringManipulation.toOneDimensionalArrays(Data.getRunUrlSet()));
+			for(String str:urlSet){
+				runTask.addItem(str);
+			}
+			selectKeyword.removeAllItems();
+			
+			if(runTask.getItemCount()>0){
+				for(String str:Data.getKeyWords(Data.getRunUrlSet(),runTask.getSelectedItem().toString())){
+					selectKeyword.addItem(str);
+				}
+			}else{
+				if(timer!=null){//取消定时任务
+					timer.cancel();
+					timer=null;
+				}
+				((CategoryPlot) lineChart.getPlot()).setDataset(null);
+			}		}
 	}
+	public void mousePressed(MouseEvent e) {}
 
-	public void mouseReleased(MouseEvent e) {// 释放
-
-	}
+	public void mouseReleased(MouseEvent e) {}
 
 	public void mouseEntered(MouseEvent e) {// 进入
 		if ("savePicture".equals(e.getComponent().getName())) {
@@ -159,5 +171,4 @@ public class DataMonitoring extends JPanel implements MouseListener {
 			dataMonitoringRefresh.setBackground(Theme.ButtonColor);
 		}
 	}
-
 }
